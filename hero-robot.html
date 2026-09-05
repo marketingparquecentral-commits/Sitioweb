@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parque Central — Hero interactivo</title>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   VARIABLES
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --negro:#000000;
+  --blanco:#FFFFFF;
+  --naranja:#F5821F;
+  --naranja-claro:#FF9A45;
+  --gris:#A8A8A8;
+
+  /* Ancho del corredor central que queda libre para la mascota.
+     Si tu robot es más ancho o más angosto, ajusta solo este valor. */
+  --corredor:clamp(240px, 30vw, 460px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:var(--negro);
+  color:var(--blanco);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,
+              "Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Foco visible para navegación con teclado */
+:focus-visible{
+  outline:3px solid var(--naranja);
+  outline-offset:4px;
+  border-radius:4px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO — contenedor a pantalla completa
+   ═══════════════════════════════════════════════════════════ */
+.hero{
+  position:relative;
+  width:100%;
+  height:100vh;
+  min-height:600px;
+  /* Unidad dinámica: evita el salto por la barra del navegador móvil.
+     Los navegadores viejos ignoran esta línea y se quedan con 100vh. */
+  height:100dvh;
+  overflow:hidden;
+  background:var(--negro);
+  display:flex;
+  flex-direction:column;
+  isolation:isolate; /* crea contexto de apilamiento propio */
+}
+
+/* ─── Capa 1 · el video ─── */
+.hero__video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;      /* cubre toda la sección sin deformarse */
+  object-position:center;
+  z-index:0;
+  pointer-events:none;   /* el mouse lo atraviesa, no bloquea el tracking */
+  /* El navegador reserva una capa de GPU: el seek se ve más limpio */
+  will-change:transform;
+  transform:translateZ(0);
+}
+
+/* Si el video falla al cargar, esta clase lo esconde y queda el fondo negro */
+.hero__video.oculto{opacity:0}
+
+/* ─── Capa 2 · viñeta ───
+   Oscurece bordes y base para que el texto blanco siempre se lea,
+   sin importar qué tan claro sea el frame del video en ese momento. */
+.hero__velo{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 38%, rgba(0,0,0,.72) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 26%, transparent 58%, rgba(0,0,0,.82) 100%);
+}
+
+/* ─── Capa 3 · contenido ─── */
+.hero__contenido{
+  position:relative;
+  z-index:2;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:clamp(24px,4vw,52px) clamp(20px,4vw,56px) clamp(30px,4vw,58px);
+  pointer-events:none; /* deja pasar el mouse; se reactiva en los botones */
+}
+
+/* Marca arriba a la izquierda */
+.hero__marca{
+  font-size:clamp(11px,1.4vw,13px);
+  font-weight:700;
+  letter-spacing:.26em;
+  color:var(--blanco);
+  opacity:.9;
+}
+.hero__marca span{color:var(--naranja)}
+
+/* ─── Titular partido en dos lados ───
+   Una sola <h1> por semántica, pero maquetada en tres columnas:
+   izquierda | corredor libre | derecha. */
+.hero__titulo{
+  display:grid;
+  grid-template-columns:1fr var(--corredor) 1fr;
+  align-items:center;
+  gap:0;
+  width:100%;
+  margin:auto 0;
+  font-weight:800;
+  font-size:clamp(38px,8.6vw,104px);
+  line-height:.92;
+  letter-spacing:-.035em;
+}
+.hero__titulo .izq{grid-column:1;text-align:left}
+.hero__titulo .der{grid-column:3;text-align:right}
+.hero__titulo .der b{color:var(--naranja);font-weight:800}
+
+/* ─── Bloque inferior centrado ─── */
+.hero__base{
+  text-align:center;
+  max-width:640px;
+  margin:0 auto;
+}
+.hero__sub{
+  font-size:clamp(15px,2vw,19px);
+  font-weight:400;
+  line-height:1.55;
+  color:var(--gris);
+  margin-bottom:26px;
+}
+.hero__sub b{color:var(--blanco);font-weight:600}
+
+.hero__acciones{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
+  pointer-events:auto; /* los botones sí reciben clics */
+}
+.btn{
+  display:inline-block;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:600;
+  text-decoration:none;
+  padding:15px 30px;
+  border-radius:100px;
+  cursor:pointer;
+  transition:background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+.btn--solido{
+  background:var(--naranja);
+  color:var(--negro);
+  border:2px solid var(--naranja);
+}
+.btn--solido:hover{background:var(--naranja-claro);border-color:var(--naranja-claro)}
+
+.btn--linea{
+  background:transparent;
+  color:var(--blanco);
+  border:2px solid rgba(255,255,255,.35);
+}
+.btn--linea:hover{border-color:var(--blanco);background:rgba(255,255,255,.08)}
+
+/* ─── Pista de interacción ───
+   Solo aparece en equipos con mouse (la muestra el JS). */
+.hero__pista{
+  position:absolute;
+  bottom:14px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:2;
+  font-size:11.5px;
+  letter-spacing:.16em;
+  color:rgba(255,255,255,.45);
+  opacity:0;
+  transition:opacity .5s ease;
+  pointer-events:none;
+}
+.hero__pista.visible{opacity:1}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — en móvil el texto se apila y desaparece el corredor
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width:860px){
+  .hero__titulo{
+    grid-template-columns:1fr;   /* una sola columna */
+    text-align:center;
+    gap:2px;
+    font-size:clamp(40px,12vw,68px);
+  }
+  .hero__titulo .izq,
+  .hero__titulo .der{
+    grid-column:1;
+    text-align:center;
+  }
+  /* La mascota queda detrás del texto: oscurecemos más el video */
+  .hero__velo{
+    background:linear-gradient(to bottom,
+      rgba(0,0,0,.72) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.88) 100%);
+  }
+  .hero__contenido{justify-content:center;gap:40px}
+  .hero__acciones .btn{flex:1 1 200px;text-align:center}
+}
+
+/* Pantallas muy bajas (portátiles pequeños en horizontal) */
+@media (max-height:640px) and (min-width:861px){
+  .hero__titulo{font-size:clamp(32px,6vw,60px)}
+  .hero__sub{margin-bottom:18px}
+}
+
+/* Respeta la preferencia del sistema de reducir movimiento */
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<section class="hero" id="hero">
+
+  <!-- ── Capa 1: video de fondo ──
+       · muted + playsinline: requisitos para que iOS no lo tome como reproducción
+       · preload="auto": descarga el archivo completo, indispensable para hacer seek
+       · sin autoplay y sin controls: nunca se reproduce solo
+       · poster: frame central, evita el hueco negro mientras carga
+       · aria-hidden: es decorativo, no aporta información al lector de pantalla -->
+  <video
+    class="hero__video"
+    id="video"
+    src="./robot.mp4"
+    poster="./robot-poster.jpg"
+    muted
+    playsinline
+    webkit-playsinline
+    preload="auto"
+    disablepictureinpicture
+    aria-hidden="true"
+    tabindex="-1"></video>
+
+  <!-- ── Capa 2: viñeta para legibilidad ── -->
+  <div class="hero__velo"></div>
+
+  <!-- ── Capa 3: contenido HTML real ── -->
+  <div class="hero__contenido">
+
+    <p class="hero__marca">PARQUE<span>·</span>CENTRAL</p>
+
+    <h1 class="hero__titulo">
+      <span class="izq">74 locales</span>
+      <span class="der">una <b>dirección</b></span>
+    </h1>
+
+    <div class="hero__base">
+      <p class="hero__sub">
+        El centro comercial de tecnología más grande de la región Caribe.
+        <b>Mueve el mouse: te está siguiendo.</b>
+      </p>
+      <div class="hero__acciones">
+        <a class="btn btn--solido" href="#locales">Ver los locales</a>
+        <a class="btn btn--linea" href="#llegar">Cómo llegar</a>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="hero__pista" id="pista">MUEVE EL MOUSE</p>
+
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ═════════════════════════════════════════════════════════
+     REFERENCIAS
+     ═════════════════════════════════════════════════════════ */
+  const hero  = document.getElementById('hero');
+  const video = document.getElementById('video');
+  const pista = document.getElementById('pista');
+
+  /* ═════════════════════════════════════════════════════════
+     DETECCIÓN DE CAPACIDADES
+     Solo activamos el tracking si hay un mouse de verdad
+     (hover + puntero fino) y el sistema no pide menos movimiento.
+     En celular y tablet no se registra ningún listener.
+     ═════════════════════════════════════════════════════════ */
+  const hayMouse       = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const menosMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const activarTracking = hayMouse && !menosMovimiento;
+
+  /* ═════════════════════════════════════════════════════════
+     ESTADO DE LA ANIMACIÓN
+     ═════════════════════════════════════════════════════════ */
+  let duracion = 0;     // duración total del video en segundos
+  let centro   = 0;     // punto medio: la mascota mirando al frente
+  let objetivo = 0;     // hacia dónde queremos llegar (lo define el mouse)
+  let actual   = 0;     // dónde estamos ahora (se acerca al objetivo por lerp)
+  let bucleId  = null;  // id del requestAnimationFrame en curso
+
+  /* Qué tan rápido persigue el video al mouse.
+     Más bajo = más suave y perezoso. Más alto = más pegado al cursor. */
+  const SUAVIDAD = 0.12;
+
+  /* Por debajo de esta diferencia (en segundos) dejamos de pedir seeks:
+     el ojo no lo nota y le ahorramos trabajo al decodificador. */
+  const UMBRAL = 0.004;
+
+  /* ═════════════════════════════════════════════════════════
+     APLICAR UN TIEMPO AL VIDEO
+     Nunca llamamos play(). Solo movemos currentTime.
+     ═════════════════════════════════════════════════════════ */
+  function aplicar(tiempo) {
+    /* Recortamos a un rango seguro: el último frame a veces no existe
+       exactamente en duration, y pedirlo puede dejar el video en negro. */
+    const seguro = Math.min(Math.max(tiempo, 0), duracion - 0.05);
+    try {
+      video.currentTime = seguro;
+    } catch (e) {
+      /* Algunos navegadores lanzan error si aún no hay datos suficientes.
+         Lo ignoramos: en el siguiente frame se vuelve a intentar. */
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     BUCLE DE INTERPOLACIÓN (lerp)
+     Nunca asignamos currentTime dentro del mousemove: eso dispara
+     decenas de seeks por segundo y se ve entrecortado.
+     En vez de eso, mousemove solo actualiza "objetivo" y aquí,
+     una vez por frame, nos acercamos un poco.
+     ═════════════════════════════════════════════════════════ */
+  function bucle() {
+    const diferencia = objetivo - actual;
+
+    /* Si ya llegamos, detenemos el bucle para no gastar batería.
+       Cualquier movimiento del mouse lo vuelve a arrancar. */
+    if (Math.abs(diferencia) < UMBRAL) {
+      bucleId = null;
+      return;
+    }
+
+    actual += diferencia * SUAVIDAD;
+    aplicar(actual);
+    bucleId = requestAnimationFrame(bucle);
+  }
+
+  function arrancarBucle() {
+    if (bucleId === null) {
+      bucleId = requestAnimationFrame(bucle);
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     MOUSEMOVE → posición 0-1 → segundo del video
+     ═════════════════════════════════════════════════════════ */
+  function alMover(evento) {
+    const caja = hero.getBoundingClientRect();
+
+    /* Posición horizontal del mouse dentro del hero, normalizada a 0-1.
+       0 = borde izquierdo (segundo 0)
+       1 = borde derecho (último segundo) */
+    let proporcion = (evento.clientX - caja.left) / caja.width;
+    proporcion = Math.min(Math.max(proporcion, 0), 1); // por si acaso
+
+    objetivo = proporcion * duracion;
+    arrancarBucle();
+
+    /* Una vez que el usuario entendió el truco, escondemos la pista */
+    if (pista.classList.contains('visible')) {
+      pista.classList.remove('visible');
+    }
+  }
+
+  /* Cuando el mouse sale del hero, la mascota vuelve suavemente al frente */
+  function alSalir() {
+    objetivo = centro;
+    arrancarBucle();
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     ARRANQUE — esperamos a conocer la duración real del video
+     ═════════════════════════════════════════════════════════ */
+  function alCargarMetadatos() {
+    /* Algunos streams reportan Infinity o NaN. Si pasa, no hacemos nada
+       y el poster se queda como imagen fija. */
+    if (!isFinite(video.duration) || video.duration <= 0) {
+      return;
+    }
+
+    duracion = video.duration;
+    centro   = duracion / 2;
+
+    /* Nos aseguramos de que esté detenido, pase lo que pase */
+    video.pause();
+
+    /* Posición inicial: la mascota mirando al frente */
+    actual   = centro;
+    objetivo = centro;
+    aplicar(centro);
+
+    /* En móvil o con movimiento reducido nos quedamos aquí:
+       video pausado en la mitad, sin listeners, sin bucle. */
+    if (!activarTracking) {
+      return;
+    }
+
+    hero.addEventListener('mousemove', alMover, { passive: true });
+    hero.addEventListener('mouseleave', alSalir, { passive: true });
+
+    /* Si el mouse sale de la ventana completa, también centramos */
+    document.addEventListener('mouseleave', alSalir, { passive: true });
+
+    /* Mostramos la pista un momento para que se descubra la interacción */
+    pista.classList.add('visible');
+    setTimeout(function () {
+      pista.classList.remove('visible');
+    }, 6000);
+  }
+
+  /* loadedmetadata ya puede haber ocurrido si el video venía en caché */
+  if (video.readyState >= 1) {
+    alCargarMetadatos();
+  } else {
+    video.addEventListener('loadedmetadata', alCargarMetadatos, { once: true });
+  }
+
+  /* Si el archivo no existe o el formato no es compatible,
+     escondemos el video y queda el fondo negro con el texto. */
+  video.addEventListener('error', function () {
+    video.classList.add('oculto');
+  });
+
+  /* Al cambiar el tamaño de la ventana no hay que recalcular nada:
+     getBoundingClientRect se consulta en cada mousemove. */
+
+})();
+</script>
+
+</body>
+</html>
