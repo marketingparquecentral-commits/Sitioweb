@@ -16,8 +16,7 @@
   --naranja-claro:#FF9A45;
   --gris:#A8A8A8;
 
-  /* Ancho del corredor central que queda libre para la mascota.
-     Si tu robot es más ancho o más angosto, ajusta solo este valor. */
+  /* Corredor central libre para que la mascota no quede tapada */
   --corredor:clamp(240px, 30vw, 460px);
 }
 
@@ -31,7 +30,6 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* Foco visible para navegación con teclado */
 :focus-visible{
   outline:3px solid var(--naranja);
   outline-offset:4px;
@@ -39,44 +37,53 @@ body{
 }
 
 /* ═══════════════════════════════════════════════════════════
-   HERO — contenedor a pantalla completa
+   HERO
    ═══════════════════════════════════════════════════════════ */
 .hero{
   position:relative;
   width:100%;
   height:100vh;
   min-height:600px;
-  /* Unidad dinámica: evita el salto por la barra del navegador móvil.
-     Los navegadores viejos ignoran esta línea y se quedan con 100vh. */
   height:100dvh;
   overflow:hidden;
   background:var(--negro);
   display:flex;
   flex-direction:column;
-  isolation:isolate; /* crea contexto de apilamiento propio */
+  isolation:isolate;
 }
 
-/* ─── Capa 1 · el video ─── */
+/* ─── Capa 0 · video ───
+   Se usa de dos maneras:
+   1. Como fuente para extraer los frames al canvas.
+   2. Como respaldo visible si la extracción falla. */
 .hero__video{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
-  object-fit:cover;      /* cubre toda la sección sin deformarse */
+  object-fit:cover;
   object-position:center;
   z-index:0;
-  pointer-events:none;   /* el mouse lo atraviesa, no bloquea el tracking */
-  /* El navegador reserva una capa de GPU: el seek se ve más limpio */
-  will-change:transform;
-  transform:translateZ(0);
+  pointer-events:none;
 }
+/* Cuando el canvas toma el control, el video se esconde */
+.hero__video.retirado{opacity:0;visibility:hidden}
 
-/* Si el video falla al cargar, esta clase lo esconde y queda el fondo negro */
-.hero__video.oculto{opacity:0}
+/* ─── Capa 0 · canvas ───
+   Aquí se dibujan los frames ya extraídos. Es lo que da la fluidez. */
+.hero__lienzo{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .4s ease;
+}
+.hero__lienzo.activo{opacity:1}
 
-/* ─── Capa 2 · viñeta ───
-   Oscurece bordes y base para que el texto blanco siempre se lea,
-   sin importar qué tan claro sea el frame del video en ese momento. */
+/* ─── Capa 1 · viñeta ─── */
 .hero__velo{
   position:absolute;
   inset:0;
@@ -87,7 +94,7 @@ body{
     linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 26%, transparent 58%, rgba(0,0,0,.82) 100%);
 }
 
-/* ─── Capa 3 · contenido ─── */
+/* ─── Capa 2 · contenido ─── */
 .hero__contenido{
   position:relative;
   z-index:2;
@@ -96,27 +103,21 @@ body{
   flex-direction:column;
   justify-content:space-between;
   padding:clamp(24px,4vw,52px) clamp(20px,4vw,56px) clamp(30px,4vw,58px);
-  pointer-events:none; /* deja pasar el mouse; se reactiva en los botones */
+  pointer-events:none;
 }
 
-/* Marca arriba a la izquierda */
 .hero__marca{
   font-size:clamp(11px,1.4vw,13px);
   font-weight:700;
   letter-spacing:.26em;
-  color:var(--blanco);
   opacity:.9;
 }
 .hero__marca span{color:var(--naranja)}
 
-/* ─── Titular partido en dos lados ───
-   Una sola <h1> por semántica, pero maquetada en tres columnas:
-   izquierda | corredor libre | derecha. */
 .hero__titulo{
   display:grid;
   grid-template-columns:1fr var(--corredor) 1fr;
   align-items:center;
-  gap:0;
   width:100%;
   margin:auto 0;
   font-weight:800;
@@ -128,15 +129,9 @@ body{
 .hero__titulo .der{grid-column:3;text-align:right}
 .hero__titulo .der b{color:var(--naranja);font-weight:800}
 
-/* ─── Bloque inferior centrado ─── */
-.hero__base{
-  text-align:center;
-  max-width:640px;
-  margin:0 auto;
-}
+.hero__base{text-align:center;max-width:640px;margin:0 auto}
 .hero__sub{
   font-size:clamp(15px,2vw,19px);
-  font-weight:400;
   line-height:1.55;
   color:var(--gris);
   margin-bottom:26px;
@@ -144,70 +139,53 @@ body{
 .hero__sub b{color:var(--blanco);font-weight:600}
 
 .hero__acciones{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  flex-wrap:wrap;
-  pointer-events:auto; /* los botones sí reciben clics */
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  pointer-events:auto;
 }
 .btn{
   display:inline-block;
-  font-family:inherit;
-  font-size:15px;
-  font-weight:600;
-  text-decoration:none;
-  padding:15px 30px;
-  border-radius:100px;
-  cursor:pointer;
+  font-family:inherit;font-size:15px;font-weight:600;
+  text-decoration:none;padding:15px 30px;border-radius:100px;cursor:pointer;
   transition:background-color .18s ease, color .18s ease, border-color .18s ease;
 }
-.btn--solido{
-  background:var(--naranja);
-  color:var(--negro);
-  border:2px solid var(--naranja);
-}
+.btn--solido{background:var(--naranja);color:var(--negro);border:2px solid var(--naranja)}
 .btn--solido:hover{background:var(--naranja-claro);border-color:var(--naranja-claro)}
-
-.btn--linea{
-  background:transparent;
-  color:var(--blanco);
-  border:2px solid rgba(255,255,255,.35);
-}
+.btn--linea{background:transparent;color:var(--blanco);border:2px solid rgba(255,255,255,.35)}
 .btn--linea:hover{border-color:var(--blanco);background:rgba(255,255,255,.08)}
 
-/* ─── Pista de interacción ───
-   Solo aparece en equipos con mouse (la muestra el JS). */
-.hero__pista{
+/* ─── Indicador de preparación ───
+   Barra finita arriba mientras se extraen los frames. */
+.hero__progreso{
   position:absolute;
-  bottom:14px;
-  left:50%;
+  top:0;left:0;
+  height:2px;width:0%;
+  background:var(--naranja);
+  z-index:3;
+  transition:width .25s ease, opacity .5s ease;
+}
+.hero__progreso.terminado{opacity:0}
+
+.hero__pista{
+  position:absolute;bottom:14px;left:50%;
   transform:translateX(-50%);
   z-index:2;
-  font-size:11.5px;
-  letter-spacing:.16em;
+  font-size:11.5px;letter-spacing:.16em;
   color:rgba(255,255,255,.45);
-  opacity:0;
-  transition:opacity .5s ease;
+  opacity:0;transition:opacity .5s ease;
   pointer-events:none;
 }
 .hero__pista.visible{opacity:1}
 
 /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — en móvil el texto se apila y desaparece el corredor
+   RESPONSIVE
    ═══════════════════════════════════════════════════════════ */
 @media (max-width:860px){
   .hero__titulo{
-    grid-template-columns:1fr;   /* una sola columna */
-    text-align:center;
-    gap:2px;
+    grid-template-columns:1fr;
+    text-align:center;gap:2px;
     font-size:clamp(40px,12vw,68px);
   }
-  .hero__titulo .izq,
-  .hero__titulo .der{
-    grid-column:1;
-    text-align:center;
-  }
-  /* La mascota queda detrás del texto: oscurecemos más el video */
+  .hero__titulo .izq,.hero__titulo .der{grid-column:1;text-align:center}
   .hero__velo{
     background:linear-gradient(to bottom,
       rgba(0,0,0,.72) 0%, rgba(0,0,0,.45) 40%, rgba(0,0,0,.88) 100%);
@@ -216,13 +194,11 @@ body{
   .hero__acciones .btn{flex:1 1 200px;text-align:center}
 }
 
-/* Pantallas muy bajas (portátiles pequeños en horizontal) */
 @media (max-height:640px) and (min-width:861px){
   .hero__titulo{font-size:clamp(32px,6vw,60px)}
   .hero__sub{margin-bottom:18px}
 }
 
-/* Respeta la preferencia del sistema de reducir movimiento */
 @media (prefers-reduced-motion:reduce){
   *{transition:none !important;animation:none !important}
 }
@@ -232,12 +208,10 @@ body{
 
 <section class="hero" id="hero">
 
-  <!-- ── Capa 1: video de fondo ──
-       · muted + playsinline: requisitos para que iOS no lo tome como reproducción
-       · preload="auto": descarga el archivo completo, indispensable para hacer seek
-       · sin autoplay y sin controls: nunca se reproduce solo
-       · poster: frame central, evita el hueco negro mientras carga
-       · aria-hidden: es decorativo, no aporta información al lector de pantalla -->
+  <!-- Barra de progreso de la preparación -->
+  <div class="hero__progreso" id="progreso"></div>
+
+  <!-- Video: fuente de los frames y respaldo visual -->
   <video
     class="hero__video"
     id="video"
@@ -247,16 +221,17 @@ body{
     playsinline
     webkit-playsinline
     preload="auto"
+    crossorigin="anonymous"
     disablepictureinpicture
     aria-hidden="true"
     tabindex="-1"></video>
 
-  <!-- ── Capa 2: viñeta para legibilidad ── -->
+  <!-- Canvas: aquí se pintan los frames ya extraídos -->
+  <canvas class="hero__lienzo" id="lienzo" aria-hidden="true"></canvas>
+
   <div class="hero__velo"></div>
 
-  <!-- ── Capa 3: contenido HTML real ── -->
   <div class="hero__contenido">
-
     <p class="hero__marca">PARQUE<span>·</span>CENTRAL</p>
 
     <h1 class="hero__titulo">
@@ -274,7 +249,6 @@ body{
         <a class="btn btn--linea" href="#llegar">Cómo llegar</a>
       </div>
     </div>
-
   </div>
 
   <p class="hero__pista" id="pista">MUEVE EL MOUSE</p>
@@ -286,165 +260,331 @@ body{
   'use strict';
 
   /* ═════════════════════════════════════════════════════════
-     REFERENCIAS
-     ═════════════════════════════════════════════════════════ */
-  const hero  = document.getElementById('hero');
-  const video = document.getElementById('video');
-  const pista = document.getElementById('pista');
+     POR QUÉ ESTE ENFOQUE
 
-  /* ═════════════════════════════════════════════════════════
-     DETECCIÓN DE CAPACIDADES
-     Solo activamos el tracking si hay un mouse de verdad
-     (hover + puntero fino) y el sistema no pide menos movimiento.
-     En celular y tablet no se registra ningún listener.
+     Mover video.currentTime en cada mousemove es lento: el
+     navegador tiene que buscar el keyframe anterior y
+     reconstruir la imagen desde ahí, decenas de veces por
+     segundo.
+
+     Aquí lo hacemos distinto. Al cargar la página extraemos
+     una sola vez todos los frames y los guardamos como
+     imágenes en memoria. Después, mover el mouse solo dibuja
+     una imagen ya lista en un canvas. Eso es instantáneo.
+
+     Cuesta unos segundos de preparación al inicio, pero la
+     interacción queda perfectamente fluida.
      ═════════════════════════════════════════════════════════ */
-  const hayMouse       = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  const hero     = document.getElementById('hero');
+  const video    = document.getElementById('video');
+  const lienzo   = document.getElementById('lienzo');
+  const progreso = document.getElementById('progreso');
+  const pista    = document.getElementById('pista');
+  const ctx      = lienzo.getContext('2d', { alpha: false });
+
+  /* ── Ajustes que puedes tocar ── */
+  const FRAMES_POR_SEGUNDO = 20;   // muestras a extraer por segundo de video
+  const FRAMES_MAX         = 72;   // tope, para no gastar memoria de más
+  const FRAMES_MIN         = 24;   // piso, para que no se vea a saltos
+  const ANCHO_CAPTURA      = 1280; // resolución de los frames guardados
+  const CALIDAD_JPEG       = 0.82; // 0-1, peso contra nitidez
+  const SUAVIDAD           = 0.22; // 0-1, qué tan pegado va al cursor
+  const TIMEOUT_SEEK       = 4000; // ms de espera máxima por frame
+
+  /* ── Estado ── */
+  let duracion   = 0;
+  let imagenes   = [];    // frames ya listos para dibujar
+  let modoCanvas = false; // true cuando la extracción terminó bien
+  let objetivo   = 0;     // posición deseada, en índice de frame
+  let actual     = 0;     // posición actual, se acerca al objetivo
+  let bucleId    = null;
+  let ultimoDibujado = -1;
+
+  /* Solo hay tracking con mouse real y sin preferencia de menos movimiento */
+  const hayMouse        = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const menosMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const activarTracking = hayMouse && !menosMovimiento;
 
   /* ═════════════════════════════════════════════════════════
-     ESTADO DE LA ANIMACIÓN
+     TAMAÑO DEL CANVAS
+     Se ajusta al hero y se redibuja el frame actual.
      ═════════════════════════════════════════════════════════ */
-  let duracion = 0;     // duración total del video en segundos
-  let centro   = 0;     // punto medio: la mascota mirando al frente
-  let objetivo = 0;     // hacia dónde queremos llegar (lo define el mouse)
-  let actual   = 0;     // dónde estamos ahora (se acerca al objetivo por lerp)
-  let bucleId  = null;  // id del requestAnimationFrame en curso
-
-  /* Qué tan rápido persigue el video al mouse.
-     Más bajo = más suave y perezoso. Más alto = más pegado al cursor. */
-  const SUAVIDAD = 0.12;
-
-  /* Por debajo de esta diferencia (en segundos) dejamos de pedir seeks:
-     el ojo no lo nota y le ahorramos trabajo al decodificador. */
-  const UMBRAL = 0.004;
-
-  /* ═════════════════════════════════════════════════════════
-     APLICAR UN TIEMPO AL VIDEO
-     Nunca llamamos play(). Solo movemos currentTime.
-     ═════════════════════════════════════════════════════════ */
-  function aplicar(tiempo) {
-    /* Recortamos a un rango seguro: el último frame a veces no existe
-       exactamente en duration, y pedirlo puede dejar el video en negro. */
-    const seguro = Math.min(Math.max(tiempo, 0), duracion - 0.05);
-    try {
-      video.currentTime = seguro;
-    } catch (e) {
-      /* Algunos navegadores lanzan error si aún no hay datos suficientes.
-         Lo ignoramos: en el siguiente frame se vuelve a intentar. */
-    }
+  function ajustarLienzo() {
+    /* Limitamos la densidad de pixeles: en pantallas retina, dibujar al
+       doble de resolución no aporta nada en un fondo con viñeta encima
+       y sí cuesta rendimiento. */
+    const densidad = Math.min(window.devicePixelRatio || 1, 1.5);
+    lienzo.width  = Math.round(hero.clientWidth  * densidad);
+    lienzo.height = Math.round(hero.clientHeight * densidad);
+    ultimoDibujado = -1;          // forzamos redibujo
+    if (modoCanvas) dibujar(actual);
   }
 
   /* ═════════════════════════════════════════════════════════
-     BUCLE DE INTERPOLACIÓN (lerp)
-     Nunca asignamos currentTime dentro del mousemove: eso dispara
-     decenas de seeks por segundo y se ve entrecortado.
-     En vez de eso, mousemove solo actualiza "objetivo" y aquí,
-     una vez por frame, nos acercamos un poco.
+     DIBUJAR UN FRAME
+     Replica el comportamiento de object-fit: cover.
+     ═════════════════════════════════════════════════════════ */
+  function dibujar(indice) {
+    const i = Math.round(Math.min(Math.max(indice, 0), imagenes.length - 1));
+    if (i === ultimoDibujado) return;   // ya está pintado, no repetimos
+
+    const img = imagenes[i];
+    if (!img) return;
+
+    const anchoL = lienzo.width;
+    const altoL  = lienzo.height;
+
+    /* Escala que hace que la imagen cubra todo el lienzo sin deformarse */
+    const escala = Math.max(anchoL / img.width, altoL / img.height);
+    const w = img.width  * escala;
+    const h = img.height * escala;
+
+    ctx.drawImage(img, (anchoL - w) / 2, (altoL - h) / 2, w, h);
+    ultimoDibujado = i;
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     BUCLE DE SUAVIZADO
+     El mousemove solo actualiza "objetivo". Aquí, una vez por
+     frame de pantalla, nos acercamos un poco y dibujamos.
      ═════════════════════════════════════════════════════════ */
   function bucle() {
     const diferencia = objetivo - actual;
 
-    /* Si ya llegamos, detenemos el bucle para no gastar batería.
-       Cualquier movimiento del mouse lo vuelve a arrancar. */
-    if (Math.abs(diferencia) < UMBRAL) {
-      bucleId = null;
+    if (Math.abs(diferencia) < 0.05) {
+      actual = objetivo;
+      dibujar(actual);
+      bucleId = null;      // llegamos, dejamos de gastar batería
       return;
     }
 
     actual += diferencia * SUAVIDAD;
-    aplicar(actual);
+    dibujar(actual);
     bucleId = requestAnimationFrame(bucle);
   }
 
   function arrancarBucle() {
-    if (bucleId === null) {
-      bucleId = requestAnimationFrame(bucle);
+    if (bucleId === null) bucleId = requestAnimationFrame(bucle);
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     EXTRACCIÓN DE FRAMES
+     Recorre el video una vez, saltando de posición en posición
+     y guardando cada imagen. Esto es lo lento, pero pasa una
+     sola vez y en segundo plano.
+     ═════════════════════════════════════════════════════════ */
+
+  /* Espera a que el video termine de posicionarse en un tiempo dado */
+  function irA(tiempo) {
+    return new Promise(function (resolver, rechazar) {
+      let cerrado = false;
+
+      const alSaltar = function () {
+        if (cerrado) return;
+        cerrado = true;
+        clearTimeout(reloj);
+        video.removeEventListener('seeked', alSaltar);
+        resolver();
+      };
+
+      /* Si un salto se demora demasiado, abortamos toda la extracción */
+      const reloj = setTimeout(function () {
+        if (cerrado) return;
+        cerrado = true;
+        video.removeEventListener('seeked', alSaltar);
+        rechazar(new Error('El salto tardó demasiado'));
+      }, TIMEOUT_SEEK);
+
+      video.addEventListener('seeked', alSaltar);
+      video.currentTime = tiempo;
+    });
+  }
+
+  /* Convierte el canvas temporal en una imagen lista para dibujar */
+  function guardarComoImagen(canvasTemp) {
+    return new Promise(function (resolver, rechazar) {
+      canvasTemp.toBlob(function (blob) {
+        if (!blob) return rechazar(new Error('No se pudo generar el frame'));
+
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+
+        img.onload = function () {
+          /* decode() fuerza al navegador a preparar la imagen ahora,
+             para que el primer dibujado no tenga tirón */
+          if (img.decode) {
+            img.decode().then(function () { resolver(img); })
+                        .catch(function () { resolver(img); });
+          } else {
+            resolver(img);
+          }
+        };
+        img.onerror = function () { rechazar(new Error('Frame corrupto')); };
+        img.src = url;
+      }, 'image/jpeg', CALIDAD_JPEG);
+    });
+  }
+
+  async function extraerFrames() {
+    /* Cuántos frames vamos a sacar, según lo que dure el video */
+    let total = Math.round(duracion * FRAMES_POR_SEGUNDO);
+    total = Math.min(FRAMES_MAX, Math.max(FRAMES_MIN, total));
+
+    /* Canvas temporal donde cae cada frame antes de guardarse */
+    const temp = document.createElement('canvas');
+    const anchoReal = video.videoWidth  || 1280;
+    const altoReal  = video.videoHeight || 720;
+    const factor    = Math.min(1, ANCHO_CAPTURA / anchoReal);
+
+    temp.width  = Math.round(anchoReal * factor);
+    temp.height = Math.round(altoReal  * factor);
+    const ctxTemp = temp.getContext('2d', { alpha: false });
+
+    /* Dejamos un margen al final: el último frame exacto a veces no existe */
+    const fin = Math.max(0, duracion - 0.04);
+
+    for (let i = 0; i < total; i++) {
+      const tiempo = (i / (total - 1)) * fin;
+
+      await irA(tiempo);
+      ctxTemp.drawImage(video, 0, 0, temp.width, temp.height);
+      imagenes.push(await guardarComoImagen(temp));
+
+      progreso.style.width = Math.round(((i + 1) / total) * 100) + '%';
     }
   }
 
   /* ═════════════════════════════════════════════════════════
-     MOUSEMOVE → posición 0-1 → segundo del video
+     MODO RESPALDO
+     Si la extracción falla, volvemos al método clásico:
+     mover currentTime directamente. Menos fluido, pero funciona.
+     ═════════════════════════════════════════════════════════ */
+  function activarRespaldo() {
+    modoCanvas = false;
+    lienzo.classList.remove('activo');
+    video.classList.remove('retirado');
+    video.currentTime = duracion / 2;
+
+    if (!activarTracking) return;
+
+    let objetivoT = duracion / 2;
+    let actualT   = duracion / 2;
+    let rafT      = null;
+
+    const bucleT = function () {
+      const d = objetivoT - actualT;
+      if (Math.abs(d) < 0.004) { rafT = null; return; }
+      actualT += d * 0.3;
+      try { video.currentTime = actualT; } catch (e) {}
+      rafT = requestAnimationFrame(bucleT);
+    };
+
+    hero.addEventListener('mousemove', function (e) {
+      const caja = hero.getBoundingClientRect();
+      let p = (e.clientX - caja.left) / caja.width;
+      p = Math.min(Math.max(p, 0), 1);
+      objetivoT = p * duracion;
+      if (rafT === null) rafT = requestAnimationFrame(bucleT);
+    }, { passive: true });
+
+    hero.addEventListener('mouseleave', function () {
+      objetivoT = duracion / 2;
+      if (rafT === null) rafT = requestAnimationFrame(bucleT);
+    }, { passive: true });
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     TRACKING DEL MOUSE (modo canvas)
      ═════════════════════════════════════════════════════════ */
   function alMover(evento) {
     const caja = hero.getBoundingClientRect();
 
-    /* Posición horizontal del mouse dentro del hero, normalizada a 0-1.
-       0 = borde izquierdo (segundo 0)
-       1 = borde derecho (último segundo) */
+    /* Posición horizontal dentro del hero, de 0 a 1 */
     let proporcion = (evento.clientX - caja.left) / caja.width;
-    proporcion = Math.min(Math.max(proporcion, 0), 1); // por si acaso
+    proporcion = Math.min(Math.max(proporcion, 0), 1);
 
-    objetivo = proporcion * duracion;
+    /* La convertimos en índice de frame */
+    objetivo = proporcion * (imagenes.length - 1);
     arrancarBucle();
 
-    /* Una vez que el usuario entendió el truco, escondemos la pista */
-    if (pista.classList.contains('visible')) {
-      pista.classList.remove('visible');
-    }
+    if (pista.classList.contains('visible')) pista.classList.remove('visible');
   }
 
-  /* Cuando el mouse sale del hero, la mascota vuelve suavemente al frente */
   function alSalir() {
-    objetivo = centro;
+    objetivo = (imagenes.length - 1) / 2;   // vuelve al centro
     arrancarBucle();
   }
 
   /* ═════════════════════════════════════════════════════════
-     ARRANQUE — esperamos a conocer la duración real del video
+     ARRANQUE
      ═════════════════════════════════════════════════════════ */
-  function alCargarMetadatos() {
-    /* Algunos streams reportan Infinity o NaN. Si pasa, no hacemos nada
-       y el poster se queda como imagen fija. */
-    if (!isFinite(video.duration) || video.duration <= 0) {
-      return;
-    }
+  async function iniciar() {
+    if (!isFinite(video.duration) || video.duration <= 0) return;
 
     duracion = video.duration;
-    centro   = duracion / 2;
-
-    /* Nos aseguramos de que esté detenido, pase lo que pase */
     video.pause();
 
-    /* Posición inicial: la mascota mirando al frente */
-    actual   = centro;
-    objetivo = centro;
-    aplicar(centro);
+    ajustarLienzo();
 
-    /* En móvil o con movimiento reducido nos quedamos aquí:
-       video pausado en la mitad, sin listeners, sin bucle. */
+    /* En celular o con movimiento reducido no extraemos nada:
+       basta con dejar el video quieto en la mitad. */
     if (!activarTracking) {
+      video.currentTime = duracion / 2;
+      progreso.classList.add('terminado');
       return;
     }
 
-    hero.addEventListener('mousemove', alMover, { passive: true });
-    hero.addEventListener('mouseleave', alSalir, { passive: true });
+    try {
+      await extraerFrames();
 
-    /* Si el mouse sale de la ventana completa, también centramos */
-    document.addEventListener('mouseleave', alSalir, { passive: true });
+      if (imagenes.length < 2) throw new Error('Muy pocos frames');
 
-    /* Mostramos la pista un momento para que se descubra la interacción */
-    pista.classList.add('visible');
-    setTimeout(function () {
-      pista.classList.remove('visible');
-    }, 6000);
+      /* Todo listo: el canvas toma el control */
+      modoCanvas = true;
+      actual = objetivo = (imagenes.length - 1) / 2;
+      dibujar(actual);
+
+      lienzo.classList.add('activo');
+      video.classList.add('retirado');
+      video.removeAttribute('src');   // liberamos el video, ya no hace falta
+      video.load();
+
+      hero.addEventListener('mousemove', alMover, { passive: true });
+      hero.addEventListener('mouseleave', alSalir, { passive: true });
+      document.addEventListener('mouseleave', alSalir, { passive: true });
+
+      pista.classList.add('visible');
+      setTimeout(function () { pista.classList.remove('visible'); }, 6000);
+
+    } catch (error) {
+      /* Algo falló: seguimos con el video normal */
+      console.warn('Extracción de frames no disponible:', error.message);
+      activarRespaldo();
+    }
+
+    progreso.classList.add('terminado');
   }
 
-  /* loadedmetadata ya puede haber ocurrido si el video venía en caché */
+  /* Puede que los metadatos ya estén listos si el video venía en caché */
   if (video.readyState >= 1) {
-    alCargarMetadatos();
+    iniciar();
   } else {
-    video.addEventListener('loadedmetadata', alCargarMetadatos, { once: true });
+    video.addEventListener('loadedmetadata', iniciar, { once: true });
   }
 
-  /* Si el archivo no existe o el formato no es compatible,
-     escondemos el video y queda el fondo negro con el texto. */
   video.addEventListener('error', function () {
-    video.classList.add('oculto');
+    video.style.opacity = '0';
+    progreso.classList.add('terminado');
   });
 
-  /* Al cambiar el tamaño de la ventana no hay que recalcular nada:
-     getBoundingClientRect se consulta en cada mousemove. */
+  /* Reajuste al cambiar el tamaño de la ventana, con freno para no
+     recalcular en cada pixel del arrastre */
+  let relojResize = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(relojResize);
+    relojResize = setTimeout(ajustarLienzo, 150);
+  });
 
 })();
 </script>
