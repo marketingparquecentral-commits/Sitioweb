@@ -373,7 +373,8 @@ html{scroll-behavior:smooth}
    no se repinta la pantalla en cada cuadro y el video no pierde
    fluidez. */
 .hero__luz{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;
-  opacity:0;transition:opacity .6s ease}
+  opacity:0;transition:opacity 1.2s ease}
+.hero__luz.activa{transition-duration:.35s}
 .hero__luz.activa{opacity:1}
 .hero__sombra,.hero__foco,.hero__orbe{position:absolute;left:0;top:0;will-change:transform;border-radius:50%}
 .hero__sombra{width:2400px;height:2400px;margin:-1200px 0 0 -1200px;
@@ -1164,21 +1165,25 @@ html{scroll-behavior:smooth}
       cx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     medir();
-    addEventListener('resize', () => { medir(); volverAlCentro(); });
+    addEventListener('resize', medir);
     addEventListener('scroll', () => { caja = heroEl.getBoundingClientRect(); }, { passive: true });
 
     let lx = W / 2, ly = H / 2, tx = lx, ty = ly;
     let chispas = [], corriendo = false, ultimoX = -1;
 
-    function volverAlCentro() { tx = W / 2; ty = H / 2; arrancar(); }
+    /* Al salir el mouse, la luz termina su recorrido y se apaga
+       ahí mismo. El robot se queda mirando ese punto. */
+    const apagar   = () => luz.classList.remove('activa');
+    const encender = () => luz.classList.add('activa');
 
     heroEl.addEventListener('pointermove', e => {
       tx = e.clientX - caja.left;
       ty = e.clientY - caja.top;
+      encender();
       arrancar();
     }, { passive: true });
-    heroEl.addEventListener('pointerleave', volverAlCentro);
-    document.addEventListener('mouseleave', volverAlCentro);
+    heroEl.addEventListener('pointerleave', apagar);
+    document.addEventListener('mouseleave', apagar);
 
     function arrancar() {
       if (!corriendo) { corriendo = true; requestAnimationFrame(bucle); }
@@ -1229,7 +1234,6 @@ html{scroll-behavior:smooth}
     }
 
     colocar();
-    luz.classList.add('activa');
   }
 
   if (punteroFino && !sinMovimiento) {
