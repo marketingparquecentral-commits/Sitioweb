@@ -69,6 +69,9 @@ body{
   pointer-events:none;
 }
 /* Cuando el canvas toma el control, el video se esconde */
+.hero__video{opacity:0;transition:opacity .35s ease}
+/* Solo se muestra cuando ya está en el cuadro de frente */
+.hero__video.listo{opacity:1}
 .hero__video.retirado{opacity:0;visibility:hidden}
 
 /* ─── Capa 0 · canvas ───
@@ -626,6 +629,10 @@ html{scroll-behavior:smooth}
   const CALIDAD_JPEG       = 0.82; // 0-1, peso contra nitidez
   const SUAVIDAD           = 0.22; // 0-1, qué tan pegado va al cursor
   const TIMEOUT_SEEK       = 4000; // ms de espera máxima por frame
+  /* Momento del video (de 0 a 1) en que el robot mira de frente.
+     0.5 es la mitad. Si en tu video el frente está en otro punto,
+     ajústalo aquí: por ejemplo 0.45 o 0.55. */
+  const PUNTO_CENTRO       = 0.5;
 
   /* ── Estado ── */
   let duracion   = 0;
@@ -825,12 +832,12 @@ html{scroll-behavior:smooth}
     modoCanvas = false;
     lienzo.classList.remove('activo');
     video.classList.remove('retirado');
-    video.currentTime = duracion / 2;
+    video.currentTime = duracion * PUNTO_CENTRO;
 
     if (!activarTracking) return;
 
-    let objetivoT = duracion / 2;
-    let actualT   = duracion / 2;
+    let objetivoT = duracion * PUNTO_CENTRO;
+    let actualT   = duracion * PUNTO_CENTRO;
     let rafT      = null;
 
     const bucleT = function () {
@@ -869,7 +876,7 @@ html{scroll-behavior:smooth}
   }
 
   function alSalir() {
-    objetivo = (imagenes.length - 1) / 2;   // vuelve al centro
+    objetivo = (imagenes.length - 1) * PUNTO_CENTRO;   // vuelve al centro
     arrancarBucle();
   }
 
@@ -881,14 +888,19 @@ html{scroll-behavior:smooth}
 
     duracion = video.duration;
     video.pause();
-    video.currentTime = duracion / 2;   // mirando al frente mientras se prepara
+    /* Mirando al frente mientras se prepara. El video está invisible
+       hasta que llega a ese cuadro, así nunca se ve el primer cuadro
+       (que puede estar en diagonal). */
+    video.addEventListener('seeked', function () { video.classList.add('listo'); }, { once: true });
+    setTimeout(function () { video.classList.add('listo'); }, 2500);   // respaldo por si el salto no avisa
+    video.currentTime = duracion * PUNTO_CENTRO;
 
     ajustarLienzo();
 
     /* En celular o con movimiento reducido no extraemos nada:
        basta con dejar el video quieto en la mitad. */
     if (!activarTracking) {
-      video.currentTime = duracion / 2;
+      video.currentTime = duracion * PUNTO_CENTRO;
       progreso.classList.add('terminado');
       return;
     }
@@ -900,7 +912,7 @@ html{scroll-behavior:smooth}
 
       /* Todo listo: el canvas toma el control */
       modoCanvas = true;
-      actual = objetivo = (imagenes.length - 1) / 2;
+      actual = objetivo = (imagenes.length - 1) * PUNTO_CENTRO;
       dibujar(actual);
 
       lienzo.classList.add('activo');
