@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Parque Central — Hero interactivo</title>
+<title>Parque Central · Centro comercial de tecnología en Barranquilla</title>
+<meta name="description" content="El centro comercial de tecnología más grande de la región Caribe. 74 locales, horarios y cómo llegar. Carrera 43 # 50-12, Barranquilla.">
 
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -202,6 +204,241 @@ body{
 @media (prefers-reduced-motion:reduce){
   *{transition:none !important;animation:none !important}
 }
+
+/* ═══════════════════════════════════════════════════════════
+   SECCIONES INFORMATIVAS
+   ═══════════════════════════════════════════════════════════ */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:14px clamp(20px,4vw,56px);
+  background:rgba(0,0,0,.88);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.nav__marca{font-weight:800;color:var(--blanco);text-decoration:none;font-size:17px}
+.nav__marca span{color:var(--naranja)}
+.nav__links{display:flex;gap:22px;list-style:none}
+.nav__links a{color:var(--gris);text-decoration:none;font-size:14.5px;font-weight:500}
+.nav__links a:hover{color:var(--blanco)}
+.estado{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--gris);white-space:nowrap}
+.estado::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gris)}
+.estado.abierto{color:var(--blanco)}
+.estado.abierto::before{background:#3DDC84;box-shadow:0 0 0 4px rgba(61,220,132,.18)}
+@media (max-width:760px){.nav__links{display:none}}
+
+.seccion{max-width:1180px;margin:0 auto;padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px)}
+.seccion__titulo{
+  font-size:clamp(34px,5.4vw,64px);font-weight:800;line-height:.98;
+  letter-spacing:-.035em;max-width:17ch;margin-bottom:18px;
+}
+.seccion__intro{color:var(--gris);font-size:clamp(16px,1.6vw,18px);line-height:1.6;max-width:58ch}
+
+/* ─── Buscador por necesidad (el momento protagonista) ─── */
+.necesidad{margin-top:40px}
+.necesidad__caja{
+  display:flex;align-items:center;gap:14px;
+  border:2px solid rgba(255,255,255,.2);border-radius:22px;
+  padding:6px 8px 6px 22px;
+  transition:border-color .2s ease;
+}
+.necesidad__caja:focus-within{border-color:var(--naranja)}
+.necesidad__prefijo{color:var(--naranja);font-weight:700;font-size:clamp(17px,2vw,22px);white-space:nowrap}
+.necesidad__input{
+  flex:1;min-width:0;font:inherit;font-size:clamp(17px,2vw,22px);
+  color:var(--blanco);background:transparent;border:0;padding:16px 0;
+}
+.necesidad__input:focus{outline:none}
+.necesidad__input::placeholder{color:#5f5f5f}
+.necesidad__limpiar{
+  font:inherit;font-size:14px;color:var(--gris);background:none;border:0;
+  padding:10px 14px;cursor:pointer;border-radius:14px;
+}
+.necesidad__limpiar:hover{color:var(--blanco);background:rgba(255,255,255,.08)}
+.necesidad__ejemplos{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ejemplo{
+  font:inherit;font-size:14px;color:var(--gris);
+  background:rgba(255,255,255,.06);border:0;border-radius:100px;
+  padding:8px 14px;cursor:pointer;
+}
+.ejemplo:hover{color:var(--blanco);background:rgba(255,255,255,.12)}
+.necesidad__respuesta{
+  min-height:28px;margin-top:22px;font-size:16px;line-height:1.5;color:var(--gris);
+}
+.necesidad__respuesta b{color:var(--blanco)}
+.necesidad__respuesta mark{background:none;color:var(--naranja);font-weight:700}
+@media (max-width:560px){
+  .necesidad__caja{flex-wrap:wrap;padding:12px 16px}
+  .necesidad__prefijo{width:100%}
+  .necesidad__input{padding:6px 0}
+}
+
+.filtros{display:flex;gap:8px;overflow-x:auto;padding:4px 0;margin-top:26px;scrollbar-width:thin}
+.filtro{
+  flex:0 0 auto;font:inherit;font-size:14px;color:var(--gris);background:transparent;
+  border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:8px 15px;cursor:pointer;
+}
+.filtro:hover{color:var(--blanco);border-color:rgba(255,255,255,.5)}
+.filtro[aria-pressed="true"]{background:var(--blanco);color:var(--negro);border-color:var(--blanco)}
+.filtro small{opacity:.6;margin-left:4px}
+
+.dir__lista{list-style:none;margin-top:14px}
+.tienda{
+  display:grid;grid-template-columns:130px 1fr auto;align-items:center;gap:6px 24px;
+  padding:20px 0;border-bottom:1px solid rgba(255,255,255,.1);
+}
+.tienda__local{font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--naranja);line-height:1}
+.tienda__local small{display:block;font-size:12.5px;font-weight:500;letter-spacing:0;color:var(--gris);margin-bottom:4px}
+.tienda__nombre{font-size:19px;font-weight:700}
+.tienda__cat{color:var(--gris);font-size:14.5px;margin-top:3px}
+.tienda__acciones{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.enlace{
+  font-size:14px;font-weight:600;text-decoration:none;color:var(--blanco);
+  border:1px solid rgba(255,255,255,.28);border-radius:100px;padding:8px 14px;white-space:nowrap;
+}
+.enlace:hover{border-color:var(--naranja);color:var(--naranja)}
+.dir__vacio{padding:36px 0;color:var(--gris);font-size:16px;line-height:1.6}
+.dir__vacio a{color:var(--naranja)}
+@media (max-width:640px){
+  .tienda{grid-template-columns:84px 1fr}
+  .tienda__local{font-size:24px}
+  .tienda__acciones{grid-column:2;justify-content:flex-start}
+}
+
+/* ─── Más que tiendas ─── */
+.planes{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:auto auto;gap:14px;margin-top:40px}
+.plan{
+  position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;
+  min-height:230px;padding:28px;border-radius:24px;
+  background:#161616;color:var(--blanco);text-decoration:none;overflow:hidden;
+}
+.plan--grande{grid-row:span 2;background:var(--naranja);color:var(--negro);min-height:474px}
+.plan__num{
+  position:absolute;top:18px;right:24px;font-size:clamp(70px,9vw,120px);font-weight:800;
+  letter-spacing:-.05em;line-height:1;opacity:.14;
+}
+.plan h3{font-size:clamp(24px,2.6vw,34px);font-weight:800;letter-spacing:-.025em;line-height:1.05}
+.plan p{font-size:15.5px;line-height:1.5;max-width:40ch;opacity:.8}
+.plan__accion{font-weight:700;font-size:15px;margin-top:6px}
+.plan:hover .plan__accion{text-decoration:underline}
+@media (max-width:860px){
+  .planes{grid-template-columns:1fr}
+  .plan--grande{grid-row:auto;min-height:300px}
+}
+
+/* ─── Visítanos ─── */
+.visita{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(32px,5vw,72px);align-items:start;margin-top:40px}
+.dato{padding:20px 0;border-top:1px solid rgba(255,255,255,.14)}
+.dato h3{font-size:14px;font-weight:600;color:var(--gris);margin-bottom:8px}
+.dato p,.dato a{font-size:18px;line-height:1.55;color:var(--blanco)}
+.horario{width:100%;border-collapse:collapse;font-size:17px}
+.horario td{padding:5px 0}
+.horario td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.horario tr.hoy td{color:var(--naranja);font-weight:700}
+.visita__botones{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.mapa{width:100%;aspect-ratio:4/3.4;border:0;border-radius:18px;filter:grayscale(1) invert(.92) contrast(.9);background:#1a1a1a}
+@media (max-width:860px){.visita{grid-template-columns:1fr}.mapa{aspect-ratio:4/3}}
+
+/* ─── Pie ─── */
+.pie{
+  border-top:1px solid rgba(255,255,255,.1);padding:40px clamp(20px,4vw,56px) 110px;
+  display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap;
+  color:var(--gris);font-size:14.5px;line-height:1.7;
+}
+.pie a{color:var(--blanco)}
+.pie strong{color:var(--blanco)}
+.redes{display:flex;gap:14px;flex-wrap:wrap}
+
+/* ─── WhatsApp flotante ─── */
+.wa{
+  position:fixed;right:20px;bottom:20px;z-index:60;
+  display:flex;align-items:center;gap:10px;
+  background:#25D366;color:#04210f;text-decoration:none;font-weight:700;font-size:15px;
+  padding:14px 20px 14px 16px;border-radius:100px;box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.wa svg{width:22px;height:22px;flex:none}
+.wa:hover{background:#3be07a}
+@media (max-width:560px){.wa span{display:none}.wa{padding:15px}}
+
+/* ═══════════════════════════════════════════════════════════
+   CAPA DE INTERACCIÓN: cursor propio, imán, decodificado
+   ═══════════════════════════════════════════════════════════ */
+::selection{background:var(--naranja);color:var(--negro)}
+
+@media (pointer:fine){
+  body.cursor-activo,
+  body.cursor-activo a,
+  body.cursor-activo button,
+  body.cursor-activo input{cursor:none}
+}
+
+/* ─── Mira robótica ───
+   Es la "visión" del robot del hero: una retícula que sigue el
+   mouse y, al pasar sobre algo accionable, se expande y lo fija
+   como objetivo. */
+.mira{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;will-change:transform,width,height}
+.mira.oculta{opacity:0}
+.mira__marco{position:absolute;inset:0;transition:transform .15s ease}
+.mira.presionada .mira__marco{transform:scale(.88)}
+.mira__esq{position:absolute;width:10px;height:10px;border:0 solid var(--naranja)}
+.mira__esq:nth-child(1){left:0;top:0;border-top-width:2px;border-left-width:2px}
+.mira__esq:nth-child(2){right:0;top:0;border-top-width:2px;border-right-width:2px}
+.mira__esq:nth-child(3){left:0;bottom:0;border-bottom-width:2px;border-left-width:2px}
+.mira__esq:nth-child(4){right:0;bottom:0;border-bottom-width:2px;border-right-width:2px}
+.mira__centro{
+  position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;
+  background:var(--naranja);border-radius:50%;transition:opacity .15s ease;
+}
+.mira__centro::before,.mira__centro::after{
+  content:"";position:absolute;background:rgba(245,130,31,.55);
+}
+.mira__centro::before{left:-9px;top:1.5px;width:22px;height:1px}
+.mira__centro::after{top:-9px;left:1.5px;width:1px;height:22px}
+.mira.fijada .mira__centro{opacity:0}
+.mira__scan{
+  position:absolute;left:0;right:0;top:0;height:2px;opacity:0;
+  background:linear-gradient(90deg,transparent,var(--naranja),transparent);
+}
+.mira.fijada .mira__scan{animation:escaneo .55s ease-out 1}
+@keyframes escaneo{
+  0%{top:0;opacity:1}
+  100%{top:100%;opacity:0}
+}
+.mira__hud{
+  position:absolute;left:0;top:calc(100% + 8px);
+  font:600 10.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.08em;color:var(--naranja);white-space:nowrap;
+}
+.mira.fijada .mira__hud{
+  top:-9px;left:16px;
+  background:var(--naranja);color:var(--negro);padding:4px 8px;border-radius:3px;
+}
+
+/* Imán: los botones se inclinan hacia el cursor */
+.iman{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .18s ease, color .18s ease, border-color .18s ease}
+
+/* Filas del directorio: barra de luz al pasar */
+.tienda{position:relative;transition:padding-left .3s cubic-bezier(.2,.8,.2,1)}
+.tienda::before{
+  content:"";position:absolute;left:0;top:50%;width:4px;height:0;
+  background:var(--naranja);border-radius:4px;transform:translateY(-50%);
+  transition:height .3s cubic-bezier(.2,.8,.2,1);
+}
+@media (hover:hover){
+  .tienda:hover{padding-left:18px}
+  .tienda:hover::before{height:60%}
+}
+
+/* Títulos que se decodifican */
+.decodificando{color:var(--gris)}
+.decodificando .ok{color:var(--blanco)}
+
+@media (prefers-reduced-motion:reduce){
+  .tienda,.tienda::before,.iman{transition:none}
+}
 </style>
 </head>
 <body>
@@ -245,7 +482,7 @@ body{
         <b>Mueve el mouse: te está siguiendo.</b>
       </p>
       <div class="hero__acciones">
-        <a class="btn btn--solido" href="#locales">Ver los locales</a>
+        <a class="btn btn--solido" href="#locales">Encuentra lo que necesitas</a>
         <a class="btn btn--linea" href="#llegar">Cómo llegar</a>
       </div>
     </div>
@@ -254,6 +491,128 @@ body{
   <p class="hero__pista" id="pista">MUEVE EL MOUSE</p>
 
 </section>
+
+<nav class="nav" aria-label="Principal">
+  <a class="nav__marca" href="#hero">Parque<span>·</span>Central</a>
+  <ul class="nav__links">
+    <li><a href="#locales">Encuentra</a></li>
+    <li><a href="#planes">Más que tiendas</a></li>
+    <li><a href="#llegar">Visítanos</a></li>
+  </ul>
+  <span class="estado" id="estado">Consultando horario…</span>
+</nav>
+
+<main>
+
+  <!-- ─── Directorio por necesidad ─── -->
+  <section class="seccion" id="locales">
+    <h2 class="seccion__titulo">Cuéntanos qué necesitas. Te decimos a qué local ir.</h2>
+    <p class="seccion__intro">
+      74 locales de tecnología en un solo lugar. Escribe tu problema con tus palabras,
+      no hace falta saber el nombre de la tienda.
+    </p>
+
+    <div class="necesidad">
+      <label class="necesidad__caja">
+        <span class="necesidad__prefijo">Necesito…</span>
+        <input class="necesidad__input" id="buscador" type="search" autocomplete="off"
+               placeholder="arreglar la pantalla de mi celular"
+               aria-label="Describe lo que necesitas o el nombre de una tienda">
+        <button class="necesidad__limpiar" id="limpiar" type="button" hidden>Borrar</button>
+      </label>
+      <div class="necesidad__ejemplos" aria-label="Ejemplos">
+        <button class="ejemplo" type="button">se me rompió la pantalla</button>
+        <button class="ejemplo" type="button">tinta para la impresora</button>
+        <button class="ejemplo" type="button">armar un PC gamer</button>
+        <button class="ejemplo" type="button">cámaras para mi negocio</button>
+        <button class="ejemplo" type="button">un café</button>
+      </div>
+      <p class="necesidad__respuesta" id="respuesta" aria-live="polite"></p>
+    </div>
+
+    <div class="filtros" id="filtros" role="group" aria-label="Filtrar por categoría"></div>
+    <ul class="dir__lista" id="lista"></ul>
+  </section>
+
+  <!-- ─── Más que tiendas ─── -->
+  <section class="seccion" id="planes">
+    <h2 class="seccion__titulo">Más que tiendas</h2>
+    <div class="planes">
+      <a class="plan plan--grande" target="_blank" rel="noopener"
+         href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sal%C3%B3n%20de%20eventos">
+        <h3>Salón de eventos</h3>
+        <p>Lanzamientos, capacitaciones y reuniones en el corazón tecnológico de la ciudad.</p>
+        <span class="plan__accion">Pregunta disponibilidad</span>
+      </a>
+      <a class="plan" href="#locales" data-busqueda="un café">
+        <h3>Sabores</h3>
+        <p>Una pausa entre local y local.</p>
+        <span class="plan__accion">Ver dónde comer</span>
+      </a>
+      <a class="plan" target="_blank" rel="noopener"
+         href="https://www.parquecentral.net/wp-content/uploads/2024/02/Portafolio-CC-Parque-Central-BAQ.pdf">
+        <h3>Pauta con nosotros</h3>
+        <p>Espacios publicitarios, zonas comunes, locales y oficinas disponibles.</p>
+        <span class="plan__accion">Ver el portafolio</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── Visítanos ─── -->
+  <section class="seccion" id="llegar">
+    <h2 class="seccion__titulo">Visítanos</h2>
+    <div class="visita">
+      <div>
+        <div class="dato">
+          <h3>Dirección</h3>
+          <p>Carrera 43 # 50-12, Barranquilla<br>Frente a la Universidad del Atlántico</p>
+        </div>
+        <div class="dato">
+          <h3>Horario</h3>
+          <table class="horario" id="horario">
+            <tr data-dias="semana"><td>Lunes a sábado</td><td>8:00 a.m. – 7:00 p.m.</td></tr>
+            <tr data-dias="festivo"><td>Domingos y festivos</td><td>9:00 a.m. – 2:00 p.m.</td></tr>
+          </table>
+        </div>
+        <div class="dato">
+          <h3>Contacto</h3>
+          <p><a href="tel:+573105689142">+57 310 568 9142</a><br>
+             <a href="mailto:administrativo@parquecentral.net">administrativo@parquecentral.net</a></p>
+        </div>
+        <div class="visita__botones">
+          <a class="btn btn--solido" target="_blank" rel="noopener" href="https://maps.app.goo.gl/9gKFXxWYgQKRt3NF8">Abrir en Google Maps</a>
+          <a class="btn btn--linea" target="_blank" rel="noopener" href="https://waze.com/ul?q=Centro%20Comercial%20Parque%20Central%20Barranquilla&navigate=yes">Abrir en Waze</a>
+        </div>
+      </div>
+      <iframe class="mapa" title="Mapa de Parque Central" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps?q=Centro+Comercial+Parque+Central,+Carrera+43+%2350-12,+Barranquilla&z=17&output=embed"></iframe>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <div><strong>Centro Comercial Parque Central</strong><br>
+       Carrera 43 # 50-12, Barranquilla, Atlántico<br>
+       En Parque Central somos + tecnología</div>
+  <div class="redes">
+    <a href="https://www.instagram.com/ccparquecentral/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.facebook.com/ccparquecentralbq" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://www.tiktok.com/@ccparquecentral" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.youtube.com/@CentroComercialParqueCentral" target="_blank" rel="noopener">YouTube</a>
+  </div>
+  <div><a href="https://www.parquecentral.net/wp-content/uploads/ccpc-politica-privacidad.pdf" target="_blank" rel="noopener">Política de privacidad</a><br>
+       <a href="https://www.parquecentral.net/legal/" target="_blank" rel="noopener">Legal</a></div>
+</footer>
+
+<a class="wa" target="_blank" rel="noopener"
+   href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20conocer%20m%C3%A1s">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.5 3.5a12 12 0 0 1 17 17 12 12 0 0 1-13.8 2.3l-5.8.7a.4.4 0 0 1-.4-.4l.7-5.8A12 12 0 0 1 3.5 3.5zm10.2 10-.9 1.2a9.8 9.8 0 0 1-3.5-3.5l1.2-.9a.8.8 0 0 0 .2-1L9.6 7a.8.8 0 0 0-1-.5l-2 .6a.8.8 0 0 0-.5.8 11.8 11.8 0 0 0 10 10 .8.8 0 0 0 .8-.6l.6-2a.8.8 0 0 0-.5-.9l-2.3-1a.8.8 0 0 0-1 .2z"/></svg>
+  <span>Escríbenos</span>
+</a>
+
+
 
 <script>
 (function () {
@@ -586,6 +945,364 @@ body{
     relojResize = setTimeout(ajustarLienzo, 150);
   });
 
+})();
+</script>
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ═════════════════════════════════════════════════════════
+     DATOS DEL DIRECTORIO
+     Tomados del sitio actual. Al tener el Excel se reemplazan
+     y se completan los 74. whatsapp: solo números, con 57.
+     ═════════════════════════════════════════════════════════ */
+  const TIENDAS = [
+    { local:'Local 6',    nombre:'Power Security',  categoria:'Videocámaras y seguridad', whatsapp:'', instagram:'' },
+    { local:'Local 39',   nombre:'Pink Store',      categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
+    { local:'Local 61',   nombre:'Teranet',         categoria:'Electrónico',              whatsapp:'', instagram:'' },
+    { local:'Local 120',  nombre:'One Mobile',      categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
+    { local:'Local 138',  nombre:'Punto PC',        categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
+    { local:'Local 170',  nombre:'MPS Mayorista',   categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
+    { local:'Local 1005', nombre:'Yoyo Intel',      categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
+    { local:'Isla',       nombre:'Sorbo Café Bar',  categoria:'Cafetería',                whatsapp:'', instagram:'' }
+  ];
+
+  /* Categorías del centro comercial y las palabras con las que
+     la gente las describe. Así "se me dañó el celular" encuentra
+     servicio técnico aunque nadie escriba "servicio técnico". */
+  const CATEGORIAS = {
+    'Celulares y Accesorios':   ['celular','telefono','iphone','samsung','xiaomi','motorola','cargador','forro','estuche','audifono','vidrio','protector','smartwatch','reloj'],
+    'Servicio técnico':         ['repar','arregl','dano','dana','roto','rompi','pantalla','no carga','no prende','formate','virus','mantenimiento','bateria','revis','tecnico'],
+    'Computadores':             ['computador','portatil','laptop','pc','torre','monitor','teclado','mouse','memoria','ram','disco','ssd','tarjeta de video','gamer'],
+    'Impresoras':               ['impresora','escaner','multifuncional','plotter'],
+    'Insumos de impresoras':    ['tinta','toner','cartucho','papel','recarga de tinta'],
+    'Videocámaras y seguridad': ['camara','cctv','seguridad','alarma','dvr','vigilancia','negocio','cerradura'],
+    'Videojuegos':              ['juego','gamer','consola','playstation','ps4','ps5','xbox','nintendo','control'],
+    'Electrónico':              ['cable','parlante','bafle','televisor','tv','router','wifi','red','internet','adaptador','bombillo','electronic'],
+    'Software':                 ['software','licencia','windows','office','antivirus','programa'],
+    'Hogar':                    ['hogar','casa','electrodomestico','licuadora','ventilador','cocina'],
+    'Estampados personalizados':['estampa','camiseta','taza','sublima','personaliz','regalo','gorra'],
+    'Cafetería':                ['cafe','tinto','comer','almuerzo','jugo','hambre','bebida','merienda','sed'],
+    'Servicios':                ['recarga','pago','fotocopia','copia','envio','giro','tramite','plastific']
+  };
+
+  const FESTIVOS = [
+    '2026-10-12','2026-11-02','2026-11-16','2026-12-08','2026-12-25',
+    '2027-01-01','2027-01-11','2027-03-22','2027-03-25','2027-03-26'
+  ];
+  const WHATSAPP_ADMIN = '573105689142';
+
+  /* ── Utilidades ── */
+  const normalizar = s => (s || '').toString().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const $ = id => document.getElementById(id);
+
+  const lista = $('lista'), buscador = $('buscador'), filtros = $('filtros'),
+        respuesta = $('respuesta'), limpiar = $('limpiar');
+  let categoriaFija = null;   // la que el visitante toca a mano
+
+  /* Lee la frase y devuelve las categorías que encajan, de más a menos */
+  function interpretar(frase) {
+    const q = ' ' + normalizar(frase) + ' ';
+    return Object.entries(CATEGORIAS)
+      .map(([cat, palabras]) => [cat, palabras.filter(p => q.includes(p)).length])
+      .filter(([, puntos]) => puntos > 0)
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat]) => cat);
+  }
+
+  /* ── Filtros por categoría (solo las que tienen tiendas) ── */
+  const conteo = TIENDAS.reduce((m, t) => (m[t.categoria] = (m[t.categoria] || 0) + 1, m), {});
+  ['Todas', ...Object.keys(CATEGORIAS).filter(c => conteo[c])].forEach(cat => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'filtro';
+    b.dataset.cat = cat;
+    b.innerHTML = cat + (cat === 'Todas' ? '' : ` <small>${conteo[cat]}</small>`);
+    b.addEventListener('click', () => {
+      categoriaFija = cat === 'Todas' ? null : cat;
+      buscador.value = '';
+      pintar();
+    });
+    filtros.appendChild(b);
+  });
+
+  function enlace(href, texto) {
+    const a = document.createElement('a');
+    a.className = 'enlace';
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = texto;
+    return a;
+  }
+
+  function pintar() {
+    const texto = buscador.value.trim();
+    const q = normalizar(texto);
+    const sugeridas = texto ? interpretar(texto) : [];
+    limpiar.hidden = !texto;
+
+    let res;
+    if (texto) {
+      res = TIENDAS.filter(t =>
+        sugeridas.includes(t.categoria) ||
+        normalizar(`${t.nombre} ${t.local}`).includes(q));
+      /* Orden: primero la categoría que mejor encaja */
+      res.sort((a, b) => {
+        const ia = sugeridas.indexOf(a.categoria), ib = sugeridas.indexOf(b.categoria);
+        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+      });
+    } else {
+      res = TIENDAS.filter(t => !categoriaFija || t.categoria === categoriaFija)
+        .sort((a, b) => a.local.localeCompare(b.local, 'es', { numeric: true }));
+    }
+
+    /* Filtros visibles */
+    filtros.querySelectorAll('.filtro').forEach(b => {
+      const activo = texto ? false : (b.dataset.cat === (categoriaFija || 'Todas'));
+      b.setAttribute('aria-pressed', activo);
+    });
+
+    /* Respuesta en lenguaje natural */
+    if (!texto) {
+      respuesta.textContent = '';
+    } else if (sugeridas.length) {
+      const nombres = sugeridas.slice(0, 2).map(c => `<mark>${c}</mark>`).join(' o ');
+      respuesta.innerHTML = res.length
+        ? `Eso lo resuelves en ${nombres}. <b>${res.length} ${res.length === 1 ? 'local' : 'locales'}</b> para ti.`
+        : `Eso lo resuelves en ${nombres}. Estamos actualizando esa lista.`;
+    } else {
+      respuesta.innerHTML = res.length
+        ? `<b>${res.length}</b> ${res.length === 1 ? 'resultado' : 'resultados'} por nombre o número de local.`
+        : 'No reconocimos esa búsqueda. Prueba con otras palabras o pregúntanos.';
+    }
+
+    /* Lista */
+    lista.textContent = '';
+    if (!res.length) {
+      const li = document.createElement('li');
+      li.className = 'dir__vacio';
+      const msg = encodeURIComponent(`Hola Parque Central, estoy buscando: ${texto || categoriaFija}. ¿Qué local me recomiendan?`);
+      li.innerHTML = `Escríbenos y te decimos a qué local ir: <a target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP_ADMIN}?text=${msg}">preguntar por WhatsApp</a>.`;
+      lista.appendChild(li);
+      return;
+    }
+    res.forEach(t => {
+      const li = document.createElement('li');
+      li.className = 'tienda';
+      const num = t.local.replace(/^local\s*/i, '');
+      const esNumero = /^\d/.test(num);
+      li.innerHTML = `
+        <div class="tienda__local">${esNumero ? '<small>Local</small>' : ''}</div>
+        <div><div class="tienda__nombre"></div><div class="tienda__cat"></div></div>
+        <div class="tienda__acciones"></div>`;
+      li.querySelector('.tienda__local').append(esNumero ? num : t.local);
+      li.querySelector('.tienda__nombre').textContent = t.nombre;
+      li.querySelector('.tienda__cat').textContent = t.categoria;
+      const acc = li.querySelector('.tienda__acciones');
+      if (t.whatsapp) {
+        const m = encodeURIComponent(`Hola ${t.nombre}, los encontré en la web de Parque Central.` + (texto ? ` Necesito: ${texto}` : ''));
+        acc.appendChild(enlace(`https://wa.me/${t.whatsapp}?text=${m}`, 'WhatsApp'));
+      }
+      if (t.instagram) acc.appendChild(enlace(`https://instagram.com/${t.instagram.replace('@', '')}`, 'Instagram'));
+      lista.appendChild(li);
+    });
+  }
+
+  let reloj = null;
+  buscador.addEventListener('input', () => {
+    categoriaFija = null;
+    clearTimeout(reloj);
+    reloj = setTimeout(pintar, 120);
+  });
+  limpiar.addEventListener('click', e => {
+    e.preventDefault();
+    buscador.value = '';
+    pintar();
+    buscador.focus();
+  });
+  function buscar(frase) {
+    categoriaFija = null;
+    buscador.value = frase;
+    pintar();
+  }
+  document.querySelectorAll('.ejemplo').forEach(b =>
+    b.addEventListener('click', () => buscar(b.textContent)));
+  document.querySelectorAll('[data-busqueda]').forEach(a =>
+    a.addEventListener('click', () => buscar(a.dataset.busqueda)));
+  pintar();
+
+  /* ── Abierto ahora (hora de Colombia) ── */
+  function horaColombia() {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23', weekday: 'short'
+    }).formatToParts(new Date()).map(x => [x.type, x.value]));
+    return {
+      fecha: `${p.year}-${p.month}-${p.day}`,
+      domingo: p.weekday === 'Sun',
+      minutos: Number(p.hour) * 60 + Number(p.minute)
+    };
+  }
+  function actualizarEstado() {
+    const ahora = horaColombia();
+    const festivo = ahora.domingo || FESTIVOS.includes(ahora.fecha);
+    const [abre, cierra, texto] = festivo ? [540, 840, '2:00 p.m.'] : [480, 1140, '7:00 p.m.'];
+    const abierto = ahora.minutos >= abre && ahora.minutos < cierra;
+    const estado = $('estado');
+    estado.classList.toggle('abierto', abierto);
+    estado.textContent = abierto ? `Abierto hasta las ${texto}` : 'Cerrado ahora';
+    document.querySelectorAll('#horario tr').forEach(tr =>
+      tr.classList.toggle('hoy', (tr.dataset.dias === 'festivo') === festivo));
+  }
+  actualizarEstado();
+  setInterval(actualizarEstado, 60000);
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+  const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const punteroFino  = matchMedia('(pointer: fine)').matches;
+
+  /* ═════════════════════════════════════════════════════════
+     1. MIRA ROBÓTICA
+     Sin objetivo: una retícula pequeña con coordenadas.
+     Con objetivo: las esquinas se abren hasta encerrar el
+     elemento, lo escanean y muestran su nombre.
+     ═════════════════════════════════════════════════════════ */
+  if (punteroFino && !sinMovimiento) {
+    const mira = document.createElement('div');
+    mira.className = 'mira oculta';
+    mira.setAttribute('aria-hidden', 'true');
+    mira.innerHTML = `
+      <div class="mira__marco">
+        <span class="mira__esq"></span><span class="mira__esq"></span>
+        <span class="mira__esq"></span><span class="mira__esq"></span>
+        <span class="mira__centro"></span>
+        <span class="mira__scan"></span>
+      </div>
+      <span class="mira__hud"></span>`;
+    document.body.appendChild(mira);
+    document.body.classList.add('cursor-activo');
+    const hud = mira.querySelector('.mira__hud');
+
+    const REPOSO = 30, HOLGURA = 8;
+    let mx = innerWidth / 2, my = innerHeight / 2;
+    let x = mx, y = my, w = REPOSO, h = REPOSO;
+    let objetivo = null;
+
+    addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      mira.classList.remove('oculta');
+    }, { passive: true });
+    document.addEventListener('mouseleave', () => mira.classList.add('oculta'));
+    addEventListener('mousedown', () => mira.classList.add('presionada'));
+    addEventListener('mouseup',   () => mira.classList.remove('presionada'));
+
+    const pad = n => String(Math.round(n)).padStart(4, '0');
+
+    (function bucle() {
+      let tx, ty, tw, th;
+      if (objetivo && objetivo.isConnected) {
+        const r = objetivo.getBoundingClientRect();
+        tx = r.left - HOLGURA; ty = r.top - HOLGURA;
+        tw = r.width + HOLGURA * 2; th = r.height + HOLGURA * 2;
+      } else {
+        tx = mx - REPOSO / 2; ty = my - REPOSO / 2; tw = th = REPOSO;
+        hud.textContent = `X ${pad(mx)}  Y ${pad(my)}`;
+      }
+      const k = objetivo ? 0.24 : 0.35;
+      x += (tx - x) * k; y += (ty - y) * k;
+      w += (tw - w) * k; h += (th - h) * k;
+      mira.style.transform = `translate3d(${x}px,${y}px,0)`;
+      mira.style.width = w + 'px';
+      mira.style.height = h + 'px';
+      requestAnimationFrame(bucle);
+    })();
+
+    function nombre(el) {
+      if (el.dataset.cursor) return el.dataset.cursor;
+      if (el.classList.contains('tienda')) {
+        const n = el.querySelector('.tienda__local').textContent.replace('Local', '').trim();
+        return /^\d/.test(n) ? `LOCAL ${n}` : n.toUpperCase();
+      }
+      if (el.classList.contains('necesidad__caja')) return 'ESCRIBE TU NECESIDAD';
+      if (el.classList.contains('ejemplo') || el.classList.contains('filtro')) return 'BUSCAR';
+      const href = el.getAttribute('href') || '';
+      if (href.includes('wa.me')) return 'ESCRIBIR';
+      if (href.startsWith('tel:')) return 'LLAMAR';
+      if (href.startsWith('mailto:')) return 'CORREO';
+      if (href.includes('maps') || href.includes('waze')) return 'RUTA';
+      if (href.endsWith('.pdf')) return 'ABRIR PDF';
+      if (href.startsWith('#')) return 'IR';
+      return 'VER';
+    }
+
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest('.mapa')) { mira.classList.add('oculta'); return; }
+      const el = e.target.closest('.necesidad__caja, a, button, .tienda, [data-cursor]');
+      if (el === objetivo) return;
+      objetivo = el;
+      mira.classList.remove('fijada');
+      if (el) {
+        void mira.offsetWidth;            // reinicia el escaneo
+        mira.classList.add('fijada');
+        hud.textContent = '▸ ' + nombre(el);
+      }
+    });
+
+    /* ═══ 2. IMÁN en botones ═══ */
+    document.querySelectorAll('.btn, .wa, .necesidad__limpiar').forEach(el => {
+      el.classList.add('iman');
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2);
+        const dy = e.clientY - (r.top + r.height / 2);
+        el.style.transform = `translate(${dx * 0.25}px, ${dy * 0.35}px)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     3. TÍTULOS QUE SE DECODIFICAN
+     Al entrar en pantalla, cada título aparece como si una
+     terminal lo estuviera descifrando. Solo una vez.
+     ═════════════════════════════════════════════════════════ */
+  if (!sinMovimiento && 'IntersectionObserver' in window) {
+    const SIMBOLOS = '01<>/#_*+=%&$';
+    const decodificar = h => {
+      const final = h.textContent;
+      h.setAttribute('aria-label', final);
+      h.classList.add('decodificando');
+      const inicio = performance.now();
+      const DURACION = 900;
+      (function paso(t) {
+        const avance = Math.min((t - inicio) / DURACION, 1);
+        const listos = Math.floor(final.length * avance);
+        let html = '';
+        for (let i = 0; i < final.length; i++) {
+          const c = final[i];
+          if (i < listos || c === ' ') html += `<span class="ok">${c}</span>`;
+          else html += SIMBOLOS[(Math.random() * SIMBOLOS.length) | 0];
+        }
+        h.innerHTML = html;
+        if (avance < 1) requestAnimationFrame(paso);
+        else { h.textContent = final; h.classList.remove('decodificando'); }
+      })(inicio);
+    };
+    const obs = new IntersectionObserver(entradas => {
+      entradas.forEach(en => {
+        if (en.isIntersecting) { decodificar(en.target); obs.unobserve(en.target); }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.seccion__titulo').forEach(h => obs.observe(h));
+  }
 })();
 </script>
 
