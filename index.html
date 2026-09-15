@@ -368,54 +368,21 @@ html{scroll-behavior:smooth}
    ═══════════════════════════════════════════════════════════ */
 ::selection{background:var(--naranja);color:var(--negro)}
 
-@media (pointer:fine){
-  body.cursor-activo,
-  body.cursor-activo a,
-  body.cursor-activo button,
-  body.cursor-activo input{cursor:none}
-}
-
-/* ─── Mira robótica ───
-   Es la "visión" del robot del hero: una retícula que sigue el
-   mouse y, al pasar sobre algo accionable, se expande y lo fija
-   como objetivo. */
-.mira{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;will-change:transform,width,height}
-.mira.oculta{opacity:0}
-.mira__marco{position:absolute;inset:0;transition:transform .15s ease}
-.mira.presionada .mira__marco{transform:scale(.88)}
-.mira__esq{position:absolute;width:10px;height:10px;border:0 solid var(--naranja)}
-.mira__esq:nth-child(1){left:0;top:0;border-top-width:2px;border-left-width:2px}
-.mira__esq:nth-child(2){right:0;top:0;border-top-width:2px;border-right-width:2px}
-.mira__esq:nth-child(3){left:0;bottom:0;border-bottom-width:2px;border-left-width:2px}
-.mira__esq:nth-child(4){right:0;bottom:0;border-bottom-width:2px;border-right-width:2px}
-.mira__centro{
-  position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;
-  background:var(--naranja);border-radius:50%;transition:opacity .15s ease;
-}
-.mira__centro::before,.mira__centro::after{
-  content:"";position:absolute;background:rgba(245,130,31,.55);
-}
-.mira__centro::before{left:-9px;top:1.5px;width:22px;height:1px}
-.mira__centro::after{top:-9px;left:1.5px;width:1px;height:22px}
-.mira.fijada .mira__centro{opacity:0}
-.mira__scan{
-  position:absolute;left:0;right:0;top:0;height:2px;opacity:0;
-  background:linear-gradient(90deg,transparent,var(--naranja),transparent);
-}
-.mira.fijada .mira__scan{animation:escaneo .55s ease-out 1}
-@keyframes escaneo{
-  0%{top:0;opacity:1}
-  100%{top:100%;opacity:0}
-}
-.mira__hud{
-  position:absolute;left:0;top:calc(100% + 8px);
-  font:600 10.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  letter-spacing:.08em;color:var(--naranja);white-space:nowrap;
-}
-.mira.fijada .mira__hud{
-  top:-9px;left:16px;
-  background:var(--naranja);color:var(--negro);padding:4px 8px;border-radius:3px;
-}
+/* ─── Luz del hero ─── */
+.hero__luz{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .6s ease;
+  --lx:50%;--ly:50%}
+.hero__luz.activa{opacity:1}
+.hero__sombra{position:absolute;inset:0;
+  background:radial-gradient(circle 440px at var(--lx) var(--ly),transparent 25%,rgba(0,0,0,.55) 100%)}
+.hero__foco{position:absolute;inset:0;mix-blend-mode:screen;
+  background:radial-gradient(circle 280px at var(--lx) var(--ly),rgba(245,130,31,.28),rgba(245,130,31,.08) 45%,transparent 70%)}
+.hero__chispas{position:absolute;inset:0;width:100%;height:100%}
+.hero__orbe{position:absolute;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;
+  background:#fff;will-change:transform;
+  box-shadow:0 0 10px 3px rgba(255,214,170,.95),0 0 34px 12px rgba(245,130,31,.65),0 0 90px 30px rgba(245,130,31,.25)}
+.hero__orbe::after{content:"";position:absolute;inset:-14px;border-radius:50%;
+  border:1.5px solid rgba(245,130,31,.6);animation:pulso 2.2s ease-out infinite}
+@keyframes pulso{from{transform:scale(.4);opacity:1}to{transform:scale(2.2);opacity:0}}
 
 /* Imán: los botones se inclinan hacia el cursor */
 .iman{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .18s ease, color .18s ease, border-color .18s ease}
@@ -468,6 +435,14 @@ html{scroll-behavior:smooth}
 
   <div class="hero__velo"></div>
 
+  <!-- Luz que el robot persigue -->
+  <div class="hero__luz" id="luz" aria-hidden="true">
+    <div class="hero__sombra"></div>
+    <div class="hero__foco"></div>
+    <canvas class="hero__chispas" id="chispas"></canvas>
+    <div class="hero__orbe"></div>
+  </div>
+
   <div class="hero__contenido">
     <p class="hero__marca">PARQUE<span>·</span>CENTRAL</p>
 
@@ -479,7 +454,7 @@ html{scroll-behavior:smooth}
     <div class="hero__base">
       <p class="hero__sub">
         El centro comercial de tecnología más grande de la región Caribe.
-        <b>Mueve el mouse: te está siguiendo.</b>
+        <b>Mueve la luz: el robot la persigue.</b>
       </p>
       <div class="hero__acciones">
         <a class="btn btn--solido" href="#locales">Encuentra lo que necesitas</a>
@@ -488,7 +463,7 @@ html{scroll-behavior:smooth}
     </div>
   </div>
 
-  <p class="hero__pista" id="pista">MUEVE EL MOUSE</p>
+  <p class="hero__pista" id="pista">MUEVE LA LUZ</p>
 
 </section>
 
@@ -839,18 +814,14 @@ html{scroll-behavior:smooth}
       rafT = requestAnimationFrame(bucleT);
     };
 
-    hero.addEventListener('mousemove', function (e) {
+    /* La luz del hero llama esta función con su posición */
+    window.__heroSeguir = function (e) {
       const caja = hero.getBoundingClientRect();
       let p = (e.clientX - caja.left) / caja.width;
       p = Math.min(Math.max(p, 0), 1);
       objetivoT = p * duracion;
       if (rafT === null) rafT = requestAnimationFrame(bucleT);
-    }, { passive: true });
-
-    hero.addEventListener('mouseleave', function () {
-      objetivoT = duracion / 2;
-      if (rafT === null) rafT = requestAnimationFrame(bucleT);
-    }, { passive: true });
+    };
   }
 
   /* ═════════════════════════════════════════════════════════
@@ -909,9 +880,8 @@ html{scroll-behavior:smooth}
       video.removeAttribute('src');   // liberamos el video, ya no hace falta
       video.load();
 
-      hero.addEventListener('mousemove', alMover, { passive: true });
-      hero.addEventListener('mouseleave', alSalir, { passive: true });
-      document.addEventListener('mouseleave', alSalir, { passive: true });
+      /* El robot ya no sigue al mouse: persigue a la luz */
+      window.__heroSeguir = alMover;
 
       pista.classList.add('visible');
       setTimeout(function () { pista.classList.remove('visible'); }, 6000);
@@ -1170,92 +1140,83 @@ html{scroll-behavior:smooth}
   const punteroFino  = matchMedia('(pointer: fine)').matches;
 
   /* ═════════════════════════════════════════════════════════
-     1. MIRA ROBÓTICA
-     Sin objetivo: una retícula pequeña con coordenadas.
-     Con objetivo: las esquinas se abren hasta encerrar el
-     elemento, lo escanean y muestran su nombre.
+     1. LA LUZ QUE EL ROBOT PERSIGUE
+     La luz sigue al mouse con retraso y el robot gira hacia
+     la luz (no hacia el mouse). Si el mouse no está en el
+     hero, la luz vaga sola y el robot la sigue igual.
      ═════════════════════════════════════════════════════════ */
-  if (punteroFino && !sinMovimiento) {
-    const mira = document.createElement('div');
-    mira.className = 'mira oculta';
-    mira.setAttribute('aria-hidden', 'true');
-    mira.innerHTML = `
-      <div class="mira__marco">
-        <span class="mira__esq"></span><span class="mira__esq"></span>
-        <span class="mira__esq"></span><span class="mira__esq"></span>
-        <span class="mira__centro"></span>
-        <span class="mira__scan"></span>
-      </div>
-      <span class="mira__hud"></span>`;
-    document.body.appendChild(mira);
-    document.body.classList.add('cursor-activo');
-    const hud = mira.querySelector('.mira__hud');
-
-    const REPOSO = 30, HOLGURA = 8;
-    let mx = innerWidth / 2, my = innerHeight / 2;
-    let x = mx, y = my, w = REPOSO, h = REPOSO;
-    let objetivo = null;
-
-    addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      mira.classList.remove('oculta');
-    }, { passive: true });
-    document.addEventListener('mouseleave', () => mira.classList.add('oculta'));
-    addEventListener('mousedown', () => mira.classList.add('presionada'));
-    addEventListener('mouseup',   () => mira.classList.remove('presionada'));
-
-    const pad = n => String(Math.round(n)).padStart(4, '0');
-
-    (function bucle() {
-      let tx, ty, tw, th;
-      if (objetivo && objetivo.isConnected) {
-        const r = objetivo.getBoundingClientRect();
-        tx = r.left - HOLGURA; ty = r.top - HOLGURA;
-        tw = r.width + HOLGURA * 2; th = r.height + HOLGURA * 2;
-      } else {
-        tx = mx - REPOSO / 2; ty = my - REPOSO / 2; tw = th = REPOSO;
-        hud.textContent = `X ${pad(mx)}  Y ${pad(my)}`;
-      }
-      const k = objetivo ? 0.24 : 0.35;
-      x += (tx - x) * k; y += (ty - y) * k;
-      w += (tw - w) * k; h += (th - h) * k;
-      mira.style.transform = `translate3d(${x}px,${y}px,0)`;
-      mira.style.width = w + 'px';
-      mira.style.height = h + 'px';
-      requestAnimationFrame(bucle);
-    })();
-
-    function nombre(el) {
-      if (el.dataset.cursor) return el.dataset.cursor;
-      if (el.classList.contains('tienda')) {
-        const n = el.querySelector('.tienda__local').textContent.replace('Local', '').trim();
-        return /^\d/.test(n) ? `LOCAL ${n}` : n.toUpperCase();
-      }
-      if (el.classList.contains('necesidad__caja')) return 'ESCRIBE TU NECESIDAD';
-      if (el.classList.contains('ejemplo') || el.classList.contains('filtro')) return 'BUSCAR';
-      const href = el.getAttribute('href') || '';
-      if (href.includes('wa.me')) return 'ESCRIBIR';
-      if (href.startsWith('tel:')) return 'LLAMAR';
-      if (href.startsWith('mailto:')) return 'CORREO';
-      if (href.includes('maps') || href.includes('waze')) return 'RUTA';
-      if (href.endsWith('.pdf')) return 'ABRIR PDF';
-      if (href.startsWith('#')) return 'IR';
-      return 'VER';
+  const heroEl = document.getElementById('hero');
+  const luz = document.getElementById('luz');
+  if (heroEl && luz && !sinMovimiento) {
+    const orbe = luz.querySelector('.hero__orbe');
+    const cv = document.getElementById('chispas');
+    const cx = cv.getContext('2d');
+    let W = 0, H = 0;
+    function medir() {
+      const r = heroEl.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+      W = r.width; H = r.height;
+      cv.width = W * dpr; cv.height = H * dpr;
+      cx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+    medir();
+    addEventListener('resize', medir);
 
-    document.addEventListener('mouseover', e => {
-      if (e.target.closest('.mapa')) { mira.classList.add('oculta'); return; }
-      const el = e.target.closest('.necesidad__caja, a, button, .tienda, [data-cursor]');
-      if (el === objetivo) return;
-      objetivo = el;
-      mira.classList.remove('fijada');
-      if (el) {
-        void mira.offsetWidth;            // reinicia el escaneo
-        mira.classList.add('fijada');
-        hud.textContent = '▸ ' + nombre(el);
+    let lx = W / 2, ly = H / 2, tx = lx, ty = ly;
+    let mouseDentro = false, visible = true;
+    let chispas = [];
+
+    heroEl.addEventListener('pointermove', e => {
+      const r = heroEl.getBoundingClientRect();
+      tx = e.clientX - r.left; ty = e.clientY - r.top;
+      mouseDentro = true;
+    }, { passive: true });
+    heroEl.addEventListener('pointerleave', () => { mouseDentro = false; });
+
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; })
+      .observe(heroEl);
+
+    luz.classList.add('activa');
+
+    (function bucle(t) {
+      if (visible) {
+        if (!mouseDentro) {
+          /* Paseo propio cuando nadie la guía */
+          const s = t / 1000;
+          tx = W * (0.5 + Math.sin(s * 0.45) * 0.32);
+          ty = H * (0.48 + Math.sin(s * 0.8) * 0.18);
+        }
+        const px = lx, py = ly;
+        lx += (tx - lx) * 0.07;
+        ly += (ty - ly) * 0.07;
+        const vel = Math.hypot(lx - px, ly - py);
+
+        orbe.style.transform = `translate3d(${lx}px,${ly}px,0)`;
+        luz.style.setProperty('--lx', lx + 'px');
+        luz.style.setProperty('--ly', ly + 'px');
+
+        /* Chispas: más cuanto más rápido se mueve */
+        const n = Math.min(4, Math.floor(vel / 3));
+        for (let i = 0; i < n; i++) {
+          chispas.push({ x: lx, y: ly, vx: (Math.random() - .5) * 1.6, vy: (Math.random() - .5) * 1.6 + .4, v: 1, r: 1 + Math.random() * 1.8 });
+        }
+        cx.clearRect(0, 0, W, H);
+        for (const c of chispas) {
+          c.x += c.vx; c.y += c.vy; c.v -= 0.025;
+          cx.fillStyle = `rgba(255,${150 + (c.v * 80) | 0},60,${Math.max(c.v, 0)})`;
+          cx.beginPath(); cx.arc(c.x, c.y, c.r, 0, 7); cx.fill();
+        }
+        chispas = chispas.filter(c => c.v > 0);
+
+        /* El robot persigue la luz */
+        if (window.__heroSeguir) {
+          window.__heroSeguir({ clientX: heroEl.getBoundingClientRect().left + lx });
+        }
       }
-    });
+      requestAnimationFrame(bucle);
+    })(0);
+  }
 
+  if (punteroFino && !sinMovimiento) {
     /* ═══ 2. IMÁN en botones ═══ */
     document.querySelectorAll('.btn, .wa, .necesidad__limpiar').forEach(el => {
       el.classList.add('iman');
