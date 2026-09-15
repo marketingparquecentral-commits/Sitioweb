@@ -166,6 +166,8 @@ body{
   transition:width .25s ease, opacity .5s ease;
 }
 .hero__progreso.terminado{opacity:0}
+/* Oculta: la preparación ocurre sin que el visitante lo note */
+.hero__progreso{display:none}
 
 .hero__pista{
   position:absolute;bottom:14px;left:50%;
@@ -364,7 +366,7 @@ html{scroll-behavior:smooth}
 @media (max-width:560px){.wa span{display:none}.wa{padding:15px}}
 
 /* ═══════════════════════════════════════════════════════════
-   CAPA DE INTERACCIÓN: cursor propio, imán, decodificado
+   CAPA DE INTERACCIÓN: luz del hero, botones con imán
    ═══════════════════════════════════════════════════════════ */
 ::selection{background:var(--naranja);color:var(--negro)}
 
@@ -402,10 +404,6 @@ html{scroll-behavior:smooth}
   .tienda:hover{padding-left:18px}
   .tienda:hover::before{height:60%}
 }
-
-/* Títulos que se decodifican */
-.decodificando{color:var(--gris)}
-.decodificando .ok{color:var(--blanco)}
 
 @media (prefers-reduced-motion:reduce){
   .tienda,.tienda::before,.iman{transition:none}
@@ -458,7 +456,6 @@ html{scroll-behavior:smooth}
     <div class="hero__base">
       <p class="hero__sub">
         El centro comercial de tecnología más grande de la región Caribe.
-        <b>Mueve la luz: el robot la persigue.</b>
       </p>
       <div class="hero__acciones">
         <a class="btn btn--solido" href="#locales">Encuentra lo que necesitas</a>
@@ -467,7 +464,7 @@ html{scroll-behavior:smooth}
     </div>
   </div>
 
-  <p class="hero__pista" id="pista">MUEVE LA LUZ</p>
+  <p class="hero__pista" id="pista" hidden></p>
 
 </section>
 
@@ -714,7 +711,7 @@ html{scroll-behavior:smooth}
      ═════════════════════════════════════════════════════════ */
 
   /* Espera a que el video termine de posicionarse en un tiempo dado */
-  function irA(tiempo) {
+  function irA(fuente, tiempo) {
     return new Promise(function (resolver, rechazar) {
       let cerrado = false;
 
@@ -722,7 +719,7 @@ html{scroll-behavior:smooth}
         if (cerrado) return;
         cerrado = true;
         clearTimeout(reloj);
-        video.removeEventListener('seeked', alSaltar);
+        fuente.removeEventListener('seeked', alSaltar);
         resolver();
       };
 
@@ -730,12 +727,12 @@ html{scroll-behavior:smooth}
       const reloj = setTimeout(function () {
         if (cerrado) return;
         cerrado = true;
-        video.removeEventListener('seeked', alSaltar);
+        fuente.removeEventListener('seeked', alSaltar);
         rechazar(new Error('El salto tardó demasiado'));
       }, TIMEOUT_SEEK);
 
-      video.addEventListener('seeked', alSaltar);
-      video.currentTime = tiempo;
+      fuente.addEventListener('seeked', alSaltar);
+      fuente.currentTime = tiempo;
     });
   }
 
@@ -764,15 +761,36 @@ html{scroll-behavior:smooth}
     });
   }
 
+  /* Copia invisible del video: se recorre por detrás para que el
+     visitante nunca vea al robot girar mientras se prepara. */
+  function crearCopia() {
+    return new Promise(function (resolver, rechazar) {
+      const copia = document.createElement('video');
+      copia.muted = true;
+      copia.playsInline = true;
+      copia.preload = 'auto';
+      copia.crossOrigin = 'anonymous';
+      copia.setAttribute('aria-hidden', 'true');
+      copia.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px';
+      document.body.appendChild(copia);
+
+      const reloj = setTimeout(function () { rechazar(new Error('La copia no cargó')); }, 10000);
+      copia.addEventListener('loadeddata', function () { clearTimeout(reloj); resolver(copia); }, { once: true });
+      copia.addEventListener('error', function () { clearTimeout(reloj); rechazar(new Error('Error en la copia')); }, { once: true });
+      copia.src = video.currentSrc || video.src;
+    });
+  }
+
   async function extraerFrames() {
     /* Cuántos frames vamos a sacar, según lo que dure el video */
     let total = Math.round(duracion * FRAMES_POR_SEGUNDO);
     total = Math.min(FRAMES_MAX, Math.max(FRAMES_MIN, total));
 
     /* Canvas temporal donde cae cada frame antes de guardarse */
+    const fuente = await crearCopia();
     const temp = document.createElement('canvas');
-    const anchoReal = video.videoWidth  || 1280;
-    const altoReal  = video.videoHeight || 720;
+    const anchoReal = fuente.videoWidth  || 1280;
+    const altoReal  = fuente.videoHeight || 720;
     const factor    = Math.min(1, ANCHO_CAPTURA / anchoReal);
 
     temp.width  = Math.round(anchoReal * factor);
@@ -785,12 +803,17 @@ html{scroll-behavior:smooth}
     for (let i = 0; i < total; i++) {
       const tiempo = (i / (total - 1)) * fin;
 
-      await irA(tiempo);
-      ctxTemp.drawImage(video, 0, 0, temp.width, temp.height);
+      await irA(fuente, tiempo);
+      ctxTemp.drawImage(fuente, 0, 0, temp.width, temp.height);
       imagenes.push(await guardarComoImagen(temp));
 
       progreso.style.width = Math.round(((i + 1) / total) * 100) + '%';
     }
+
+    /* Liberamos la copia */
+    fuente.removeAttribute('src');
+    fuente.load();
+    fuente.remove();
   }
 
   /* ═════════════════════════════════════════════════════════
@@ -858,6 +881,7 @@ html{scroll-behavior:smooth}
 
     duracion = video.duration;
     video.pause();
+    video.currentTime = duracion / 2;   // mirando al frente mientras se prepara
 
     ajustarLienzo();
 
@@ -1236,8 +1260,8 @@ html{scroll-behavior:smooth}
     colocar();
   }
 
+  /* ═══ 2. IMÁN en botones ═══ */
   if (punteroFino && !sinMovimiento) {
-    /* ═══ 2. IMÁN en botones ═══ */
     document.querySelectorAll('.btn, .wa, .necesidad__limpiar').forEach(el => {
       el.classList.add('iman');
       el.addEventListener('mousemove', e => {
@@ -1248,41 +1272,6 @@ html{scroll-behavior:smooth}
       });
       el.addEventListener('mouseleave', () => { el.style.transform = ''; });
     });
-  }
-
-  /* ═════════════════════════════════════════════════════════
-     3. TÍTULOS QUE SE DECODIFICAN
-     Al entrar en pantalla, cada título aparece como si una
-     terminal lo estuviera descifrando. Solo una vez.
-     ═════════════════════════════════════════════════════════ */
-  if (!sinMovimiento && 'IntersectionObserver' in window) {
-    const SIMBOLOS = '01<>/#_*+=%&$';
-    const decodificar = h => {
-      const final = h.textContent;
-      h.setAttribute('aria-label', final);
-      h.classList.add('decodificando');
-      const inicio = performance.now();
-      const DURACION = 900;
-      (function paso(t) {
-        const avance = Math.min((t - inicio) / DURACION, 1);
-        const listos = Math.floor(final.length * avance);
-        let html = '';
-        for (let i = 0; i < final.length; i++) {
-          const c = final[i];
-          if (i < listos || c === ' ') html += `<span class="ok">${c}</span>`;
-          else html += SIMBOLOS[(Math.random() * SIMBOLOS.length) | 0];
-        }
-        h.innerHTML = html;
-        if (avance < 1) requestAnimationFrame(paso);
-        else { h.textContent = final; h.classList.remove('decodificando'); }
-      })(inicio);
-    };
-    const obs = new IntersectionObserver(entradas => {
-      entradas.forEach(en => {
-        if (en.isIntersecting) { decodificar(en.target); obs.unobserve(en.target); }
-      });
-    }, { threshold: 0.6 });
-    document.querySelectorAll('.seccion__titulo').forEach(h => obs.observe(h));
   }
 })();
 </script>
