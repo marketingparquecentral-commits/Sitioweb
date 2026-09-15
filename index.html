@@ -368,17 +368,20 @@ html{scroll-behavior:smooth}
    ═══════════════════════════════════════════════════════════ */
 ::selection{background:var(--naranja);color:var(--negro)}
 
-/* ─── Luz del hero ─── */
-.hero__luz{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .6s ease;
-  --lx:50%;--ly:50%}
+/* ─── Luz del hero ───
+   Todo se mueve con transform (lo hace la tarjeta gráfica), así
+   no se repinta la pantalla en cada cuadro y el video no pierde
+   fluidez. */
+.hero__luz{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;
+  opacity:0;transition:opacity .6s ease}
 .hero__luz.activa{opacity:1}
-.hero__sombra{position:absolute;inset:0;
-  background:radial-gradient(circle 440px at var(--lx) var(--ly),transparent 25%,rgba(0,0,0,.55) 100%)}
-.hero__foco{position:absolute;inset:0;mix-blend-mode:screen;
-  background:radial-gradient(circle 280px at var(--lx) var(--ly),rgba(245,130,31,.28),rgba(245,130,31,.08) 45%,transparent 70%)}
+.hero__sombra,.hero__foco,.hero__orbe{position:absolute;left:0;top:0;will-change:transform;border-radius:50%}
+.hero__sombra{width:2400px;height:2400px;margin:-1200px 0 0 -1200px;
+  background:radial-gradient(circle,transparent 0,transparent 200px,rgba(0,0,0,.55) 560px)}
+.hero__foco{width:560px;height:560px;margin:-280px 0 0 -280px;
+  background:radial-gradient(circle,rgba(245,130,31,.26) 0,rgba(245,130,31,.08) 45%,transparent 70%)}
 .hero__chispas{position:absolute;inset:0;width:100%;height:100%}
-.hero__orbe{position:absolute;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;
-  background:#fff;will-change:transform;
+.hero__orbe{width:14px;height:14px;margin:-7px 0 0 -7px;background:#fff;
   box-shadow:0 0 10px 3px rgba(255,214,170,.95),0 0 34px 12px rgba(245,130,31,.65),0 0 90px 30px rgba(245,130,31,.25)}
 .hero__orbe::after{content:"";position:absolute;inset:-14px;border-radius:50%;
   border:1.5px solid rgba(245,130,31,.6);animation:pulso 2.2s ease-out infinite}
@@ -1148,72 +1151,85 @@ html{scroll-behavior:smooth}
   const heroEl = document.getElementById('hero');
   const luz = document.getElementById('luz');
   if (heroEl && luz && !sinMovimiento) {
-    const orbe = luz.querySelector('.hero__orbe');
+    const capas = ['.hero__sombra', '.hero__foco', '.hero__orbe'].map(s => luz.querySelector(s));
     const cv = document.getElementById('chispas');
     const cx = cv.getContext('2d');
-    let W = 0, H = 0;
+    let W = 0, H = 0, caja = heroEl.getBoundingClientRect();
+
     function medir() {
-      const r = heroEl.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
-      W = r.width; H = r.height;
+      caja = heroEl.getBoundingClientRect();
+      const dpr = Math.min(devicePixelRatio || 1, 1.5);
+      W = caja.width; H = caja.height;
       cv.width = W * dpr; cv.height = H * dpr;
       cx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     medir();
-    addEventListener('resize', medir);
+    addEventListener('resize', () => { medir(); volverAlCentro(); });
+    addEventListener('scroll', () => { caja = heroEl.getBoundingClientRect(); }, { passive: true });
 
     let lx = W / 2, ly = H / 2, tx = lx, ty = ly;
-    let mouseDentro = false, visible = true;
-    let chispas = [];
+    let chispas = [], corriendo = false, ultimoX = -1;
+
+    function volverAlCentro() { tx = W / 2; ty = H / 2; arrancar(); }
 
     heroEl.addEventListener('pointermove', e => {
-      const r = heroEl.getBoundingClientRect();
-      tx = e.clientX - r.left; ty = e.clientY - r.top;
-      mouseDentro = true;
+      tx = e.clientX - caja.left;
+      ty = e.clientY - caja.top;
+      arrancar();
     }, { passive: true });
-    heroEl.addEventListener('pointerleave', () => { mouseDentro = false; });
+    heroEl.addEventListener('pointerleave', volverAlCentro);
+    document.addEventListener('mouseleave', volverAlCentro);
 
-    new IntersectionObserver(([en]) => { visible = en.isIntersecting; })
-      .observe(heroEl);
+    function arrancar() {
+      if (!corriendo) { corriendo = true; requestAnimationFrame(bucle); }
+    }
 
-    luz.classList.add('activa');
+    function colocar() {
+      const t = `translate3d(${lx}px,${ly}px,0)`;
+      for (const c of capas) c.style.transform = t;
+    }
 
-    (function bucle(t) {
-      if (visible) {
-        if (!mouseDentro) {
-          /* Paseo propio cuando nadie la guía */
-          const s = t / 1000;
-          tx = W * (0.5 + Math.sin(s * 0.45) * 0.32);
-          ty = H * (0.48 + Math.sin(s * 0.8) * 0.18);
-        }
-        const px = lx, py = ly;
-        lx += (tx - lx) * 0.07;
-        ly += (ty - ly) * 0.07;
-        const vel = Math.hypot(lx - px, ly - py);
+    function bucle() {
+      const px = lx, py = ly;
+      lx += (tx - lx) * 0.14;
+      ly += (ty - ly) * 0.14;
+      const vel = Math.hypot(lx - px, ly - py);
+      colocar();
 
-        orbe.style.transform = `translate3d(${lx}px,${ly}px,0)`;
-        luz.style.setProperty('--lx', lx + 'px');
-        luz.style.setProperty('--ly', ly + 'px');
-
-        /* Chispas: más cuanto más rápido se mueve */
-        const n = Math.min(4, Math.floor(vel / 3));
-        for (let i = 0; i < n; i++) {
-          chispas.push({ x: lx, y: ly, vx: (Math.random() - .5) * 1.6, vy: (Math.random() - .5) * 1.6 + .4, v: 1, r: 1 + Math.random() * 1.8 });
-        }
+      /* Chispas: solo cuando la luz va rápido */
+      const n = Math.min(3, Math.floor(vel / 4));
+      for (let i = 0; i < n; i++) {
+        chispas.push({ x: lx, y: ly, vx: (Math.random() - .5) * 1.6, vy: (Math.random() - .5) * 1.6 + .4, v: 1, r: 1 + Math.random() * 1.6 });
+      }
+      if (chispas.length || n) {
         cx.clearRect(0, 0, W, H);
         for (const c of chispas) {
-          c.x += c.vx; c.y += c.vy; c.v -= 0.025;
+          c.x += c.vx; c.y += c.vy; c.v -= 0.03;
           cx.fillStyle = `rgba(255,${150 + (c.v * 80) | 0},60,${Math.max(c.v, 0)})`;
-          cx.beginPath(); cx.arc(c.x, c.y, c.r, 0, 7); cx.fill();
+          cx.fillRect(c.x - c.r, c.y - c.r, c.r * 2, c.r * 2);
         }
         chispas = chispas.filter(c => c.v > 0);
+        if (!chispas.length) cx.clearRect(0, 0, W, H);
+      }
 
-        /* El robot persigue la luz */
-        if (window.__heroSeguir) {
-          window.__heroSeguir({ clientX: heroEl.getBoundingClientRect().left + lx });
-        }
+      /* El robot persigue la luz (solo si se movió de verdad) */
+      if (window.__heroSeguir && Math.abs(lx - ultimoX) > 0.5) {
+        ultimoX = lx;
+        window.__heroSeguir({ clientX: caja.left + lx });
+      }
+
+      /* Si la luz llegó a su destino y no hay chispas, descansamos */
+      const quieta = Math.abs(tx - lx) < 0.3 && Math.abs(ty - ly) < 0.3;
+      if (quieta && !chispas.length) {
+        lx = tx; ly = ty; colocar();
+        corriendo = false;
+        return;
       }
       requestAnimationFrame(bucle);
-    })(0);
+    }
+
+    colocar();
+    luz.classList.add('activa');
   }
 
   if (punteroFino && !sinMovimiento) {
