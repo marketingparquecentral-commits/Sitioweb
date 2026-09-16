@@ -284,45 +284,6 @@ section[id]{scroll-margin-top:72px}
 }
 .seccion__intro{color:var(--gris);font-size:clamp(16px,1.6vw,18px);line-height:1.6;max-width:58ch}
 
-/* ─── Buscador por necesidad (el momento protagonista) ─── */
-.necesidad{margin-top:40px}
-.necesidad__caja{
-  display:flex;align-items:center;gap:14px;
-  border:2px solid rgba(255,255,255,.2);border-radius:22px;
-  padding:6px 8px 6px 22px;
-  transition:border-color .2s ease;
-}
-.necesidad__caja:focus-within{border-color:var(--naranja)}
-.necesidad__prefijo{color:var(--naranja);font-weight:700;font-size:clamp(17px,2vw,22px);white-space:nowrap}
-.necesidad__input{
-  flex:1;min-width:0;font:inherit;font-size:clamp(17px,2vw,22px);
-  color:var(--blanco);background:transparent;border:0;padding:16px 0;
-}
-.necesidad__input:focus{outline:none}
-.necesidad__input::placeholder{color:#5f5f5f}
-.necesidad__limpiar{
-  font:inherit;font-size:14px;color:var(--gris);background:none;border:0;
-  padding:10px 14px;cursor:pointer;border-radius:14px;
-}
-.necesidad__limpiar:hover{color:var(--blanco);background:rgba(255,255,255,.08)}
-.necesidad__ejemplos{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.ejemplo{
-  font:inherit;font-size:14px;color:var(--gris);
-  background:rgba(255,255,255,.06);border:0;border-radius:100px;
-  padding:8px 14px;cursor:pointer;
-}
-.ejemplo:hover{color:var(--blanco);background:rgba(255,255,255,.12)}
-.necesidad__respuesta{
-  min-height:28px;margin-top:22px;font-size:16px;line-height:1.5;color:var(--gris);
-}
-.necesidad__respuesta b{color:var(--blanco)}
-.necesidad__respuesta mark{background:none;color:var(--naranja);font-weight:700}
-@media (max-width:560px){
-  .necesidad__caja{flex-wrap:wrap;padding:12px 16px}
-  .necesidad__prefijo{width:100%}
-  .necesidad__input{padding:6px 0}
-}
-
 .filtros{display:flex;gap:8px;overflow-x:auto;padding:4px 0;margin-top:26px;scrollbar-width:thin}
 .filtro{
   flex:0 0 auto;font:inherit;font-size:14px;color:var(--gris);background:transparent;
@@ -515,9 +476,6 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 .tema-claro .btn--linea{border-color:var(--linea-fuerte)}
 .tema-claro .btn--linea:hover{border-color:#0b0b0b;background:rgba(0,0,0,.04)}
 
-.tema-claro .necesidad__caja{border-color:var(--linea-fuerte)}
-.tema-claro .necesidad__input::placeholder{color:#9a9a9a}
-.tema-claro .necesidad__limpiar:hover{background:rgba(0,0,0,.05)}
 .tema-claro .ejemplo{background:var(--superficie)}
 .tema-claro .ejemplo:hover{background:#e7e7e4}
 .tema-claro .filtro{border-color:var(--linea-fuerte)}
@@ -527,7 +485,6 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 .tema-claro .plan:not(.plan--destacado){background:var(--superficie)}
 .tema-claro .dato{border-top-color:var(--linea)}
 .tema-claro .mapa{filter:none;background:var(--superficie)}
-.tema-claro .necesidad__respuesta mark{color:#c75f00}
 .tema-claro .tienda__local{color:#d96c10}
 
 /* Barra de pestañas blanca */
@@ -740,6 +697,107 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   .hero__pie{flex-direction:column;align-items:center;text-align:center;gap:6px;border-top:0;padding-top:0}
   .hero__pie-der{text-align:center}
 }
+
+/* ═══ LOCALES: barra, lista, tarjetas y ficha ═══ */
+.dir__barra{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:32px}
+.dir__barra .filtros{margin-top:0;flex:1 1 100%;min-width:0;order:2}
+.dir__lado{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;order:1}
+.dir__conteo{font-size:14px;color:var(--gris);white-space:nowrap}
+.vista{display:flex;background:#f0f0ee;border-radius:12px;padding:3px}
+.vista__btn{display:flex;align-items:center;gap:6px;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;color:#6b6b6b;padding:7px 12px;border-radius:9px;cursor:pointer}
+.vista__btn svg{width:16px;height:16px}
+.vista__btn[aria-pressed="true"]{background:#fff;color:#0b0b0b;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.vista__btn:focus-visible{outline:2px solid #0b0b0b;outline-offset:1px}
+
+.dir__lista{list-style:none;margin:18px 0 0;padding:0}
+.dir__lista li{margin:0}
+
+/* Lista */
+.tema-claro .tienda{
+  width:100%;border:0;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;
+  display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:6px 24px;
+  padding:18px 8px;border-bottom:1px solid var(--linea);border-radius:0;
+}
+.tema-claro .tienda:hover{background:#fafaf8}
+.tema-claro .tienda:focus-visible{outline:2px solid #0b0b0b;outline-offset:-2px}
+.tienda__info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tienda__nombre{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.tienda__cat{font-size:14px;color:var(--gris)}
+.tienda__fin{display:flex;align-items:center;gap:12px}
+.tienda__flecha{width:18px;height:18px;color:#9a9a9a;transition:transform .2s ease}
+.tienda:hover .tienda__flecha{transform:translateX(3px);color:#0b0b0b}
+
+/* Insignia abierto / cerrado */
+.insignia{font-size:12px;font-weight:600;padding:4px 10px;border-radius:100px;background:#f0f0ee;color:#6b6b6b;white-space:nowrap}
+.insignia--abierto{background:#e8f6ee;color:#1a7f45}
+
+/* Tarjetas */
+.dir__lista--tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.tarjeta{
+  width:100%;height:100%;border:1px solid var(--linea);background:#fff;font:inherit;color:inherit;text-align:left;cursor:pointer;
+  display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:18px;border-radius:18px;
+  transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+.tarjeta:hover{border-color:#0b0b0b;transform:translateY(-3px);box-shadow:0 12px 24px -16px rgba(0,0,0,.35)}
+.tarjeta:focus-visible{outline:2px solid #0b0b0b;outline-offset:2px}
+.tarjeta__logo,.ficha__logo{
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  color:#fff;font-weight:800;letter-spacing:-.02em;background:#f3f3f1;
+}
+.tarjeta__logo{width:54px;height:54px;border-radius:14px;font-size:18px;margin-bottom:10px}
+.tarjeta__logo img,.ficha__logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.tarjeta__nombre{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.tarjeta__cat{font-size:13.5px;color:var(--gris)}
+.tarjeta__pie{margin-top:auto;padding-top:14px;width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tarjeta__loc{font-size:13px;font-weight:600;color:#c75f00}
+
+/* Ficha lateral */
+.ficha-fondo{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.35);opacity:0;transition:opacity .3s ease}
+.ficha-fondo.abierta{opacity:1}
+.ficha{
+  position:fixed;top:0;right:0;bottom:0;z-index:90;width:min(420px,100%);
+  background:#fff;color:#0b0b0b;box-shadow:-20px 0 50px rgba(0,0,0,.18);
+  padding:24px 28px 32px;overflow-y:auto;
+  transform:translateX(104%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.ficha.abierta{transform:none}
+/* Sin ocultar la barra lateral (evita que la página salte); el scroll interno no se escapa */
+.ficha{overscroll-behavior:contain}
+.ficha__cerrar{
+  display:flex;align-items:center;justify-content:center;margin-left:auto;
+  width:40px;height:40px;border:0;border-radius:50%;background:#f0f0ee;color:#0b0b0b;cursor:pointer;
+}
+.ficha__cerrar svg{width:18px;height:18px}
+.ficha__cerrar:hover{background:#e5e5e2}
+.ficha__cerrar:focus-visible{outline:2px solid #0b0b0b;outline-offset:2px}
+.ficha__logo{width:76px;height:76px;border-radius:20px;font-size:26px;margin:4px 0 18px}
+.ficha__nombre{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:0}
+.ficha__cat{color:#5c5c5c;margin:6px 0 22px;font-size:15px}
+.ficha__datos{margin:0}
+.ficha__datos div{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-top:1px solid rgba(0,0,0,.08);font-size:15px}
+.ficha__datos dt{color:#5c5c5c}
+.ficha__datos dd{margin:0;text-align:right;font-weight:600}
+.ficha__datos dd.abierto{color:#1a7f45}
+.ficha__datos dd.cerrado{color:#5c5c5c}
+.ficha__acciones{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.ficha__btn{
+  display:block;text-align:center;text-decoration:none;font-weight:700;font-size:15px;
+  padding:14px 18px;border-radius:100px;border:1.5px solid rgba(0,0,0,.18);color:#0b0b0b;
+}
+.ficha__btn:hover{border-color:#0b0b0b}
+.ficha__btn--wa{background:#25D366;border-color:#25D366;color:#04210f}
+.ficha__btn--wa:hover{background:#3be07a;border-color:#3be07a}
+
+@media (max-width:640px){
+  .dir__lado{width:100%;justify-content:space-between}
+  .tema-claro .tienda{grid-template-columns:64px 1fr auto;gap:4px 12px;padding:14px 4px}
+  .tienda__flecha{display:none}
+  .dir__lista--tarjetas{grid-template-columns:1fr 1fr;gap:10px}
+  .tarjeta{padding:14px}
+  /* En celular la ficha sube desde abajo */
+  .ficha{top:auto;left:0;width:100%;max-height:88vh;border-radius:24px 24px 0 0;transform:translateY(104%);padding:18px 22px 28px}
+}
+@media (prefers-reduced-motion:reduce){.ficha,.ficha-fondo,.tarjeta{transition:none}}
 </style>
 </head>
 <body>
@@ -837,7 +895,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 <div class="pestanas-aire" id="pestanas-aire" aria-hidden="true"></div>
 <div class="pestanas tema-claro" id="pestanas">
   <div class="pestanas__lista" role="tablist" aria-label="Secciones del sitio">
-    <button class="pestana" role="tab" id="tab-locales" aria-controls="locales" aria-selected="true"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="pestana__texto">Locales</span></button>
+    <button class="pestana" role="tab" id="tab-locales" aria-controls="locales" aria-selected="true"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8h13l-1 12.5h-11z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></span><span class="pestana__texto">Locales</span></button>
     <button class="pestana" role="tab" id="tab-como-llegar" aria-controls="como-llegar" aria-selected="false" tabindex="-1"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span class="pestana__texto">Cómo llegar</span></button>
     <button class="pestana" role="tab" id="tab-eventos" aria-controls="eventos" aria-selected="false" tabindex="-1"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/><path d="M8.5 14h2v2h-2z"/></svg></span><span class="pestana__texto">Eventos</span></button>
     <button class="pestana" role="tab" id="tab-para-marcas" aria-controls="para-marcas" aria-selected="false" tabindex="-1"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 12v8h13v-8"/><path d="M10 20v-4.5h4V20"/></svg></span><span class="pestana__texto">Para marcas</span></button>
@@ -846,30 +904,23 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 
   <!-- ─── Pestaña: Locales ─── -->
   <section class="seccion panel" id="locales" role="tabpanel" aria-labelledby="tab-locales" tabindex="-1">
-    <h2 class="seccion__titulo">Cuéntanos qué necesitas. Te decimos a qué local ir.</h2>
-    <p class="seccion__intro">
-      Escríbelo con tus palabras, no hace falta saber el nombre de la tienda.
-    </p>
+    <h2 class="seccion__titulo">Locales</h2>
+    <p class="seccion__intro">Elige una categoría y toca cualquier local para ver cómo contactarlo.</p>
 
-    <div class="necesidad">
-      <label class="necesidad__caja">
-        <span class="necesidad__prefijo">Necesito…</span>
-        <input class="necesidad__input" id="buscador" type="search" autocomplete="off"
-               placeholder="arreglar la pantalla de mi celular"
-               aria-label="Describe lo que necesitas o el nombre de una tienda">
-        <button class="necesidad__limpiar" id="limpiar" type="button" hidden>Borrar</button>
-      </label>
-      <div class="necesidad__ejemplos" aria-label="Ejemplos">
-        <button class="ejemplo" type="button">se me rompió la pantalla</button>
-        <button class="ejemplo" type="button">tinta para la impresora</button>
-        <button class="ejemplo" type="button">armar un PC gamer</button>
-        <button class="ejemplo" type="button">cámaras para mi negocio</button>
-        <button class="ejemplo" type="button">un café</button>
+    <div class="dir__barra">
+      <div class="filtros" id="filtros" role="group" aria-label="Filtrar por categoría"></div>
+      <div class="dir__lado">
+        <span class="dir__conteo" id="conteo" aria-live="polite"></span>
+        <div class="vista" role="group" aria-label="Tipo de vista">
+          <button class="vista__btn" type="button" data-vista="lista" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Lista
+          </button>
+          <button class="vista__btn" type="button" data-vista="tarjetas" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>Tarjetas
+          </button>
+        </div>
       </div>
-      <p class="necesidad__respuesta" id="respuesta" aria-live="polite"></p>
     </div>
-
-    <div class="filtros" id="filtros" role="group" aria-label="Filtrar por categoría"></div>
     <ul class="dir__lista" id="lista"></ul>
   </section>
 
@@ -968,6 +1019,14 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
     <span>© <span id="anio">2026</span> Parque Central</span>
   </div>
 </footer>
+
+<div class="ficha-fondo" id="ficha-fondo" hidden></div>
+<aside class="ficha" id="ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-titulo" hidden>
+  <button class="ficha__cerrar" type="button" aria-label="Cerrar ficha">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="ficha__cuerpo" id="ficha-cuerpo"></div>
+</aside>
 
 <a class="wa" target="_blank" rel="noopener"
    href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20conocer%20m%C3%A1s">
@@ -1353,15 +1412,18 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
      y se completan los 74. whatsapp: solo números, con 57.
      ═════════════════════════════════════════════════════════ */
   const TIENDAS = [
-    { local:'Local 6',    nombre:'Power Security',  categoria:'Videocámaras y seguridad', whatsapp:'', instagram:'' },
-    { local:'Local 39',   nombre:'Pink Store',      categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
-    { local:'Local 61',   nombre:'Teranet',         categoria:'Electrónico',              whatsapp:'', instagram:'' },
-    { local:'Local 120',  nombre:'One Mobile',      categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
-    { local:'Local 138',  nombre:'Punto PC',        categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
-    { local:'Local 170',  nombre:'MPS Mayorista',   categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
-    { local:'Local 1005', nombre:'Yoyo Intel',      categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'' },
-    { local:'Isla',       nombre:'Sorbo Café Bar',  categoria:'Cafetería',                whatsapp:'', instagram:'' }
+    /* local: número o "Isla" · piso: número o null · horario: "9:00-18:00" o "" (usa el del centro comercial)
+       vende: palabras que la gente buscaría · logo: ruta de la imagen o "" (se muestran las iniciales) */
+    { local:'6',    piso:null, nombre:'Power Security', categoria:'Videocámaras y seguridad', whatsapp:'', instagram:'', horario:'', vende:'', logo:'' },
+    { local:'39',   piso:null, nombre:'Pink Store',     categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'', horario:'', vende:'', logo:'' },
+    { local:'61',   piso:null, nombre:'Teranet',        categoria:'Electrónico',              whatsapp:'', instagram:'', horario:'', vende:'', logo:'' },
+    { local:'120',  piso:null, nombre:'One Mobile',     categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'', horario:'', vende:'', logo:'' },
+    { local:'138',  piso:null, nombre:'Punto PC',       categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'', horario:'', vende:'', logo:'' },
+    { local:'170',  piso:null, nombre:'MPS Mayorista',  categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'', horario:'', vende:'', logo:'' },
+    { local:'1005', piso:null, nombre:'Yoyo Intel',     categoria:'Celulares y Accesorios',   whatsapp:'', instagram:'', horario:'', vende:'', logo:'' },
+    { local:'Isla', piso:null, nombre:'Sorbo Café Bar', categoria:'Cafetería',                whatsapp:'', instagram:'', horario:'', vende:'café, bebidas, comida', logo:'' }
   ];
+  const TOTAL_LOCALES = 74;
 
   /* Categorías del centro comercial y las palabras con las que
      la gente las describe. Así "se me dañó el celular" encuentra
@@ -1393,8 +1455,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const $ = id => document.getElementById(id);
 
-  const lista = $('lista'), buscador = $('buscador'), filtros = $('filtros'),
-        respuesta = $('respuesta'), limpiar = $('limpiar');
+  const lista = $('lista'), filtros = $('filtros'), conteo = $('conteo');
   let categoriaFija = null;   // la que el visitante toca a mano
 
   /* Lee la frase y devuelve las categorías que encajan, de más a menos */
@@ -1408,24 +1469,23 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   }
 
   /* ── Filtros por categoría (solo las que tienen tiendas) ── */
-  const conteo = TIENDAS.reduce((m, t) => (m[t.categoria] = (m[t.categoria] || 0) + 1, m), {});
-  ['Todas', ...Object.keys(CATEGORIAS).filter(c => conteo[c])].forEach(cat => {
+  const porCategoria = TIENDAS.reduce((m, t) => (m[t.categoria] = (m[t.categoria] || 0) + 1, m), {});
+  ['Todas', ...Object.keys(CATEGORIAS).filter(c => porCategoria[c])].forEach(cat => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'filtro';
     b.dataset.cat = cat;
-    b.innerHTML = cat + (cat === 'Todas' ? '' : ` <small>${conteo[cat]}</small>`);
+    b.innerHTML = cat + (cat === 'Todas' ? '' : ` <small>${porCategoria[cat]}</small>`);
     b.addEventListener('click', () => {
       categoriaFija = cat === 'Todas' ? null : cat;
-      buscador.value = '';
       pintar();
     });
     filtros.appendChild(b);
   });
 
-  function enlace(href, texto) {
+  function enlace(href, texto, clase) {
     const a = document.createElement('a');
-    a.className = 'enlace';
+    a.className = clase || 'enlace';
     a.href = href;
     a.target = '_blank';
     a.rel = 'noopener';
@@ -1433,17 +1493,23 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
     return a;
   }
 
+  /* Coincidencia por palabras sueltas en "qué vende" (forro, cargador…) */
+  function interpretarVende(t, q) {
+    const vende = normalizar(t.vende);
+    return q.split(/\s+/).some(w => w.length > 3 && vende.includes(w.replace(/s$/, '')));
+  }
+
   function pintar() {
-    const texto = buscador.value.trim();
+    const texto = '';   // el buscador por texto se retiró; se filtra solo por categoría
     const q = normalizar(texto);
     const sugeridas = texto ? interpretar(texto) : [];
-    limpiar.hidden = !texto;
 
     let res;
     if (texto) {
       res = TIENDAS.filter(t =>
         sugeridas.includes(t.categoria) ||
-        normalizar(`${t.nombre} ${t.local}`).includes(q));
+        normalizar(`${t.nombre} local ${t.local} ${t.vende}`).includes(q) ||
+        (t.vende && interpretarVende(t, q)));
       /* Orden: primero la categoría que mejor encaja */
       res.sort((a, b) => {
         const ia = sugeridas.indexOf(a.categoria), ib = sugeridas.indexOf(b.categoria);
@@ -1451,7 +1517,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
       });
     } else {
       res = TIENDAS.filter(t => !categoriaFija || t.categoria === categoriaFija)
-        .sort((a, b) => a.local.localeCompare(b.local, 'es', { numeric: true }));
+        .sort((a, b) => String(a.local).localeCompare(String(b.local), 'es', { numeric: true }));
     }
 
     /* Filtros visibles */
@@ -1460,22 +1526,14 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
       b.setAttribute('aria-pressed', activo);
     });
 
-    /* Respuesta en lenguaje natural */
-    if (!texto) {
-      respuesta.textContent = '';
-    } else if (sugeridas.length) {
-      const nombres = sugeridas.slice(0, 2).map(c => `<mark>${c}</mark>`).join(' o ');
-      respuesta.innerHTML = res.length
-        ? `Eso lo resuelves en ${nombres}. <b>${res.length} ${res.length === 1 ? 'local' : 'locales'}</b> para ti.`
-        : `Eso lo resuelves en ${nombres}. Estamos actualizando esa lista.`;
-    } else {
-      respuesta.innerHTML = res.length
-        ? `<b>${res.length}</b> ${res.length === 1 ? 'resultado' : 'resultados'} por nombre o número de local.`
-        : 'No reconocimos esa búsqueda. Prueba con otras palabras o pregúntanos.';
-    }
-
-    /* Lista */
+    /* Conteo y vista */
+    conteo.textContent = texto || categoriaFija
+      ? `${res.length} de ${TOTAL_LOCALES} locales`
+      : `${TOTAL_LOCALES} locales`;
+    lista.className = 'dir__lista dir__lista--' + vista;
     lista.textContent = '';
+    ultimaBusqueda = texto;
+
     if (!res.length) {
       const li = document.createElement('li');
       li.className = 'dir__vacio';
@@ -1484,50 +1542,162 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
       lista.appendChild(li);
       return;
     }
-    res.forEach(t => {
-      const li = document.createElement('li');
-      li.className = 'tienda';
-      const num = t.local.replace(/^local\s*/i, '');
-      const esNumero = /^\d/.test(num);
-      li.innerHTML = `
-        <div class="tienda__local">${esNumero ? '<small>Local</small>' : ''}</div>
-        <div><div class="tienda__nombre"></div><div class="tienda__cat"></div></div>
-        <div class="tienda__acciones"></div>`;
-      li.querySelector('.tienda__local').append(esNumero ? num : t.local);
-      li.querySelector('.tienda__nombre').textContent = t.nombre;
-      li.querySelector('.tienda__cat').textContent = t.categoria;
-      const acc = li.querySelector('.tienda__acciones');
-      if (t.whatsapp) {
-        const m = encodeURIComponent(`Hola ${t.nombre}, los encontré en la web de Parque Central.` + (texto ? ` Necesito: ${texto}` : ''));
-        acc.appendChild(enlace(`https://wa.me/${t.whatsapp}?text=${m}`, 'WhatsApp'));
-      }
-      if (t.instagram) acc.appendChild(enlace(`https://instagram.com/${t.instagram.replace('@', '')}`, 'Instagram'));
-      lista.appendChild(li);
-    });
+    res.forEach(t => lista.appendChild(vista === 'tarjetas' ? tarjeta(t) : fila(t)));
   }
 
-  let reloj = null;
-  buscador.addEventListener('input', () => {
-    categoriaFija = null;
-    clearTimeout(reloj);
-    reloj = setTimeout(pintar, 120);
+  /* ── Piezas visuales ── */
+  const esNum = l => /^\d/.test(String(l));
+  const ubicacion = t => (esNum(t.local) ? `Local ${t.local}` : 'Isla central') + (t.piso ? ` · Piso ${t.piso}` : '');
+  const iniciales = n => n.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const TONOS = ['#1f2a44', '#3b2a4a', '#1d3b34', '#4a2a1f', '#2d2d2d', '#233a52', '#4a3a1f', '#3a1f2d'];
+  const tono = n => TONOS[[...n].reduce((a, c) => a + c.charCodeAt(0), 0) % TONOS.length];
+
+  function logo(t, clase) {
+    const d = document.createElement('div');
+    d.className = clase;
+    if (t.logo) {
+      const img = new Image();
+      img.alt = ''; img.loading = 'lazy'; img.src = t.logo;
+      img.onerror = () => { img.remove(); d.textContent = iniciales(t.nombre); d.style.background = tono(t.nombre); };
+      d.appendChild(img);
+    } else {
+      d.textContent = iniciales(t.nombre);
+      d.style.background = tono(t.nombre);
+    }
+    return d;
+  }
+
+  function estadoDe(t) {
+    const ahora = horaColombia();
+    const festivo = ahora.domingo || FESTIVOS.includes(ahora.fecha);
+    let abre, cierra;
+    const m = /^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})$/.exec((t.horario || '').trim());
+    if (m) { abre = +m[1] * 60 + +m[2]; cierra = +m[3] * 60 + +m[4]; }
+    else [abre, cierra] = festivo ? [540, 840] : [480, 1140];
+    return ahora.minutos >= abre && ahora.minutos < cierra;
+  }
+
+  function insignia(t) {
+    const s = document.createElement('span');
+    const abierto = estadoDe(t);
+    s.className = 'insignia' + (abierto ? ' insignia--abierto' : '');
+    s.textContent = abierto ? 'Abierto' : 'Cerrado';
+    return s;
+  }
+
+  function fila(t) {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tienda';
+    b.innerHTML = `
+      <span class="tienda__local">${esNum(t.local) ? '<small>Local</small>' : ''}</span>
+      <span class="tienda__info"><span class="tienda__nombre"></span><span class="tienda__cat"></span></span>
+      <span class="tienda__fin"></span>`;
+    b.querySelector('.tienda__local').append(t.local);
+    b.querySelector('.tienda__nombre').textContent = t.nombre;
+    b.querySelector('.tienda__cat').textContent = t.categoria + (t.piso ? ` · Piso ${t.piso}` : '');
+    b.querySelector('.tienda__fin').append(insignia(t));
+    b.querySelector('.tienda__fin').insertAdjacentHTML('beforeend', '<svg class="tienda__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    b.setAttribute('aria-label', `${t.nombre}, ${ubicacion(t)}. Ver ficha`);
+    b.addEventListener('click', () => abrirFicha(t, b));
+    li.appendChild(b);
+    return li;
+  }
+
+  function tarjeta(t) {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tarjeta';
+    b.appendChild(logo(t, 'tarjeta__logo'));
+    b.insertAdjacentHTML('beforeend', '<span class="tarjeta__nombre"></span><span class="tarjeta__cat"></span><span class="tarjeta__pie"><span class="tarjeta__loc"></span></span>');
+    b.querySelector('.tarjeta__nombre').textContent = t.nombre;
+    b.querySelector('.tarjeta__cat').textContent = t.categoria;
+    b.querySelector('.tarjeta__loc').textContent = ubicacion(t);
+    b.querySelector('.tarjeta__pie').append(insignia(t));
+    b.setAttribute('aria-label', `${t.nombre}, ${ubicacion(t)}. Ver ficha`);
+    b.addEventListener('click', () => abrirFicha(t, b));
+    li.appendChild(b);
+    return li;
+  }
+
+  /* ── Ficha del local ── */
+  const ficha = $('ficha'), fondoFicha = $('ficha-fondo'), cuerpoFicha = $('ficha-cuerpo');
+  let volverA = null, ultimaBusqueda = '';
+
+  function abrirFicha(t, origen) {
+    volverA = origen;
+    cuerpoFicha.textContent = '';
+    cuerpoFicha.appendChild(logo(t, 'ficha__logo'));
+    const abierto = estadoDe(t);
+    cuerpoFicha.insertAdjacentHTML('beforeend', `
+      <h3 class="ficha__nombre" id="ficha-titulo"></h3>
+      <p class="ficha__cat"></p>
+      <dl class="ficha__datos">
+        <div><dt>Ubicación</dt><dd class="d-ubi"></dd></div>
+        <div><dt>Horario</dt><dd class="d-hor"></dd></div>
+        <div><dt>Estado</dt><dd class="${abierto ? 'abierto' : 'cerrado'}">${abierto ? 'Abierto ahora' : 'Cerrado ahora'}</dd></div>
+        ${t.vende ? '<div><dt>Qué vende</dt><dd class="d-ven"></dd></div>' : ''}
+      </dl>
+      <div class="ficha__acciones"></div>`);
+    cuerpoFicha.querySelector('.ficha__nombre').textContent = t.nombre;
+    cuerpoFicha.querySelector('.ficha__cat').textContent = t.categoria;
+    cuerpoFicha.querySelector('.d-ubi').textContent = ubicacion(t);
+    cuerpoFicha.querySelector('.d-hor').textContent = t.horario ? t.horario.replace('-', ' – ') : 'Horario del centro comercial';
+    if (t.vende) cuerpoFicha.querySelector('.d-ven').textContent = t.vende;
+
+    const acc = cuerpoFicha.querySelector('.ficha__acciones');
+    if (t.whatsapp) {
+      const num = String(t.whatsapp).replace(/\D/g, '');
+      const m = encodeURIComponent(`Hola ${t.nombre}, los encontré en la web de Parque Central.` + (ultimaBusqueda ? ` Necesito: ${ultimaBusqueda}` : ''));
+      acc.appendChild(enlace(`https://wa.me/${num.startsWith('57') ? num : '57' + num}?text=${m}`, 'Escribir por WhatsApp', 'ficha__btn ficha__btn--wa'));
+    }
+    if (t.instagram) acc.appendChild(enlace(`https://instagram.com/${t.instagram.replace('@', '')}`, 'Ver Instagram', 'ficha__btn'));
+    if (!t.whatsapp && !t.instagram) {
+      const m = encodeURIComponent(`Hola Parque Central, quiero contactar a ${t.nombre} (${ubicacion(t)}).`);
+      acc.appendChild(enlace(`https://wa.me/${WHATSAPP_ADMIN}?text=${m}`, 'Pedir contacto a Parque Central', 'ficha__btn ficha__btn--wa'));
+    }
+
+    fondoFicha.hidden = false; ficha.hidden = false;
+    requestAnimationFrame(() => { fondoFicha.classList.add('abierta'); ficha.classList.add('abierta'); });
+    document.documentElement.classList.add('ficha-abierta');
+    ficha.querySelector('.ficha__cerrar').focus({ preventScroll: true });
+  }
+
+  function cerrarFicha() {
+    if (ficha.hidden) return;
+    ficha.classList.remove('abierta'); fondoFicha.classList.remove('abierta');
+    document.documentElement.classList.remove('ficha-abierta');
+    setTimeout(() => { ficha.hidden = true; fondoFicha.hidden = true; }, 320);
+    if (volverA) volverA.focus({ preventScroll: true });
+  }
+  ficha.querySelector('.ficha__cerrar').addEventListener('click', cerrarFicha);
+  fondoFicha.addEventListener('click', cerrarFicha);
+  document.addEventListener('keydown', e => {
+    if (ficha.hidden) return;
+    if (e.key === 'Escape') cerrarFicha();
+    if (e.key === 'Tab') {                     // el foco no sale de la ficha
+      const f = [...ficha.querySelectorAll('button, a[href]')];
+      const primero = f[0], ultimo = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+    }
   });
-  limpiar.addEventListener('click', e => {
-    e.preventDefault();
-    buscador.value = '';
-    pintar();
-    buscador.focus();
-  });
-  function buscar(frase) {
-    categoriaFija = null;
-    buscador.value = frase;
+
+  /* ── Selector de vista ── */
+  let vista = 'lista';
+  try { vista = localStorage.getItem('pc-vista') || (matchMedia('(min-width: 861px)').matches ? 'tarjetas' : 'lista'); } catch (e) {}
+  const botonesVista = [...document.querySelectorAll('.vista__btn')];
+  function ponerVista(v) {
+    vista = v;
+    botonesVista.forEach(b => b.setAttribute('aria-pressed', b.dataset.vista === v));
+    try { localStorage.setItem('pc-vista', v); } catch (e) {}
     pintar();
   }
-  document.querySelectorAll('.ejemplo').forEach(b =>
-    b.addEventListener('click', () => buscar(b.textContent)));
-  document.querySelectorAll('[data-busqueda]').forEach(a =>
-    a.addEventListener('click', () => buscar(a.dataset.busqueda)));
-  pintar();
+  botonesVista.forEach(b => b.addEventListener('click', () => ponerVista(b.dataset.vista)));
+
+  ponerVista(vista);
 
   /* ── Abierto ahora (hora de Colombia) ── */
   function horaColombia() {
@@ -1671,7 +1841,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 
   /* ═══ 2. IMÁN en botones ═══ */
   if (punteroFino && !sinMovimiento) {
-    document.querySelectorAll('.btn, .wa, .necesidad__limpiar').forEach(el => {
+    document.querySelectorAll('.btn, .wa').forEach(el => {
       el.classList.add('iman');
       el.addEventListener('mousemove', e => {
         const r = el.getBoundingClientRect();
