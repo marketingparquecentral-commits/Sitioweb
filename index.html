@@ -1,11 +1,44 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Parque Central · Centro comercial de tecnología en Barranquilla</title>
-<meta name="description" content="El centro comercial de tecnología más grande de la región Caribe. 74 locales, horarios y cómo llegar. Carrera 43 # 50-12, Barranquilla.">
+<meta name="description" content="El centro comercial de tecnología más grande de la región Caribe. 74 locales de celulares, computadores, accesorios y servicio técnico. Carrera 43 # 50-12, Barranquilla.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%23F5821F'/><rect x='4' y='5' width='3' height='3' fill='%23000'/><rect x='9' y='5' width='3' height='3' fill='%23000'/><rect x='4' y='10' width='8' height='2' fill='%23000'/></svg>">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CO">
+<meta property="og:title" content="Parque Central · 74 locales de tecnología en Barranquilla">
+<meta property="og:description" content="Cuéntanos qué necesitas y te decimos a qué local ir. Carrera 43 # 50-12, frente a la Universidad del Atlántico.">
+<meta property="og:image" content="./robot-poster.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ShoppingCenter",
+  "name": "Centro Comercial Parque Central",
+  "description": "El centro comercial de tecnología más grande de la región Caribe.",
+  "telephone": "+57 310 568 9142",
+  "email": "administrativo@parquecentral.net",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Carrera 43 # 50-12",
+    "addressLocality": "Barranquilla",
+    "addressRegion": "Atlántico",
+    "addressCountry": "CO"
+  },
+  "openingHoursSpecification": [
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "08:00", "closes": "19:00"},
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "09:00", "closes": "14:00"}
+  ],
+  "sameAs": [
+    "https://www.instagram.com/ccparquecentral/",
+    "https://www.facebook.com/ccparquecentralbq",
+    "https://www.tiktok.com/@ccparquecentral",
+    "https://www.youtube.com/@CentroComercialParqueCentral"
+  ]
+}
+</script>
 
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -19,7 +52,7 @@
   --gris:#A8A8A8;
 
   /* Corredor central libre para que la mascota no quede tapada */
-  --corredor:clamp(240px, 30vw, 460px);
+  --corredor:clamp(200px, 22vw, 380px);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -107,7 +140,7 @@ body{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  padding:clamp(24px,4vw,52px) clamp(20px,4vw,56px) clamp(30px,4vw,58px);
+  padding:clamp(84px,9vw,110px) clamp(20px,4vw,56px) clamp(30px,4vw,58px);
   pointer-events:none;
 }
 
@@ -126,7 +159,7 @@ body{
   width:100%;
   margin:auto 0;
   font-weight:800;
-  font-size:clamp(38px,8.6vw,104px);
+  font-size:clamp(38px,6.8vw,96px);
   line-height:.92;
   letter-spacing:-.035em;
 }
@@ -216,14 +249,23 @@ body{
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
+/* Barra superior: transparente sobre el video, sólida al bajar */
 .nav{
-  position:sticky;top:0;z-index:50;
+  position:fixed;top:0;left:0;right:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:14px clamp(20px,4vw,56px);
-  background:rgba(0,0,0,.88);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:18px clamp(20px,4vw,56px);
+  border-bottom:1px solid transparent;
+  transition:background-color .3s ease,border-color .3s ease,padding .3s ease;
 }
+.nav.solida{
+  background:rgba(0,0,0,.96);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom-color:rgba(255,255,255,.08);
+}
+.saltar{position:absolute;left:12px;top:-60px;z-index:100;background:var(--naranja);color:var(--negro);
+  padding:10px 14px;border-radius:8px;font-weight:700;text-decoration:none}
+.saltar:focus{top:12px}
+section[id]{scroll-margin-top:72px}
 .nav__marca{font-weight:800;color:var(--blanco);text-decoration:none;font-size:17px}
 .nav__marca span{color:var(--naranja)}
 .nav__links{display:flex;gap:22px;list-style:none}
@@ -314,13 +356,14 @@ html{scroll-behavior:smooth}
 }
 
 /* ─── Más que tiendas ─── */
-.planes{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:auto auto;gap:14px;margin-top:40px}
+.planes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
 .plan{
   position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;
-  min-height:230px;padding:28px;border-radius:24px;
+  min-height:300px;padding:28px;border-radius:24px;
   background:#161616;color:var(--blanco);text-decoration:none;overflow:hidden;
 }
-.plan--grande{grid-row:span 2;background:var(--naranja);color:var(--negro);min-height:474px}
+.plan--destacado{background:var(--naranja);color:var(--negro)}
+.plan__para{position:absolute;top:24px;left:28px;font-size:13.5px;font-weight:600;opacity:.75}
 .plan__num{
   position:absolute;top:18px;right:24px;font-size:clamp(70px,9vw,120px);font-weight:800;
   letter-spacing:-.05em;line-height:1;opacity:.14;
@@ -331,7 +374,6 @@ html{scroll-behavior:smooth}
 .plan:hover .plan__accion{text-decoration:underline}
 @media (max-width:860px){
   .planes{grid-template-columns:1fr}
-  .plan--grande{grid-row:auto;min-height:300px}
 }
 
 /* ─── Visítanos ─── */
@@ -354,6 +396,7 @@ html{scroll-behavior:smooth}
   color:var(--gris);font-size:14.5px;line-height:1.7;
 }
 .pie a{color:var(--blanco)}
+.pie > div,.pie > nav{min-width:200px}
 .pie strong{color:var(--blanco)}
 .redes{display:flex;gap:14px;flex-wrap:wrap}
 
@@ -411,9 +454,167 @@ html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){
   .tienda,.tienda::before,.iman{transition:none}
 }
+
+/* En celular: estado más compacto */
+@media (max-width:420px){.estado{font-size:12px}.nav{gap:10px}}
+/* WhatsApp aparece al salir del video, para no tapar los botones del hero */
+.wa{transition:opacity .3s ease,transform .3s ease}
+.wa.oculto{opacity:0;transform:translateY(20px);pointer-events:none}
+
+/* ═══ PESTAÑAS ═══ */
+/* Evita que el navegador "corrija" el scroll al cambiar de pestaña */
+html{overflow-anchor:none}
+.pestanas{
+  position:sticky;top:var(--alto-nav,60px);z-index:40;
+  background:rgba(0,0,0,.96);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.pestanas__lista{
+  max-width:1180px;margin:0 auto;
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  padding:12px clamp(20px,4vw,56px);
+}
+.pestanas__lista::-webkit-scrollbar{display:none}
+.pestana{
+  flex:0 0 auto;font:inherit;font-size:15px;font-weight:600;
+  color:var(--gris);background:transparent;border:0;border-radius:100px;
+  padding:10px 20px;cursor:pointer;
+  transition:background-color .2s ease,color .2s ease;
+}
+.pestana:hover{color:var(--blanco);background:rgba(255,255,255,.07)}
+.pestana[aria-selected="true"]{background:var(--naranja);color:var(--negro)}
+.pestana:focus-visible{outline:2px solid var(--blanco);outline-offset:2px}
+.panel{min-height:72vh;padding-top:clamp(40px,6vw,72px)}
+.panel:focus{outline:none}
+section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pestanas,96px))}
+.panel[hidden]{display:none}
+.panel .planes{margin-top:32px}
+@media (max-width:640px){.plan{min-height:220px}}
+.nav{border-bottom-color:transparent!important}
+
+/* ═══ TEMA CLARO: todo lo que está debajo del video ═══
+   Dentro de .tema-claro se invierten los tokens: "blanco" pasa a
+   ser el color del texto y "negro" el del fondo. Así casi todas
+   las reglas se adaptan solas; abajo se ajustan las que usan
+   transparencias fijas o van sobre naranja. */
+.tema-claro{
+  --blanco:#0b0b0b;
+  --negro:#ffffff;
+  --gris:#5c5c5c;
+  --linea:rgba(0,0,0,.10);
+  --linea-fuerte:rgba(0,0,0,.22);
+  --superficie:#f3f3f1;
+  background:#fff;
+  color:#0b0b0b;
+}
+/* Sobre naranja el texto siempre es negro */
+.tema-claro .btn--solido,
+.tema-claro .plan--destacado,
+.tema-claro .pestana[aria-selected="true"]{color:#0b0b0b}
+.tema-claro .btn--linea{border-color:var(--linea-fuerte)}
+.tema-claro .btn--linea:hover{border-color:#0b0b0b;background:rgba(0,0,0,.04)}
+
+.tema-claro .necesidad__caja{border-color:var(--linea-fuerte)}
+.tema-claro .necesidad__input::placeholder{color:#9a9a9a}
+.tema-claro .necesidad__limpiar:hover{background:rgba(0,0,0,.05)}
+.tema-claro .ejemplo{background:var(--superficie)}
+.tema-claro .ejemplo:hover{background:#e7e7e4}
+.tema-claro .filtro{border-color:var(--linea-fuerte)}
+.tema-claro .filtro:hover{border-color:#0b0b0b}
+.tema-claro .tienda{border-bottom-color:var(--linea)}
+.tema-claro .enlace{border-color:var(--linea-fuerte)}
+.tema-claro .plan:not(.plan--destacado){background:var(--superficie)}
+.tema-claro .dato{border-top-color:var(--linea)}
+.tema-claro .mapa{filter:none;background:var(--superficie)}
+.tema-claro .necesidad__respuesta mark{color:#c75f00}
+.tema-claro .tienda__local{color:#d96c10}
+
+/* Barra de pestañas blanca */
+.pestanas.tema-claro{background:#fff;border-bottom-color:var(--linea)}
+.tema-claro .pestana:not([aria-selected="true"]):hover{background:rgba(0,0,0,.05)}
+.tema-claro .pestana[aria-selected="true"]{background:var(--naranja)}
+.tema-claro .horario tr.hoy td{color:#c75f00}
+.tema-claro .pestana:focus-visible{outline-color:#0b0b0b}
+
+/* El menú superior se vuelve blanco al salir del video */
+.nav.solida{background:#fff!important;border-bottom-color:transparent}
+.nav.solida .nav__marca,
+.nav.solida .estado.abierto{color:#0b0b0b}
+.nav.solida .estado{color:#5c5c5c}
+.nav.solida .estado::before{background:#9a9a9a}
+.nav.solida .estado.abierto::before{background:#1fa855;box-shadow:0 0 0 4px rgba(31,168,85,.15)}
+
+/* ═══ Pestañas: ícono sobre texto ═══ */
+.pestanas__lista{gap:4px;padding-top:10px;padding-bottom:10px}
+.pestana,
+.tema-claro .pestana,
+.tema-claro .pestana:hover,
+.tema-claro .pestana[aria-selected="true"],
+.tema-claro .pestana:not([aria-selected="true"]):hover{background:transparent}
+.pestana{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:4px 14px;border-radius:14px;
+  font-size:13px;font-weight:600;
+}
+.pestana__icono{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  background:#f3f3f1;color:#6b6b6b;
+  transition:background-color .25s ease,color .25s ease,transform .25s ease;
+}
+.pestana__icono svg{width:22px;height:22px}
+.pestana:hover .pestana__icono{background:#e8e8e5;color:#0b0b0b;transform:translateY(-2px)}
+.pestana[aria-selected="true"] .pestana__icono{background:var(--naranja);color:#0b0b0b;transform:none}
+.tema-claro .pestana[aria-selected="true"]{color:#0b0b0b}
+.pestana:focus-visible{outline-offset:0}
+@media (max-width:420px){
+  .pestanas__lista{justify-content:space-between;gap:0}
+  .pestana{padding:4px 6px;font-size:12px}
+  .pestana__icono{width:42px;height:42px}
+}
+@media (prefers-reduced-motion:reduce){.pestana__icono{transition:none}}
+
+/* ═══ DOCK DE PESTAÑAS ═══
+   La barra flota como una tarjeta que cruza el borde entre el video
+   y el contenido: une las dos zonas y se convierte en la llamada a
+   la acción principal. Al fijarse arriba, se extiende a todo el ancho. */
+:root{--cruce:52px}
+.hero__contenido{padding-bottom:calc(clamp(30px,4vw,58px) + var(--cruce))!important}
+.hero__sub{margin-bottom:0!important}
+.pestanas.tema-claro{
+  margin-top:calc(var(--cruce) * -1);
+  background:transparent;border-bottom:1px solid transparent;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  transition:background-color .25s ease,border-color .25s ease;
+}
+.pestanas .pestanas__lista{
+  width:max-content;max-width:calc(100% - 32px);
+  margin:0 auto;justify-content:center;gap:clamp(4px,1.5vw,18px);
+  padding:12px clamp(12px,2.5vw,28px);
+  background:#fff;border-radius:24px;
+  box-shadow:0 18px 40px -12px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.04);
+  transition:box-shadow .25s ease,border-radius .25s ease;
+}
+.pestanas.fijas{background:#fff;border-bottom-color:rgba(0,0,0,.08)}
+.pestanas.fijas .pestanas__lista{box-shadow:none;border-radius:0}
+.pestana{min-width:92px}
+.panel{padding-top:clamp(36px,5vw,64px)!important}
+@media (max-width:420px){
+  :root{--cruce:44px}
+  .pestanas .pestanas__lista{width:auto;justify-content:space-between;gap:0;padding:10px 6px}
+  .pestana{min-width:0;flex:1;font-size:11px;white-space:nowrap;padding:4px 2px}
+}
 </style>
 </head>
 <body>
+
+<a class="saltar" href="#directorio">Saltar al directorio</a>
+
+<header class="nav" id="nav">
+  <a class="nav__marca" href="#hero" aria-label="Parque Central, inicio">Parque<span>·</span>Central</a>
+  <span class="estado" id="estado">Consultando horario…</span>
+</header>
 
 <section class="hero" id="hero">
 
@@ -449,7 +650,6 @@ html{scroll-behavior:smooth}
   </div>
 
   <div class="hero__contenido">
-    <p class="hero__marca">PARQUE<span>·</span>CENTRAL</p>
 
     <h1 class="hero__titulo">
       <span class="izq">74 locales</span>
@@ -460,10 +660,6 @@ html{scroll-behavior:smooth}
       <p class="hero__sub">
         El centro comercial de tecnología más grande de la región Caribe.
       </p>
-      <div class="hero__acciones">
-        <a class="btn btn--solido" href="#locales">Encuentra lo que necesitas</a>
-        <a class="btn btn--linea" href="#llegar">Cómo llegar</a>
-      </div>
     </div>
   </div>
 
@@ -471,24 +667,24 @@ html{scroll-behavior:smooth}
 
 </section>
 
-<nav class="nav" aria-label="Principal">
-  <a class="nav__marca" href="#hero">Parque<span>·</span>Central</a>
-  <ul class="nav__links">
-    <li><a href="#locales">Encuentra</a></li>
-    <li><a href="#planes">Más que tiendas</a></li>
-    <li><a href="#llegar">Visítanos</a></li>
-  </ul>
-  <span class="estado" id="estado">Consultando horario…</span>
-</nav>
 
-<main>
 
-  <!-- ─── Directorio por necesidad ─── -->
-  <section class="seccion" id="locales">
+<main class="tema-claro">
+
+<div class="pestanas tema-claro" id="pestanas">
+  <div class="pestanas__lista" role="tablist" aria-label="Secciones del sitio">
+    <button class="pestana" role="tab" id="tab-directorio" aria-controls="directorio" aria-selected="true"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="pestana__texto">Directorio</span></button>
+    <button class="pestana" role="tab" id="tab-como-llegar" aria-controls="como-llegar" aria-selected="false" tabindex="-1"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span class="pestana__texto">Cómo llegar</span></button>
+    <button class="pestana" role="tab" id="tab-eventos" aria-controls="eventos" aria-selected="false" tabindex="-1"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/><path d="M8.5 14h2v2h-2z"/></svg></span><span class="pestana__texto">Eventos</span></button>
+    <button class="pestana" role="tab" id="tab-para-marcas" aria-controls="para-marcas" aria-selected="false" tabindex="-1"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 12v8h13v-8"/><path d="M10 20v-4.5h4V20"/></svg></span><span class="pestana__texto">Para marcas</span></button>
+  </div>
+</div>
+
+  <!-- ─── Pestaña: Directorio ─── -->
+  <section class="seccion panel" id="directorio" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
     <h2 class="seccion__titulo">Cuéntanos qué necesitas. Te decimos a qué local ir.</h2>
     <p class="seccion__intro">
-      74 locales de tecnología en un solo lugar. Escribe tu problema con tus palabras,
-      no hace falta saber el nombre de la tienda.
+      Escríbelo con tus palabras, no hace falta saber el nombre de la tienda.
     </p>
 
     <div class="necesidad">
@@ -513,33 +709,9 @@ html{scroll-behavior:smooth}
     <ul class="dir__lista" id="lista"></ul>
   </section>
 
-  <!-- ─── Más que tiendas ─── -->
-  <section class="seccion" id="planes">
-    <h2 class="seccion__titulo">Más que tiendas</h2>
-    <div class="planes">
-      <a class="plan plan--grande" target="_blank" rel="noopener"
-         href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sal%C3%B3n%20de%20eventos">
-        <h3>Salón de eventos</h3>
-        <p>Lanzamientos, capacitaciones y reuniones en el corazón tecnológico de la ciudad.</p>
-        <span class="plan__accion">Pregunta disponibilidad</span>
-      </a>
-      <a class="plan" href="#locales" data-busqueda="un café">
-        <h3>Sabores</h3>
-        <p>Una pausa entre local y local.</p>
-        <span class="plan__accion">Ver dónde comer</span>
-      </a>
-      <a class="plan" target="_blank" rel="noopener"
-         href="https://www.parquecentral.net/wp-content/uploads/2024/02/Portafolio-CC-Parque-Central-BAQ.pdf">
-        <h3>Pauta con nosotros</h3>
-        <p>Espacios publicitarios, zonas comunes, locales y oficinas disponibles.</p>
-        <span class="plan__accion">Ver el portafolio</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ─── Visítanos ─── -->
-  <section class="seccion" id="llegar">
-    <h2 class="seccion__titulo">Visítanos</h2>
+  <!-- ─── Pestaña: Cómo llegar ─── -->
+  <section class="seccion panel" id="como-llegar" role="tabpanel" aria-labelledby="tab-como-llegar" tabindex="-1" hidden>
+    <h2 class="seccion__titulo">Cómo llegar</h2>
     <div class="visita">
       <div>
         <div class="dato">
@@ -569,20 +741,68 @@ html{scroll-behavior:smooth}
     </div>
   </section>
 
+  <!-- ─── Pestaña: Eventos ─── -->
+  <section class="seccion panel" id="eventos" role="tabpanel" aria-labelledby="tab-eventos" tabindex="-1" hidden>
+    <h2 class="seccion__titulo">Eventos</h2>
+    <p class="seccion__intro">Para empresas, lanzamientos y la comunidad.</p>
+    <div class="planes">
+      <a class="plan plan--destacado" target="_blank" rel="noopener"
+         href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sal%C3%B3n%20de%20eventos">
+        <span class="plan__para">Alquiler de espacio</span>
+        <h3>Salón de eventos</h3>
+        <p>Lanzamientos, capacitaciones y reuniones en el corazón tecnológico de la ciudad.</p>
+        <span class="plan__accion">Preguntar disponibilidad</span>
+      </a>
+      <a class="plan" target="_blank" rel="noopener" href="https://www.instagram.com/ccparquecentral/">
+        <span class="plan__para">Agenda</span>
+        <h3>Promociones y actividades</h3>
+        <p>Concursos, ferias y temporadas especiales del centro comercial.</p>
+        <span class="plan__accion">Ver en Instagram</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── Pestaña: Para marcas ─── -->
+  <section class="seccion panel" id="para-marcas" role="tabpanel" aria-labelledby="tab-para-marcas" tabindex="-1" hidden>
+    <h2 class="seccion__titulo">Para marcas</h2>
+    <p class="seccion__intro">Haz visible tu marca frente a miles de visitantes que vienen a buscar tecnología.</p>
+    <div class="planes">
+      <a class="plan plan--destacado" target="_blank" rel="noopener"
+         href="https://www.parquecentral.net/wp-content/uploads/2024/02/Portafolio-CC-Parque-Central-BAQ.pdf">
+        <span class="plan__para">Portafolio comercial</span>
+        <h3>Pauta con nosotros</h3>
+        <p>Espacios publicitarios y zonas comunes para tu marca.</p>
+        <span class="plan__accion">Ver el portafolio</span>
+      </a>
+      <a class="plan" target="_blank" rel="noopener"
+         href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20locales%20y%20oficinas%20disponibles">
+        <span class="plan__para">Disponibilidad</span>
+        <h3>Locales y oficinas</h3>
+        <p>Consulta los espacios libres y sus condiciones directamente con la administración.</p>
+        <span class="plan__accion">Consultar disponibilidad</span>
+      </a>
+    </div>
+  </section>
+
 </main>
 
 <footer class="pie">
-  <div><strong>Centro Comercial Parque Central</strong><br>
-       Carrera 43 # 50-12, Barranquilla, Atlántico<br>
-       En Parque Central somos + tecnología</div>
-  <div class="redes">
+  <div>
+    <strong>Centro Comercial Parque Central</strong><br>
+    Carrera 43 # 50-12, Barranquilla, Atlántico<br>
+    <a href="tel:+573105689142">+57 310 568 9142</a>
+  </div>
+  <nav class="redes" aria-label="Redes sociales">
     <a href="https://www.instagram.com/ccparquecentral/" target="_blank" rel="noopener">Instagram</a>
     <a href="https://www.facebook.com/ccparquecentralbq" target="_blank" rel="noopener">Facebook</a>
     <a href="https://www.tiktok.com/@ccparquecentral" target="_blank" rel="noopener">TikTok</a>
     <a href="https://www.youtube.com/@CentroComercialParqueCentral" target="_blank" rel="noopener">YouTube</a>
+  </nav>
+  <div>
+    <a href="https://www.parquecentral.net/wp-content/uploads/ccpc-politica-privacidad.pdf" target="_blank" rel="noopener">Política de privacidad</a><br>
+    <a href="https://www.parquecentral.net/legal/" target="_blank" rel="noopener">Legal</a><br>
+    <span>© <span id="anio">2026</span> Parque Central</span>
   </div>
-  <div><a href="https://www.parquecentral.net/wp-content/uploads/ccpc-politica-privacidad.pdf" target="_blank" rel="noopener">Política de privacidad</a><br>
-       <a href="https://www.parquecentral.net/legal/" target="_blank" rel="noopener">Legal</a></div>
 </footer>
 
 <a class="wa" target="_blank" rel="noopener"
@@ -1170,6 +1390,19 @@ html{scroll-behavior:smooth}
   }
   actualizarEstado();
   setInterval(actualizarEstado, 60000);
+
+  /* ── Barra superior sólida al salir del video ── */
+  const nav = $('nav'), heroSec = $('hero');
+  const wa = document.querySelector('.wa');
+  const revisarNav = () => {
+    const fuera = scrollY > heroSec.offsetHeight - 150;
+    nav.classList.toggle('solida', fuera);
+    wa.classList.toggle('oculto', !fuera);
+  };
+  addEventListener('scroll', revisarNav, { passive: true });
+  revisarNav();
+
+  $('anio').textContent = new Date().getFullYear();
 })();
 </script>
 
@@ -1284,6 +1517,97 @@ html{scroll-behavior:smooth}
       });
       el.addEventListener('mouseleave', () => { el.style.transform = ''; });
     });
+  }
+})();
+</script>
+
+
+<script>
+(function () {
+  'use strict';
+  /* ═══ PESTAÑAS ═══
+     Cada pestaña tiene su enlace (#directorio, #como-llegar…),
+     así se puede compartir y abre directo en esa sección. */
+  const barra   = document.getElementById('pestanas');
+  const nav     = document.getElementById('nav');
+  const botones = [...document.querySelectorAll('.pestana')];
+  const ids     = botones.map(b => b.getAttribute('aria-controls'));
+  /* Enlaces viejos que alguien pudo haber guardado */
+  const ALIAS = { locales: 'directorio', llegar: 'como-llegar', espacios: 'eventos' };
+
+  function medirNav() {
+    document.documentElement.style.setProperty('--alto-nav', nav.offsetHeight + 'px');
+    document.documentElement.style.setProperty('--alto-pestanas', barra.offsetHeight + 'px');
+  }
+  medirNav();
+  addEventListener('resize', medirNav);
+  if ('ResizeObserver' in window) new ResizeObserver(medirNav).observe(nav);
+
+  /* La barra pasa de tarjeta flotante a barra completa al fijarse */
+  const revisarFijas = () => {
+    const tope = barra.getBoundingClientRect().top;
+    barra.classList.toggle('fijas', tope <= nav.offsetHeight + 0.5);
+  };
+  addEventListener('scroll', revisarFijas, { passive: true });
+  addEventListener('resize', revisarFijas);
+  revisarFijas();
+
+  function abrir(id, { desplazar = false, enfocar = false, historial = true } = {}) {
+    id = ALIAS[id] || id;
+    if (!ids.includes(id)) return false;
+    botones.forEach(b => {
+      const activo = b.getAttribute('aria-controls') === id;
+      b.setAttribute('aria-selected', activo);
+      b.tabIndex = activo ? 0 : -1;
+      document.getElementById(b.getAttribute('aria-controls')).hidden = !activo;
+      if (activo) {
+        /* Solo desplaza la fila de pestañas de lado (en celular), nunca la página */
+        const lista = b.parentElement;
+        const izq = b.offsetLeft - lista.offsetLeft, der = izq + b.offsetWidth;
+        if (izq < lista.scrollLeft || der > lista.scrollLeft + lista.clientWidth) {
+          lista.scrollTo({ left: izq - 20, behavior: 'smooth' });
+        }
+      }
+    });
+    if (historial) history.replaceState(null, '', '#' + id);
+    if (desplazar) {
+      /* Posición natural de la barra (justo debajo del video), sin importar si ya está fija */
+      const hero = document.getElementById('hero');
+      const cruce = parseFloat(getComputedStyle(barra).marginTop) || 0;
+      const destino = hero.offsetTop + hero.offsetHeight + cruce - nav.offsetHeight;
+      if (Math.abs(scrollY - destino) > 2) scrollTo({ top: destino, behavior: 'smooth' });
+    }
+    if (enfocar) botones[ids.indexOf(id)].focus({ preventScroll: true });
+    return true;
+  }
+
+  botones.forEach((b, i) => {
+    b.addEventListener('click', () => abrir(b.getAttribute('aria-controls'), { desplazar: true }));
+    /* Flechas del teclado para moverse entre pestañas */
+    b.addEventListener('keydown', e => {
+      let j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % botones.length;
+      if (e.key === 'ArrowLeft')  j = (i - 1 + botones.length) % botones.length;
+      if (e.key === 'Home') j = 0;
+      if (e.key === 'End')  j = botones.length - 1;
+      if (j !== null) { e.preventDefault(); abrir(ids[j], { enfocar: true }); }
+    });
+  });
+
+  /* Cualquier enlace interno a una pestaña (botones del video, saltar) */
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = a.getAttribute('href').slice(1);
+    if (abrir(id, { desplazar: true })) e.preventDefault();
+  });
+
+  addEventListener('hashchange', () => abrir(location.hash.slice(1), { desplazar: true, historial: false }));
+
+  /* Al cargar con un enlace directo */
+  const inicial = location.hash.slice(1);
+  if (inicial && abrir(inicial)) {
+    requestAnimationFrame(() => abrir(inicial, { desplazar: true, historial: false }));
   }
 })();
 </script>
