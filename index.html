@@ -626,7 +626,6 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 .intro-activa .nav__marca{opacity:0}
 .nav__marca{transition:opacity .2s ease}
 .sin-intro .intro{display:none}
-html:not(.sin-intro) body.con-intro{overflow:hidden}
 .intro__marca{position:relative;display:flex;flex-direction:column;align-items:center;gap:20px}
 .intro__frase{transition:opacity .2s ease}
 .intro.saliendo .intro__frase{opacity:0}
@@ -667,6 +666,23 @@ html:not(.sin-intro) body.con-intro{overflow:hidden}
 
 /* Espacio entre el video y la isla */
 .pestanas-aire{height:clamp(28px,3.5vw,44px);background:#fff}
+
+/* ═══ Título nivelado: dos líneas a cada lado, misma altura ═══ */
+.hero__titulo .linea{display:block}
+.hero__titulo{align-items:start}
+@media (max-width:860px){.hero__titulo .linea{display:inline}}
+
+/* ═══ Hero: "74 locales" a la izquierda, la frase a la derecha ═══ */
+.hero__titulo{align-items:center}
+.hero__titulo .hero__frase{
+  justify-self:end;max-width:17ch;
+  font-size:clamp(20px,2.3vw,34px);font-weight:700;line-height:1.12;letter-spacing:-.025em;
+  color:#bdbdbd;
+}
+.hero__titulo .hero__frase b{color:var(--naranja);font-weight:700}
+@media (max-width:860px){
+  .hero__titulo .hero__frase{justify-self:center;max-width:22ch;margin-top:14px;font-size:clamp(17px,4.6vw,24px)}
+}
 </style>
 </head>
 <body>
@@ -730,14 +746,9 @@ html:not(.sin-intro) body.con-intro{overflow:hidden}
 
     <div class="hero__cabecera">
       <h1 class="hero__titulo">
-        <span class="izq">74 locales</span>
-        <span class="der">una <b>dirección</b></span>
+        <span class="izq"><span class="linea">74</span> <span class="linea">locales</span></span>
+        <span class="der hero__frase">El centro comercial de tecnología <b>más grande del Caribe colombiano</b></span>
       </h1>
-      <div class="hero__fila">
-        <p class="hero__sub hero__sub--izq">
-          El centro comercial de tecnología <b>más grande del Caribe colombiano</b>
-        </p>
-      </div>
     </div>
   </div>
 
@@ -1705,6 +1716,23 @@ html:not(.sin-intro) body.con-intro{overflow:hidden}
   if (document.documentElement.classList.contains('sin-intro')) { document.documentElement.classList.remove('intro-activa'); intro.remove(); return; }
   document.body.classList.add('con-intro');
 
+  /* Bloqueo del scroll SIN ocultar la barra lateral: si se ocultara,
+     al terminar aparecería de golpe y toda la página se correría. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  scrollTo(0, 0);
+  const TECLAS = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Spacebar'];
+  const frenar = e => e.preventDefault();
+  const frenarTeclas = e => { if (TECLAS.includes(e.key)) e.preventDefault(); };
+  addEventListener('wheel', frenar, { passive: false });
+  addEventListener('touchmove', frenar, { passive: false });
+  addEventListener('keydown', frenarTeclas);
+  const liberarScroll = () => {
+    removeEventListener('wheel', frenar);
+    removeEventListener('touchmove', frenar);
+    removeEventListener('keydown', frenarTeclas);
+    if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
+  };
+
   const NOMBRE = 'Parque·Central';
   const FRASE  = 'El centro comercial de tecnología más grande del Caribe colombiano';
   const sinMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1779,6 +1807,7 @@ html:not(.sin-intro) body.con-intro{overflow:hidden}
     await viajar();
     document.body.classList.remove('con-intro');
     document.documentElement.classList.remove('intro-activa');
+    liberarScroll();
     try { sessionStorage.setItem('pc-intro', '1'); } catch (e) {}
     intro.remove();
   }
