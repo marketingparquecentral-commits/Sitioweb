@@ -670,7 +670,6 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 /* ═══ Título nivelado: dos líneas a cada lado, misma altura ═══ */
 .hero__titulo .linea{display:block}
 .hero__titulo{align-items:start}
-@media (max-width:860px){.hero__titulo .linea{display:inline}}
 
 /* ═══ Hero: "74 locales" a la izquierda, la frase a la derecha ═══ */
 .hero__titulo{align-items:center}
@@ -682,6 +681,64 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 .hero__titulo .hero__frase b{color:var(--naranja);font-weight:700}
 @media (max-width:860px){
   .hero__titulo .hero__frase{justify-self:center;max-width:22ch;margin-top:14px;font-size:clamp(17px,4.6vw,24px)}
+}
+
+/* ═══ Hero: "74 locales de [categoría] en un solo lugar" ═══ */
+.solo-lectores{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hero__titulo .hero__num{font-size:1.9em;line-height:.82;letter-spacing:-.06em}
+.hero__titulo .hero__detalle{font-size:.44em;line-height:1.08;letter-spacing:-.03em;font-weight:800}
+.hero__titulo .hero__num + .hero__detalle{margin-top:.25em}
+.hero__gris{color:#9a9a9a;margin-top:.1em}
+.rotador{display:inline-block;position:relative;overflow:hidden;vertical-align:bottom;height:1.12em;line-height:1.12}
+.rotador__palabra{display:block;color:var(--naranja);transition:transform .5s cubic-bezier(.7,0,.3,1)}
+.rotador__palabra.sale{transform:translateY(-110%)}
+.rotador__palabra.entra-abajo{transition:none;transform:translateY(110%)}
+
+.hero__titulo .hero__frase{display:flex;flex-direction:column;align-items:flex-end;gap:.08em}
+.hero__titulo .hero__frase > *{display:block}
+.hero__marca-texto{color:#fff}
+
+/* Entrada: las líneas suben cuando termina la intro */
+.js:not(.hero-entra) .hero__titulo .entra{opacity:0;transform:translateY(28px)}
+.hero__titulo .entra{transition:opacity .7s ease var(--d,0s),transform .9s cubic-bezier(.2,.8,.2,1) var(--d,0s)}
+
+@media (max-width:860px){
+  .hero__titulo .linea{display:block}
+  .hero__titulo .hero__num{font-size:1.7em}
+  .hero__titulo .hero__detalle{font-size:.5em}
+  .hero__titulo .hero__frase{align-items:center;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero__titulo .entra{transition:none}
+  .rotador__palabra{transition:none}
+}
+
+/* ═══ Hero "espejo imponente": 74 locales | un solo lugar ═══ */
+.hero__titulo--espejo{align-items:start}
+.hero__titulo--espejo .linea{display:block}
+.hero__titulo--espejo .der b{color:var(--naranja);font-weight:800}
+.hero__contenido .entra{transition:opacity .7s ease var(--d,0s),transform .9s cubic-bezier(.2,.8,.2,1) var(--d,0s)}
+.js:not(.hero-entra) .hero__contenido .entra{opacity:0;transform:translateY(28px)}
+
+.hero__pie{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:24px;
+  padding-top:clamp(18px,2.4vw,32px);
+  border-top:1px solid rgba(255,255,255,.14);
+  font-size:clamp(14px,1.15vw,18px);line-height:1.4;color:#9a9a9a;
+}
+.hero__pie p{margin:0}
+.hero__pie b{color:#fff;font-weight:600}
+.hero__pie .naranja{color:var(--naranja);font-weight:600}
+.hero__pie-izq{white-space:nowrap}
+.hero__pie-der{text-align:right;max-width:66ch}
+.hero__pie .rotador{height:1.35em;line-height:1.35;vertical-align:bottom}
+.hero__pie .rotador__palabra{font-weight:600}
+
+@media (max-width:860px){
+  .hero__titulo--espejo .linea{display:inline}
+  .hero__titulo--espejo .izq,.hero__titulo--espejo .der{display:block}
+  .hero__pie{flex-direction:column;align-items:center;text-align:center;gap:6px;border-top:0;padding-top:0}
+  .hero__pie-der{text-align:center}
 }
 </style>
 </head>
@@ -696,6 +753,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 </div>
 <noscript><style>.intro{display:none}</style></noscript>
 <script>
+  document.documentElement.classList.add('js');
   /* Solo la primera vez por sesión: al volver a la página no se repite */
   try { if (sessionStorage.getItem('pc-intro')) document.documentElement.classList.add('sin-intro'); } catch (e) {}
   if (!document.documentElement.classList.contains('sin-intro')) document.documentElement.classList.add('intro-activa');
@@ -745,10 +803,26 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   <div class="hero__contenido">
 
     <div class="hero__cabecera">
-      <h1 class="hero__titulo">
-        <span class="izq"><span class="linea">74</span> <span class="linea">locales</span></span>
-        <span class="der hero__frase">El centro comercial de tecnología <b>más grande del Caribe colombiano</b></span>
+      <h1 class="hero__titulo hero__titulo--espejo">
+        <span class="izq">
+          <span class="linea entra">74</span>
+          <span class="linea entra" style="--d:.08s">locales</span>
+        </span>
+        <span class="solo-lectores"> en </span>
+        <span class="der">
+          <span class="linea entra" style="--d:.16s">un solo</span>
+          <b class="linea entra" style="--d:.24s">lugar</b>
+        </span>
       </h1>
+    </div>
+
+    <div class="hero__pie entra" style="--d:.5s">
+      <p class="hero__pie-izq">
+        Locales de <span class="rotador" aria-hidden="true"><span class="rotador__palabra" id="rotador">tecnología</span></span><span class="solo-lectores">celulares, computadores, accesorios, videojuegos, impresoras y seguridad</span>
+      </p>
+      <p class="hero__pie-der">
+        <b>Parque Central</b> · el centro comercial de tecnología <span class="naranja">más grande del Caribe colombiano</span>
+      </p>
     </div>
   </div>
 
@@ -1713,7 +1787,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
         y deja ver el video. */
   const intro = document.getElementById('intro');
   if (!intro) return;
-  if (document.documentElement.classList.contains('sin-intro')) { document.documentElement.classList.remove('intro-activa'); intro.remove(); return; }
+  if (document.documentElement.classList.contains('sin-intro')) { document.documentElement.classList.remove('intro-activa'); intro.remove(); requestAnimationFrame(() => document.documentElement.classList.add('hero-entra')); return; }
   document.body.classList.add('con-intro');
 
   /* Bloqueo del scroll SIN ocultar la barra lateral: si se ocultara,
@@ -1770,6 +1844,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
       const nombre = elNombre.parentElement;              // .intro__nombre
       const logo = document.querySelector('.nav__marca');
       intro.classList.add('saliendo');
+      setTimeout(() => document.documentElement.classList.add('hero-entra'), 350);
       if (sinMov || !logo) {
         intro.style.transition = 'opacity .4s'; intro.style.opacity = 0;
         return setTimeout(resolver, 420);
@@ -1827,6 +1902,40 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 </script>
 
 
+
+
+<script>
+(function () {
+  'use strict';
+  /* ═══ CATEGORÍA QUE ROTA ═══
+     "74 locales de [celulares / computadores / …] en un solo lugar" */
+  const el = document.getElementById('rotador');
+  if (!el) return;
+  const PALABRAS = ['celulares', 'computadores', 'accesorios', 'videojuegos', 'impresoras', 'seguridad', 'tecnología'];
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;   // se queda en "tecnología"
+  let i = PALABRAS.length - 1;
+  const PAUSA = 1900;
+  function siguiente() {
+    el.classList.add('sale');
+    setTimeout(() => {
+      i = (i + 1) % PALABRAS.length;
+      el.textContent = PALABRAS[i];
+      el.classList.remove('sale');
+      el.classList.add('entra-abajo');
+      void el.offsetWidth;                 // fuerza el punto de partida abajo
+      el.classList.remove('entra-abajo');
+    }, 500);
+  }
+  /* Empieza cuando el hero ya entró; se pausa si la pestaña no está visible */
+  let reloj = null;
+  const arrancar = () => { if (!reloj) reloj = setInterval(() => { if (!document.hidden) siguiente(); }, PAUSA); };
+  const html = document.documentElement;
+  if (html.classList.contains('hero-entra')) setTimeout(arrancar, 900);
+  else new MutationObserver((m, o) => {
+    if (html.classList.contains('hero-entra')) { o.disconnect(); setTimeout(arrancar, 1100); }
+  }).observe(html, { attributes: true, attributeFilter: ['class'] });
+})();
+</script>
 
 </body>
 </html>
