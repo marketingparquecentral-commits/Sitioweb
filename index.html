@@ -614,45 +614,64 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   box-shadow:0 12px 32px -14px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.06);
 }
 
-/* ═══ PANTALLA INICIAL ═══ */
+/* ═══ PANTALLA INICIAL: terminal del robot ═══ */
 .intro{
   position:fixed;inset:0;z-index:1000;
   display:flex;align-items:center;justify-content:center;
   background:#000;color:#fff;text-align:center;padding:24px;
-  transition:opacity .7s ease,visibility 0s linear .7s;
 }
-.intro.fuera{opacity:0;visibility:hidden}
+.intro.saliendo{background:transparent}
 .sin-intro .intro{display:none}
 html:not(.sin-intro) body.con-intro{overflow:hidden}
-.intro__marca{display:flex;flex-direction:column;align-items:center;gap:18px}
+.intro__pix{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.intro__marca{position:relative;display:flex;flex-direction:column;align-items:center;gap:20px;transition:opacity .15s ease}
+.intro.saliendo .intro__marca{opacity:0}
 .intro__nombre{
   font-size:clamp(44px,9vw,120px);font-weight:800;letter-spacing:-.045em;line-height:.95;
-  opacity:0;transform:translateY(18px);
-  animation:intro-sube .9s cubic-bezier(.2,.8,.2,1) .15s forwards;
+  min-height:1em;white-space:nowrap;
 }
-.intro__punto{color:var(--naranja);display:inline-block;animation:intro-late 1.2s ease-in-out 1.1s infinite}
+.intro__nombre .punto{color:var(--naranja)}
 .intro__frase{
-  font-size:clamp(15px,1.8vw,20px);line-height:1.45;color:#9a9a9a;max-width:40ch;
-  opacity:0;transform:translateY(12px);
-  animation:intro-sube .9s cubic-bezier(.2,.8,.2,1) .5s forwards;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(13px,1.5vw,17px);line-height:1.6;color:#9a9a9a;max-width:46ch;min-height:1.6em;
 }
-.intro__frase strong{color:#fff;font-weight:600}
-@media (min-width:480px){.intro__frase strong{white-space:nowrap}}
-@keyframes intro-sube{to{opacity:1;transform:none}}
-@keyframes intro-late{0%,100%{transform:scale(1)}50%{transform:scale(1.6)}}
-@media (prefers-reduced-motion:reduce){
-  .intro__nombre,.intro__frase{animation:none;opacity:1;transform:none}
-  .intro__punto{animation:none}
+.intro__cursor{
+  display:inline-block;width:.6em;height:1.1em;margin-left:3px;vertical-align:-.15em;
+  background:var(--naranja);animation:intro-cursor 1s steps(1) infinite;
 }
+.intro__cursor--nombre{width:.08em;height:.8em;margin-left:.05em;vertical-align:-.02em}
+.intro__cursor[hidden]{display:none}
+@keyframes intro-cursor{50%{opacity:0}}
+@media (max-width:480px){.intro__nombre{white-space:normal}}
+@media (prefers-reduced-motion:reduce){.intro__cursor{animation:none}}
+
+/* ═══ Frase bajo "74 locales" ═══ */
+.hero__cabecera{width:100%;margin:auto 0}
+.hero__titulo{margin:0;align-items:end}
+.hero__fila{display:grid;grid-template-columns:1fr var(--corredor) 1fr;margin-top:clamp(14px,1.6vw,22px)}
+.hero__sub--izq{
+  grid-column:1;margin:0!important;text-align:left;
+  max-width:30ch;font-size:clamp(15px,1.45vw,19px);line-height:1.45;color:#a8a8a8;
+}
+.hero__sub--izq b{color:#fff;font-weight:600}
+@media (max-width:860px){
+  .hero__fila{grid-template-columns:1fr}
+  .hero__sub--izq{text-align:center;margin:0 auto!important}
+}
+
+/* ═══ Borde de píxeles que titilan ═══ */
+.pestanas-aire{position:relative;height:clamp(84px,8vw,108px);background:#fff}
+.borde-pixeles{position:absolute;left:0;top:0;width:100%;height:68%;display:block}
 </style>
 </head>
 <body>
 
 <!-- ═══ Pantalla inicial: se ve mientras el robot se prepara ═══ -->
 <div class="intro" id="intro" aria-hidden="true">
+  <canvas class="intro__pix" id="intro-pix"></canvas>
   <div class="intro__marca">
-    <span class="intro__nombre">Parque<span class="intro__punto">·</span>Central</span>
-    <span class="intro__frase">El centro comercial de tecnología<br><strong>más grande del Caribe colombiano</strong></span>
+    <span class="intro__nombre"><span id="intro-nombre"></span><span class="intro__cursor intro__cursor--nombre" id="cursor-nombre"></span></span>
+    <span class="intro__frase"><span id="intro-frase"></span><span class="intro__cursor" id="cursor-frase" hidden></span></span>
   </div>
 </div>
 <noscript><style>.intro{display:none}</style></noscript>
@@ -704,15 +723,16 @@ html:not(.sin-intro) body.con-intro{overflow:hidden}
 
   <div class="hero__contenido">
 
-    <h1 class="hero__titulo">
-      <span class="izq">74 locales</span>
-      <span class="der">una <b>dirección</b></span>
-    </h1>
-
-    <div class="hero__base">
-      <p class="hero__sub">
-        El centro comercial de tecnología más grande de la región Caribe.
-      </p>
+    <div class="hero__cabecera">
+      <h1 class="hero__titulo">
+        <span class="izq">74 locales</span>
+        <span class="der">una <b>dirección</b></span>
+      </h1>
+      <div class="hero__fila">
+        <p class="hero__sub hero__sub--izq">
+          El centro comercial de tecnología <b>más grande del Caribe colombiano</b>
+        </p>
+      </div>
     </div>
   </div>
 
@@ -724,7 +744,7 @@ html:not(.sin-intro) body.con-intro{overflow:hidden}
 
 <main class="tema-claro">
 
-<div class="pestanas-aire" id="pestanas-aire" aria-hidden="true"></div>
+<div class="pestanas-aire" id="pestanas-aire" aria-hidden="true"><canvas class="borde-pixeles" id="borde-pixeles"></canvas></div>
 <div class="pestanas tema-claro" id="pestanas">
   <div class="pestanas__lista" role="tablist" aria-label="Secciones del sitio">
     <button class="pestana" role="tab" id="tab-locales" aria-controls="locales" aria-selected="true"><span class="pestana__icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span class="pestana__texto">Locales</span></button>
@@ -1670,45 +1690,168 @@ html:not(.sin-intro) body.con-intro{overflow:hidden}
 <script>
 (function () {
   'use strict';
-  /* ═══ PANTALLA INICIAL ═══
-     Se retira cuando el robot está listo (lienzo activo o video en su
-     cuadro de frente). Se muestra al menos 1,6 s para que se alcance a
-     leer, y nunca más de 5 s aunque el video tarde. */
+  /* ═══ PANTALLA INICIAL: terminal del robot ═══
+     1. Se escribe "Parque·Central".
+     2. Se escribe la frase con un cursor naranja.
+     3. Cuando el robot está listo, la pantalla se rompe en píxeles
+        y deja ver el video. */
   const intro = document.getElementById('intro');
   if (!intro) return;
   if (document.documentElement.classList.contains('sin-intro')) { intro.remove(); return; }
   document.body.classList.add('con-intro');
 
-  const MINIMO = 1600, MAXIMO = 5000, inicio = performance.now();
-  const lienzo = document.getElementById('lienzo');
-  const video  = document.getElementById('video');
-  let cerrada = false;
+  const NOMBRE = 'Parque·Central';
+  const FRASE  = 'El centro comercial de tecnología más grande del Caribe colombiano';
+  const sinMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const elNombre = document.getElementById('intro-nombre');
+  const elFrase  = document.getElementById('intro-frase');
+  const curNombre = document.getElementById('cursor-nombre');
+  const curFrase  = document.getElementById('cursor-frase');
 
-  function cerrar() {
-    if (cerrada) return;
-    cerrada = true;
-    const espera = Math.max(0, MINIMO - (performance.now() - inicio));
-    setTimeout(() => {
-      intro.classList.add('fuera');
-      document.body.classList.remove('con-intro');
-      try { sessionStorage.setItem('pc-intro', '1'); } catch (e) {}
-      setTimeout(() => intro.remove(), 800);
-    }, espera);
+  const pintarNombre = n => {
+    const t = NOMBRE.slice(0, n);
+    const i = t.indexOf('·');
+    elNombre.innerHTML = i < 0 ? t : t.slice(0, i) + '<span class="punto">·</span>' + t.slice(i + 1);
+  };
+  const esperar = ms => new Promise(r => setTimeout(r, ms));
+  let textoListo = false;
+
+  async function escribir() {
+    if (sinMov) {
+      pintarNombre(NOMBRE.length); elFrase.textContent = FRASE;
+      curNombre.hidden = true; textoListo = true; return;
+    }
+    await esperar(250);
+    for (let i = 1; i <= NOMBRE.length; i++) { pintarNombre(i); await esperar(70); }
+    curNombre.hidden = true; curFrase.hidden = false;
+    await esperar(200);
+    for (let i = 1; i <= FRASE.length; i++) { elFrase.textContent = FRASE.slice(0, i); await esperar(18); }
+    await esperar(450);
+    textoListo = true;
+  }
+  const escritura = escribir();
+
+  /* Salida: la pantalla negra se deshace en cuadros al azar */
+  function disolver() {
+    return new Promise(resolver => {
+      const cv = document.getElementById('intro-pix');
+      const ctx = cv.getContext('2d');
+      const W = innerWidth, H = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const P = Math.max(18, Math.round(W / 60));
+      const celdas = [];
+      for (let y = 0; y < H; y += P) for (let x = 0; x < W; x += P) celdas.push([x, y, Math.random()]);
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+      intro.classList.add('saliendo');
+      if (sinMov) { intro.style.transition = 'opacity .4s'; intro.style.opacity = 0; return setTimeout(resolver, 400); }
+      const DUR = 750, t0 = performance.now();
+      (function paso(t) {
+        const k = Math.min(1, (t - t0) / DUR);
+        ctx.clearRect(0, 0, W, H);
+        for (const [x, y, r] of celdas) {
+          if (r < k) continue;                       // ya desapareció
+          /* algunos cuadros brillan en naranja justo antes de irse */
+          ctx.fillStyle = (r - k < 0.04 && r > 0.2) ? '#F5821F' : '#000';
+          ctx.fillRect(x, y, P, P);
+        }
+        if (k < 1) requestAnimationFrame(paso); else resolver();
+      })(t0);
+    });
   }
 
-  const conSeguimiento = matchMedia('(hover: hover) and (pointer: fine)').matches &&
-                         !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const listo = () =>
-    (lienzo && lienzo.classList.contains('activo')) ||
-    /* En celular o sin seguimiento, basta con el video ya de frente */
-    (video && video.classList.contains('listo') && !conSeguimiento);
+  const MAXIMO = 6000;
+  const lienzo = document.getElementById('lienzo');
+  const video  = document.getElementById('video');
+  const conSeguimiento = matchMedia('(hover: hover) and (pointer: fine)').matches && !sinMov;
+  let robotListo = false, cerrando = false;
 
-  if (listo()) cerrar();
-  const obs = new MutationObserver(() => { if (listo()) { obs.disconnect(); cerrar(); } });
+  async function intentarCerrar(forzar) {
+    if (cerrando) return;
+    if (!forzar && !(robotListo && textoListo)) return;
+    cerrando = true;
+    await disolver();
+    document.body.classList.remove('con-intro');
+    try { sessionStorage.setItem('pc-intro', '1'); } catch (e) {}
+    intro.remove();
+  }
+
+  const revisar = () => {
+    robotListo = (lienzo && lienzo.classList.contains('activo')) ||
+                 (video && video.classList.contains('listo') && !conSeguimiento);
+    intentarCerrar(false);
+  };
+  escritura.then(revisar);
+  const obs = new MutationObserver(revisar);
   [lienzo, video].forEach(el => el && obs.observe(el, { attributes: true, attributeFilter: ['class'] }));
-  /* Si el video falla, el hero usa su respaldo: no esperamos más */
-  if (video) video.addEventListener('error', cerrar, { once: true });
-  setTimeout(cerrar, MAXIMO);
+  if (video) video.addEventListener('error', () => { robotListo = true; escritura.then(revisar); }, { once: true });
+  setTimeout(() => intentarCerrar(true), MAXIMO);
+  revisar();
+})();
+</script>
+
+
+<script>
+(function () {
+  'use strict';
+  /* ═══ BORDE DE PÍXELES ═══
+     El negro del video se deshace en cuadros sobre el blanco.
+     Algunos cuadros titilan en naranja, como luces de un equipo. */
+  const cv = document.getElementById('borde-pixeles');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const sinMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NEGRO = '#000', NARANJA = '#F5821F';
+  let W = 0, H = 0, P = 8, celdas = [], visible = true, rafId = null;
+
+  /* Número "al azar" pero fijo para cada cuadro, así el patrón no salta */
+  const azar = (x, y) => { const v = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453; return v - Math.floor(v); };
+
+  function preparar() {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    P = W < 600 ? 7 : 9;
+    celdas = [];
+    const filas = Math.floor(H / P);   // solo filas completas
+    for (let fy = 0; fy < filas; fy++) {
+      const f = fy / filas;                       // 0 arriba, 1 abajo
+      for (let fx = 0; fx * P < W; fx++) {
+        const r1 = azar(fx, fy);
+        if (r1 <= Math.pow(f, 0.8)) continue;     // cada vez menos cuadros hacia abajo
+        celdas.push({ x: fx * P, y: fy * P, luz: r1 > 0.93 && f > 0.15, fase: azar(fy, fx) * 6.28 });
+      }
+    }
+  }
+
+  function dibujar(t) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = NEGRO;
+    ctx.fillRect(0, 0, W, P);                   // la primera fila es sólida: continúa el video
+    for (const c of celdas) {
+      if (c.y < P) continue;
+      if (c.luz) {
+        const brillo = sinMov ? 1 : (Math.sin(t / 700 + c.fase) + 1) / 2;
+        ctx.fillStyle = brillo > 0.55 ? NARANJA : NEGRO;
+      } else {
+        ctx.fillStyle = NEGRO;
+      }
+      ctx.fillRect(c.x, c.y, P - 1, P - 1);
+    }
+  }
+
+  function bucle(t) {
+    dibujar(t);
+    rafId = visible && !sinMov ? requestAnimationFrame(bucle) : null;
+  }
+
+  preparar();
+  dibujar(0);
+  addEventListener('resize', () => { preparar(); dibujar(performance.now()); });
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    if (visible && !sinMov && rafId === null) rafId = requestAnimationFrame(bucle);
+  }).observe(cv);
 })();
 </script>
 
