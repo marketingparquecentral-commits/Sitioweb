@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -40,6 +41,7 @@
 }
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
 <style>
 /* ═══════════════════════════════════════════════════════════
    VARIABLES
@@ -799,6 +801,284 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 }
 @media (prefers-reduced-motion:reduce){.ficha,.ficha-fondo,.tarjeta{transition:none}}
 </style>
+<style id="direccion-v16">
+:root{--f:"Schibsted Grotesk", ui-sans-serif, sans-serif}
+
+/* ═══ v4 · ORIGINAL AJUSTADA ═══
+   Se conserva todo el diseño original. Cambian solo 3 cosas:
+   1) tipografía propia en lugar de la del sistema
+   2) sin pills: esquinas pequeñas y consistentes
+   3) hover: sin "levantar" ni "imán"; el cambio es de borde/fondo, y el
+      naranja aparece solo donde está el dato clave (número de local). */
+:root{--radio:10px;--radio-sm:7px}
+body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-family:var(--f)}
+.intro__nombre,.nav__marca{font-family:var(--f)}
+/* 2 · Sin pills */
+.btn{border-radius:var(--radio)}
+.filtro{border-radius:var(--radio-sm)}
+.enlace{border-radius:var(--radio-sm)}
+.ficha__btn{border-radius:var(--radio)}
+.wa{border-radius:14px}
+.insignia,.insignia--abierto{background:transparent!important;padding:0;border-radius:0;display:inline-flex;align-items:center;gap:6px}
+.insignia::before{content:"";width:7px;height:7px;border-radius:50%;background:#A8A8A4}
+.insignia--abierto::before{background:#1FA855}
+/* 3 · Hover */
+.iman{transform:none!important}                       /* fuera el efecto imán */
+.tarjeta:hover{transform:none;box-shadow:none;border-color:#0b0b0b}
+.tarjeta:hover .tarjeta__loc{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+@media (hover:hover){.tienda:hover{padding-left:8px}}  /* sin deslizar la fila */
+.tema-claro .tienda:hover{background:#f6f6f3}
+.pestana:hover .pestana__icono{transform:none}
+/* ═══ ÍNDICE LATERAL (tipo directorio de edificio) ═══ */
+@media (min-width:861px){
+  #locales{display:grid;grid-template-columns:230px minmax(0,1fr);column-gap:56px;align-items:start}
+  #locales > .seccion__titulo,#locales > .seccion__intro{grid-column:1/-1}
+  #locales .dir__barra{display:contents}
+  #locales .dir__lado{grid-column:2;grid-row:3;margin-top:36px}
+  #locales .filtros{grid-column:1;grid-row:3 / span 2;display:flex;flex-direction:column;overflow:visible;gap:0;margin-top:36px;
+    position:sticky;top:calc(var(--alto-nav,60px) + 120px);border-top:2px solid #0b0b0b;padding:0}
+  #locales .filtros::before{content:"Categorías";font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8a8a86;padding:12px 0 6px}
+  .filtro,.tema-claro .filtro{display:flex;justify-content:space-between;align-items:baseline;width:100%;border:0;border-bottom:1px solid var(--linea);
+    border-radius:0;padding:13px 0;font-size:15.5px;font-weight:500;text-align:left;background:transparent!important;color:#5c5c5c;
+    transition:padding .2s ease,color .2s ease}
+  .filtro small{opacity:1;font-size:13px;color:#8a8a86;font-variant-numeric:tabular-nums}
+  .filtro:hover,.tema-claro .filtro:hover{color:#0b0b0b}
+  .filtro[aria-pressed="true"]{color:#0b0b0b!important;font-weight:700;padding-left:14px;box-shadow:inset 3px 0 0 var(--naranja)}
+  .filtro[aria-pressed="true"] small{color:#0b0b0b}
+  #lista{grid-column:2;grid-row:4}
+  #locales .dir__lista--tarjetas{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+}
+/* En celular: fila de texto subrayada */
+@media (max-width:860px){
+  .filtros{gap:20px;border-bottom:1px solid var(--linea);padding:0}
+  .filtro,.tema-claro .filtro{border:0;border-radius:0;background:transparent!important;padding:10px 0 12px;font-weight:500;color:#6b6b6b;position:relative}
+  .filtro[aria-pressed="true"]{color:#0b0b0b;font-weight:700}
+  .filtro[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--naranja)}
+}
+
+/* ═══ CORRECCIÓN: cada pestaña muestra solo su contenido ═══
+   El índice lateral ponía #locales en display:grid y eso le ganaba a [hidden]:
+   "Locales" se quedaba visible aunque se eligiera Eventos, Cómo llegar o Para marcas. */
+#locales[hidden]{display:none!important}
+
+/* ═══ v12 · SONAR ═══
+   Al elegir: de un punto gris nace una onda circular que se expande y deja la fila
+   en gris clarito; el punto queda como marca. Al pasar el mouse: el punto aparece tenue.
+   Al cargar la página: la categoría activa ya está en su estado final, sin animación. */
+#locales .filtros{--relleno:#EBEBE8;--trazo:#9C9C97;--tenue:#CFCFCA}
+.filtro,.tema-claro .filtro{position:relative;isolation:isolate;overflow:hidden;transition:color .25s,border-color .3s}
+.filtro[aria-pressed="true"],.filtro:has(+ .filtro[aria-pressed="true"]){border-bottom-color:transparent!important;box-shadow:none!important}
+.filtro::before,.filtro::after,.filtro[aria-pressed="true"]::after{content:"";position:absolute;pointer-events:none;z-index:-1;background:none}
+.filtro::before{left:13px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--trazo);transform:scale(0);transition:transform .2s,opacity .2s}
+.filtro::after,.filtro[aria-pressed="true"]::after{left:16.5px;right:auto;bottom:auto;top:50%;width:900px;height:900px;margin:-450px 0 0 -450px;border-radius:50%;
+  background:radial-gradient(circle,var(--relleno) 0 69%,var(--tenue) 69.5% 70%,transparent 70.5%);transform:scale(0);opacity:0;z-index:-2}
+.filtro[aria-pressed="true"]::before{transform:scale(1)}
+.filtro[aria-pressed="true"]::after{animation:sonar .6s cubic-bezier(.3,0,.2,1) both}
+.filtro:not([aria-pressed="true"]):hover::before{transform:scale(.8);opacity:.55}
+@keyframes sonar{from{transform:scale(0);opacity:1}to{transform:scale(1);opacity:1}}
+.filtros.inicio .filtro::after,.filtros.inicio .filtro::before{animation-duration:0s!important;transition:none!important}
+@media (min-width:861px){
+  .filtro,.tema-claro .filtro,.filtro[aria-pressed="true"]{padding:13px 10px 13px 30px!important}
+}
+@media (max-width:860px){
+  .filtros{gap:4px}
+  .filtro,.tema-claro .filtro,.filtro[aria-pressed="true"]{padding:10px 12px 12px 28px!important}
+  .filtro::before{left:12px}
+  .filtro::after,.filtro[aria-pressed="true"]::after{left:15.5px}
+}
+@media (prefers-reduced-motion:reduce){.filtro::before,.filtro::after{animation-duration:0s!important;transition:none!important}}
+
+/* Conteo que rueda */
+.dir__conteo{display:inline-flex;overflow:hidden;height:1.4em;line-height:1.4em;vertical-align:bottom}
+.rueda{display:inline-grid}
+.rueda > span{grid-area:1/1;white-space:nowrap}
+.rueda .sale{animation:rueda-sale .45s cubic-bezier(.7,0,.3,1) forwards}
+.rueda .entra{animation:rueda-entra .45s cubic-bezier(.7,0,.3,1) both}
+@keyframes rueda-sale{to{transform:translateY(-110%)}}
+@keyframes rueda-entra{from{transform:translateY(110%)}}
+.fantasma-local{position:fixed;margin:0;z-index:5;pointer-events:none}
+@media (prefers-reduced-motion:reduce){
+  
+  .rueda .sale{display:none}.rueda .entra{animation:none}
+}
+@media (min-width:861px){#locales{grid-template-columns:252px minmax(0,1fr)}}
+/* v12b · el índice de categorías ya no se queda pegado al bajar */
+@media (min-width:861px){#locales .filtros{position:relative!important;top:auto!important}}
+/* v12c · la barra de pestañas se queda en su sitio (no baja con el scroll) */
+.pestanas,.pestanas.tema-claro,.pestanas.fijas{position:relative!important;top:auto!important;background:#fff!important;border-bottom-color:transparent!important}
+.pestanas.fijas .pestanas__lista{box-shadow:0 12px 32px -14px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.06)!important;border-radius:24px!important}
+/* v12d · al pasar el mouse solo aparece la bolita gris: la línea de abajo no se oscurece */
+.filtro:hover,.tema-claro .filtro:hover{border-bottom-color:var(--linea)!important}
+.filtro[aria-pressed="true"]:hover,.filtro:has(+ .filtro[aria-pressed="true"]):hover{border-bottom-color:transparent!important}
+/* Arreglos de accesibilidad sin cambiar tamaños (aprobados junto con el pie) */
+.intro__frase{font-family:var(--f)!important}
+#locales .filtros::before{color:#6B6B67!important}
+.filtro small{color:#6B6B67!important}
+.filtro[aria-pressed="true"] small{color:#0b0b0b!important}
+.tarjeta__loc,.tema-claro .horario tr.hoy td,.horario tr.hoy td{color:#B35400!important}
+@media (max-width:860px){
+  .pestana,.tema-claro .pestana{font-size:12px!important}
+  .filtro small{font-size:12px!important}
+}
+/* ═══ PIE NUEVO (común) ═══ */
+.pie{display:none!important}
+.pie2{--pie-fondo:#000;--pie-txt:#fff;--pie-gris:#A8A8A8;--pie-linea:rgba(255,255,255,.14);
+  background:var(--pie-fondo);color:var(--pie-txt);font-family:var(--f);font-size:14px;line-height:1.6;
+  padding:clamp(48px,6vw,80px) clamp(20px,4vw,56px) 110px}
+.pie2 a{color:inherit;text-decoration:none}
+.pie2 a:hover{color:var(--naranja)}
+.pie2 a:focus-visible{outline:2px solid var(--naranja);outline-offset:3px;border-radius:2px}
+.pie2 ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pie2 p{margin:0}
+.pie2__logo{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.pie2__logo span{color:var(--naranja)}
+.pie2__lema{color:var(--pie-gris);margin-top:10px!important;max-width:30ch}
+.pie2__acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.pie2__btn{display:inline-block;font-weight:600;font-size:14px;padding:11px 16px;border-radius:10px;border:1.5px solid var(--pie-linea)}
+.pie2__btn:hover{border-color:currentColor}
+.pie2__btn--wa{background:#25D366;border-color:#25D366;color:#04210f!important}
+.pie2__btn--wa:hover{background:#3be07a;border-color:#3be07a}
+.pie2__tit{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--pie-gris);margin:0 0 12px}
+.pie2__nota{color:var(--pie-gris);margin-top:6px!important}
+.pie2__horario{margin:0;display:grid;gap:10px}
+.pie2__horario dt{color:var(--pie-gris)}
+.pie2__horario dd{margin:0}
+.pie2__base{grid-column:1/-1;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  border-top:1px solid var(--pie-linea);padding-top:22px;margin-top:8px;color:var(--pie-gris);font-size:12px}
+.pie2__legal{display:flex;gap:18px}
+.pie2 a[href^="mailto"]{overflow-wrap:anywhere}
+@media (max-width:640px){.pie2 .pie2__col:has(a[href^="mailto"]){grid-column:1/-1}}
+/* A · DIRECTORIO EN COLUMNAS (negro, como el hero) */
+.pie2{display:grid;grid-template-columns:1.6fr repeat(5,1fr);gap:40px 32px;max-width:1280px;margin:0 auto}
+.pie2{max-width:none}
+.pie2 > *{min-width:0}
+@media (max-width:1100px){.pie2{grid-template-columns:repeat(3,1fr)}.pie2__marca{grid-column:1/-1}}
+@media (max-width:640px){.pie2{grid-template-columns:1fr 1fr;gap:32px 20px}.pie2__marca{grid-column:1/-1}}
+/* ═══ v15 · CÓMO LLEGAR con el mismo sistema del directorio ═══
+   Misma retícula (columna de 252 px + contenido), mismas etiquetas que "CATEGORÍAS",
+   filas con línea fina como el índice, y el "hoy" marcado igual que la categoría
+   elegida (fondo gris clarito + bolita gris). Sin botón naranja ni subrayados. */
+.visita2{display:grid;grid-template-columns:252px minmax(0,1fr);column-gap:56px;align-items:start;margin-top:36px}
+.visita2__datos{border-top:2px solid #0b0b0b}
+.visita2 .bloque + .bloque{margin-top:26px}
+.visita2 .etq{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6B67;padding:12px 0 6px;margin:0}
+.visita2 .fila{position:relative;display:flex;justify-content:space-between;gap:12px;margin:0;padding:13px 10px 13px 30px;
+  font-size:16px;line-height:1.35;color:#0b0b0b;border-bottom:1px solid var(--linea);text-decoration:none;overflow-wrap:anywhere}
+.visita2 .fila--sec{color:#5c5c5c;font-size:14px}
+.visita2 .fila--link::before{content:"";position:absolute;left:13px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#9C9C97;transform:scale(0);opacity:.55;transition:transform .2s}
+.visita2 .fila--link:hover::before,.visita2 .fila--link:focus-visible::before{transform:scale(.8)}
+.visita2 .fila--link span{color:#6B6B67}
+.visita2 .fila--link:focus-visible{outline:2px solid #0b0b0b;outline-offset:-2px}
+/* Horario como filas del índice */
+.visita2 .horario{width:100%;border-collapse:collapse;font-size:16px}
+.visita2 .horario td{padding:13px 10px 13px 0;border-bottom:1px solid var(--linea);font-variant-numeric:normal;color:#0b0b0b}
+.visita2 .horario td:first-child{padding-left:30px;position:relative;color:#5c5c5c}
+.visita2 .horario td:last-child{text-align:right;white-space:nowrap}
+.visita2 .horario tr.hoy td,.tema-claro .visita2 .horario tr.hoy td{background:#EBEBE8;color:#0b0b0b!important;font-weight:600!important;border-bottom-color:transparent}
+.visita2 .horario tr.hoy td:first-child::before{content:"";position:absolute;left:13px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#9C9C97}
+.visita2 .mapa,.tema-claro .visita2 .mapa{width:100%;aspect-ratio:16/11;border:1px solid var(--linea)!important;border-radius:18px;background:#F3F3F1;filter:none}
+@media (max-width:860px){
+  .visita2{grid-template-columns:1fr;row-gap:32px;margin-top:24px}
+  .visita2 .mapa{aspect-ratio:4/3}
+}
+/* ajuste: la columna de datos necesita más aire para el horario; el mapa acompaña su altura */
+@media (min-width:861px){
+  .visita2{grid-template-columns:380px minmax(0,1fr);align-items:stretch}
+  .visita2 .mapa,.tema-claro .visita2 .mapa{aspect-ratio:auto;height:100%;min-height:440px}
+}
+/* ═══ v16 · LAS 4 PESTAÑAS CON EL MISMO SISTEMA DE LOCALES ═══
+   Retícula: columna de 252 px a la izquierda (índice o datos) + contenido a la derecha.
+   Izquierda: etiqueta como "CATEGORÍAS" + filas finas con bolita gris al pasar el mouse.
+   Derecha: tarjetas iguales a las de los locales. Nada de bloques naranjas. */
+@media (min-width:861px){
+  .visita2,.vista2{grid-template-columns:252px minmax(0,1fr)!important;column-gap:56px;align-items:start}
+}
+/* Cómo llegar: horario apilado (día arriba, hora debajo) para caber en 252 px */
+.visita2 .horario,.visita2 .horario tbody,.visita2 .horario tr{display:block;width:100%}
+.visita2 .horario tr{position:relative;padding:11px 10px 11px 30px;border-bottom:1px solid var(--linea)}
+.visita2 .horario td{display:block;padding:0!important;border:0!important;background:none!important;text-align:left!important}
+.visita2 .horario td:first-child{color:#0b0b0b;font-size:16px;position:static}
+.visita2 .horario td:last-child{color:#5c5c5c;font-size:14px;margin-top:2px}
+.visita2 .horario tr.hoy{background:#EBEBE8;border-bottom-color:transparent}
+.visita2 .horario tr.hoy td:first-child::before{left:13px}
+.visita2 .horario tr.hoy td:last-child{color:#0b0b0b!important;font-weight:400!important}
+.visita2 .horario tr.hoy td:first-child{font-weight:600}
+@media (min-width:861px){.visita2 .mapa,.tema-claro .visita2 .mapa{min-height:420px}}
+
+/* Eventos y Para marcas */
+.vista2{display:grid;margin-top:36px}
+.vista2__lado{border-top:2px solid #0b0b0b}
+.vista2 .etq{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6B67;padding:12px 0 6px;margin:0}
+.vista2 .fila{position:relative;display:flex;justify-content:space-between;gap:12px;margin:0;padding:13px 10px 13px 30px;
+  font-size:16px;line-height:1.35;color:#0b0b0b;border-bottom:1px solid var(--linea);text-decoration:none;overflow-wrap:anywhere}
+.vista2 .fila span{color:#6B6B67}
+.vista2 .fila::before{content:"";position:absolute;left:13px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#9C9C97;transform:scale(0);opacity:.55;transition:transform .2s}
+.vista2 .fila:hover::before,.vista2 .fila:focus-visible::before{transform:scale(.8)}
+.vista2 .fila:focus-visible{outline:2px solid #0b0b0b;outline-offset:-2px}
+.vista2__tarjetas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.tarjeta--info{text-decoration:none;height:100%}
+.tarjeta--info .tarjeta__cat{line-height:1.45}
+.tarjeta__logo--ico{background:#F3F3F1!important;color:#5c5c5c}
+.tarjeta__logo--ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tarjeta__tipo{font-size:12px;font-weight:600;color:#6B6B67;text-align:right}
+.planes{display:none!important}
+@media (max-width:860px){
+  .vista2{grid-template-columns:1fr;row-gap:28px;margin-top:24px}
+  .vista2__tarjetas{grid-template-columns:1fr}
+}
+/* flecha de las filas: la misma de la lista de locales (chevron), no ↗ */
+.visita2 .fila__flecha,.vista2 .fila__flecha{width:18px;height:18px;flex:none;color:#9a9a9a;transition:transform .2s ease,color .2s ease;align-self:center}
+.visita2 .fila--link:hover .fila__flecha,.vista2 .fila:hover .fila__flecha{transform:translateX(3px);color:#0b0b0b}
+
+</style>
+<style id="v17">
+/* v17 · hover: gris que se rellena de izquierda a derecha y regresa (opción A) */
+@media (hover:hover) and (min-width:861px){
+  #locales .filtro{background-color:transparent!important;background-image:linear-gradient(#F2F2EF,#F2F2EF)!important;background-repeat:no-repeat!important;
+    background-position:left center!important;background-size:0% 100%!important;
+    transition:background-size .45s cubic-bezier(.6,0,.2,1),color .25s,border-color .3s}
+  #locales .filtro:hover,#locales .filtro:focus-visible{background-size:100% 100%!important}
+  #locales .filtro:not([aria-pressed="true"]):hover::before{transform:scale(0);opacity:0}
+  #locales .filtros.inicio .filtro{transition:none!important}
+}
+@media (prefers-reduced-motion:reduce){#locales .filtro{transition:none!important}}
+
+/* v17 · seleccionado negro: Sonar en negro, letra blanca (19.7:1), bolita naranja */
+#locales .filtros{--relleno:#0b0b0b!important;--tenue:#0b0b0b!important;--trazo:#F5821F!important}
+#locales .filtro[aria-pressed="true"],#locales .filtro[aria-pressed="true"] small,#locales .filtro[aria-pressed="true"]:hover{color:#fff!important}
+#locales .filtro[aria-pressed="true"]:focus-visible{outline:2px solid #F5821F;outline-offset:-2px}
+</style>
+<style id="v18">
+/* ═══ v18 · ACENTOS en Cómo llegar, Eventos y Para marcas (mismo vocabulario de Locales) ═══ */
+/* Filas-enlace: el gris se rellena de izquierda a derecha al pasar el mouse (como las categorías) */
+.visita2 .fila--link,.vista2 .fila--link{isolation:isolate;overflow:hidden;background-color:transparent;
+  background-image:linear-gradient(#F2F2EF,#F2F2EF);background-repeat:no-repeat;background-position:left center;background-size:0% 100%;
+  transition:background-size .45s cubic-bezier(.6,0,.2,1),color .25s}
+@media (hover:hover){.visita2 .fila--link:hover,.vista2 .fila--link:hover{background-size:100% 100%}}
+.visita2 .fila--link:hover::before,.vista2 .fila:hover::before,.visita2 .fila--link:focus-visible::before,.vista2 .fila:focus-visible::before{transform:scale(0)!important}
+/* Horario: «hoy» igual que la categoría elegida (negro, letra blanca, bolita naranja) */
+.visita2 .horario tr.hoy,.tema-claro .visita2 .horario tr.hoy{background:#0b0b0b!important;border-bottom-color:transparent}
+.visita2 .horario tr.hoy td,.visita2 .horario tr.hoy td:last-child,.tema-claro .visita2 .horario tr.hoy td{background:none!important;color:#fff!important}
+.visita2 .horario tr.hoy td:first-child{font-weight:700!important}
+.visita2 .horario tr.hoy td:last-child{color:rgba(255,255,255,.8)!important}
+.visita2 .horario tr.hoy td:first-child::before{background:#F5821F!important}
+.visita2 .horario tr:has(+ tr.hoy){border-bottom-color:transparent}
+/* Estado en vivo sobre el mapa (mismo verde "abierto" de todo el sitio) */
+.mapa-caja{min-width:0}
+.estado-mapa{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;font-size:13px;font-weight:600;color:#0b0b0b}
+.estado-mapa::before{content:"";width:8px;height:8px;border-radius:50%;background:#9C9C97}
+.estado-mapa.abierto::before{background:#1FA855;box-shadow:0 0 0 4px rgba(31,168,85,.15)}
+/* Tarjetas de Eventos y Para marcas: íconos en los tonos de los logos de los locales */
+.vista2 li:nth-child(1) .tarjeta__logo--ico{background:#1f2a44!important;color:#fff}
+.vista2 li:nth-child(2) .tarjeta__logo--ico{background:#3b2a4a!important;color:#fff}
+.tarjeta--info .tarjeta__loc{text-decoration:none;display:flex;align-items:center;justify-content:space-between;width:100%}
+.tarjeta--info .tarjeta__loc::after{content:"";width:18px;height:18px;flex:none;background:currentColor;transition:transform .2s;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m9 6 6 6-6 6' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m9 6 6 6-6 6' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.tarjeta--info:hover .tarjeta__loc::after{transform:translateX(3px)}
+.tarjeta--info .tarjeta__pie{width:100%}
+@media (prefers-reduced-motion:reduce){.visita2 .fila--link,.vista2 .fila--link{transition:none!important}}
+</style>
 </head>
 <body>
 
@@ -927,98 +1207,150 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   <!-- ─── Pestaña: Cómo llegar ─── -->
   <section class="seccion panel" id="como-llegar" role="tabpanel" aria-labelledby="tab-como-llegar" tabindex="-1" hidden>
     <h2 class="seccion__titulo">Cómo llegar</h2>
-    <div class="visita">
-      <div>
-        <div class="dato">
-          <h3>Dirección</h3>
-          <p>Carrera 43 # 50-12, Barranquilla<br>Frente a la Universidad del Atlántico</p>
+    <div class="visita2">
+      <div class="visita2__datos">
+        <div class="bloque">
+          <h3 class="etq">Dirección</h3>
+          <p class="fila">Carrera 43 # 50-12, Barranquilla</p>
+          <p class="fila fila--sec">Frente a la Universidad del Atlántico</p>
         </div>
-        <div class="dato">
-          <h3>Horario</h3>
+        <div class="bloque">
+          <h3 class="etq">Horario</h3>
           <table class="horario" id="horario">
             <tr data-dias="semana"><td>Lunes a sábado</td><td>8:00 a.m. – 7:00 p.m.</td></tr>
             <tr data-dias="festivo"><td>Domingos y festivos</td><td>9:00 a.m. – 2:00 p.m.</td></tr>
           </table>
         </div>
-        <div class="dato">
-          <h3>Contacto</h3>
-          <p><a href="tel:+573105689142">+57 310 568 9142</a><br>
-             <a href="mailto:administrativo@parquecentral.net">administrativo@parquecentral.net</a></p>
+        <div class="bloque">
+          <h3 class="etq">Contacto</h3>
+          <a class="fila fila--link" href="tel:+573105689142">+57 310 568 9142</a>
+          <a class="fila fila--link" href="mailto:administrativo@parquecentral.net">Escribir un correo <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="visita__botones">
-          <a class="btn btn--solido" target="_blank" rel="noopener" href="https://maps.app.goo.gl/9gKFXxWYgQKRt3NF8">Abrir en Google Maps</a>
-          <a class="btn btn--linea" target="_blank" rel="noopener" href="https://waze.com/ul?q=Centro%20Comercial%20Parque%20Central%20Barranquilla&navigate=yes">Abrir en Waze</a>
+        <div class="bloque">
+          <h3 class="etq">Abrir en</h3>
+          <a class="fila fila--link" target="_blank" rel="noopener" href="https://maps.app.goo.gl/9gKFXxWYgQKRt3NF8">Google Maps <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="fila fila--link" target="_blank" rel="noopener" href="https://waze.com/ul?q=Centro%20Comercial%20Parque%20Central%20Barranquilla&navigate=yes">Waze <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
-      <iframe class="mapa" title="Mapa de Parque Central" loading="lazy"
+      <div class="mapa-caja"><p class="estado-mapa" id="estado-mapa" aria-live="polite">Consultando horario…</p><iframe class="mapa" title="Mapa de Parque Central" loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        src="https://www.google.com/maps?q=Centro+Comercial+Parque+Central,+Carrera+43+%2350-12,+Barranquilla&z=17&output=embed"></iframe>
+        src="https://www.google.com/maps?q=Centro+Comercial+Parque+Central,+Carrera+43+%2350-12,+Barranquilla&z=17&output=embed"></iframe></div>
     </div>
+
   </section>
 
   <!-- ─── Pestaña: Eventos ─── -->
   <section class="seccion panel" id="eventos" role="tabpanel" aria-labelledby="tab-eventos" tabindex="-1" hidden>
     <h2 class="seccion__titulo">Eventos</h2>
     <p class="seccion__intro">Para empresas, lanzamientos y la comunidad.</p>
-    <div class="planes">
-      <a class="plan plan--destacado" target="_blank" rel="noopener"
-         href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sal%C3%B3n%20de%20eventos">
-        <span class="plan__para">Alquiler de espacio</span>
-        <h3>Salón de eventos</h3>
-        <p>Lanzamientos, capacitaciones y reuniones en el corazón tecnológico de la ciudad.</p>
-        <span class="plan__accion">Preguntar disponibilidad</span>
-      </a>
-      <a class="plan" target="_blank" rel="noopener" href="https://www.instagram.com/ccparquecentral/">
-        <span class="plan__para">Agenda</span>
-        <h3>Promociones y actividades</h3>
-        <p>Concursos, ferias y temporadas especiales del centro comercial.</p>
-        <span class="plan__accion">Ver en Instagram</span>
-      </a>
+    <div class="vista2">
+      <div class="vista2__lado">
+        <div class="bloque">
+          <h3 class="etq">Contacto directo</h3>
+          <a class="fila fila--link" target="_blank" rel="noopener" href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sal%C3%B3n%20de%20eventos">WhatsApp <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="fila fila--link" target="_blank" rel="noopener" href="https://www.instagram.com/ccparquecentral/">Instagram <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="fila fila--link" href="mailto:administrativo@parquecentral.net">Escribir un correo <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+      <ul class="vista2__tarjetas">
+        <li><a class="tarjeta tarjeta--info" target="_blank" rel="noopener" href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sal%C3%B3n%20de%20eventos">
+          <span class="tarjeta__logo tarjeta__logo--ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
+          <span class="tarjeta__nombre">Salón de eventos</span>
+          <span class="tarjeta__cat">Lanzamientos, capacitaciones y reuniones en el corazón tecnológico de la ciudad.</span>
+          <span class="tarjeta__pie"><span class="tarjeta__loc">Preguntar disponibilidad</span></span>
+        </a></li>
+        <li><a class="tarjeta tarjeta--info" target="_blank" rel="noopener" href="https://www.instagram.com/ccparquecentral/">
+          <span class="tarjeta__logo tarjeta__logo--ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></span>
+          <span class="tarjeta__nombre">Promociones y actividades</span>
+          <span class="tarjeta__cat">Concursos, ferias y temporadas especiales del centro comercial.</span>
+          <span class="tarjeta__pie"><span class="tarjeta__loc">Ver en Instagram</span></span>
+        </a></li>
+      </ul>
     </div>
+
   </section>
 
   <!-- ─── Pestaña: Para marcas ─── -->
   <section class="seccion panel" id="para-marcas" role="tabpanel" aria-labelledby="tab-para-marcas" tabindex="-1" hidden>
     <h2 class="seccion__titulo">Para marcas</h2>
     <p class="seccion__intro">Haz visible tu marca frente a miles de visitantes que vienen a buscar tecnología.</p>
-    <div class="planes">
-      <a class="plan plan--destacado" target="_blank" rel="noopener"
-         href="https://www.parquecentral.net/wp-content/uploads/2024/02/Portafolio-CC-Parque-Central-BAQ.pdf">
-        <span class="plan__para">Portafolio comercial</span>
-        <h3>Pauta con nosotros</h3>
-        <p>Espacios publicitarios y zonas comunes para tu marca.</p>
-        <span class="plan__accion">Ver el portafolio</span>
-      </a>
-      <a class="plan" target="_blank" rel="noopener"
-         href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20locales%20y%20oficinas%20disponibles">
-        <span class="plan__para">Disponibilidad</span>
-        <h3>Locales y oficinas</h3>
-        <p>Consulta los espacios libres y sus condiciones directamente con la administración.</p>
-        <span class="plan__accion">Consultar disponibilidad</span>
-      </a>
+    <div class="vista2">
+      <div class="vista2__lado">
+        <div class="bloque">
+          <h3 class="etq">Contacto comercial</h3>
+          <a class="fila fila--link" target="_blank" rel="noopener" href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20comercial">WhatsApp <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="fila fila--link" href="mailto:administrativo@parquecentral.net">Escribir un correo <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="fila fila--link" target="_blank" rel="noopener" href="https://www.parquecentral.net/wp-content/uploads/2024/02/Portafolio-CC-Parque-Central-BAQ.pdf">Portafolio comercial (PDF) <svg class="fila__flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+      <ul class="vista2__tarjetas">
+        <li><a class="tarjeta tarjeta--info" target="_blank" rel="noopener" href="https://www.parquecentral.net/wp-content/uploads/2024/02/Portafolio-CC-Parque-Central-BAQ.pdf">
+          <span class="tarjeta__logo tarjeta__logo--ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6"/></svg></span>
+          <span class="tarjeta__nombre">Pauta con nosotros</span>
+          <span class="tarjeta__cat">Espacios publicitarios y zonas comunes para tu marca.</span>
+          <span class="tarjeta__pie"><span class="tarjeta__loc">Ver el portafolio</span></span>
+        </a></li>
+        <li><a class="tarjeta tarjeta--info" target="_blank" rel="noopener" href="https://wa.me/573105689142?text=Hola%20Parque%20Central%2C%20quiero%20informaci%C3%B3n%20sobre%20locales%20y%20oficinas%20disponibles">
+          <span class="tarjeta__logo tarjeta__logo--ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 12v8h13v-8"/><path d="M10 20v-4.5h4V20"/></svg></span>
+          <span class="tarjeta__nombre">Locales y oficinas</span>
+          <span class="tarjeta__cat">Consulta los espacios libres y sus condiciones directamente con la administración.</span>
+          <span class="tarjeta__pie"><span class="tarjeta__loc">Consultar disponibilidad</span></span>
+        </a></li>
+      </ul>
     </div>
+
   </section>
 
 </main>
 
-<footer class="pie">
-  <div>
-    <strong>Centro Comercial Parque Central</strong><br>
-    Carrera 43 # 50-12, Barranquilla, Atlántico<br>
-    <a href="tel:+573105689142">+57 310 568 9142</a>
+<footer class="pie2" aria-label="Información de Parque Central">
+  <div class="pie2__marca">
+    <a class="pie2__logo" href="#hero">Parque<span>·</span>Central</a>
+    <p class="pie2__lema">El centro comercial de tecnología más grande del Caribe colombiano.</p>
   </div>
-  <nav class="redes" aria-label="Redes sociales">
-    <a href="https://www.instagram.com/ccparquecentral/" target="_blank" rel="noopener">Instagram</a>
-    <a href="https://www.facebook.com/ccparquecentralbq" target="_blank" rel="noopener">Facebook</a>
-    <a href="https://www.tiktok.com/@ccparquecentral" target="_blank" rel="noopener">TikTok</a>
-    <a href="https://www.youtube.com/@CentroComercialParqueCentral" target="_blank" rel="noopener">YouTube</a>
+  <div class="pie2__col">
+    <h2 class="pie2__tit">Visítanos</h2>
+    <p>Carrera 43 # 50-12<br>Barranquilla, Atlántico</p>
+    <p class="pie2__nota">Frente a la Universidad del Atlántico</p>
+  </div>
+  <div class="pie2__col">
+    <h2 class="pie2__tit">Horario</h2>
+    <dl class="pie2__horario">
+      <div><dt>Lunes a sábado</dt><dd>8:00 a.m. – 7:00 p.m.</dd></div>
+      <div><dt>Domingos y festivos</dt><dd>9:00 a.m. – 2:00 p.m.</dd></div>
+    </dl>
+  </div>
+  <div class="pie2__col">
+    <h2 class="pie2__tit">Contacto</h2>
+    <ul>
+      <li><a href="tel:+573105689142">+57 310 568 9142</a></li>
+      <li><a href="mailto:administrativo@parquecentral.net">administrativo@parquecentral.net</a></li>
+    </ul>
+  </div>
+  <nav class="pie2__col" aria-label="Secciones">
+    <h2 class="pie2__tit">Explora</h2>
+    <ul>
+      <li><a href="#locales">Locales</a></li>
+      <li><a href="#como-llegar">Cómo llegar</a></li>
+      <li><a href="#eventos">Eventos</a></li>
+      <li><a href="#para-marcas">Para marcas</a></li>
+    </ul>
   </nav>
-  <div>
-    <a href="https://www.parquecentral.net/wp-content/uploads/ccpc-politica-privacidad.pdf" target="_blank" rel="noopener">Política de privacidad</a><br>
-    <a href="https://www.parquecentral.net/legal/" target="_blank" rel="noopener">Legal</a><br>
-    <span>© <span id="anio">2026</span> Parque Central</span>
+  <nav class="pie2__col" aria-label="Redes sociales">
+    <h2 class="pie2__tit">Síguenos</h2>
+    <ul>
+      <li><a href="https://www.instagram.com/ccparquecentral/" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://www.facebook.com/ccparquecentralbq" target="_blank" rel="noopener">Facebook</a></li>
+      <li><a href="https://www.tiktok.com/@ccparquecentral" target="_blank" rel="noopener">TikTok</a></li>
+      <li><a href="https://www.youtube.com/@CentroComercialParqueCentral" target="_blank" rel="noopener">YouTube</a></li>
+    </ul>
+  </nav>
+  <div class="pie2__base">
+    <span>© <span id="anio">2026</span> Centro Comercial Parque Central</span>
+    <span class="pie2__legal"><a href="https://www.parquecentral.net/wp-content/uploads/ccpc-politica-privacidad.pdf" target="_blank" rel="noopener">Política de privacidad</a><a href="https://www.parquecentral.net/legal/" target="_blank" rel="noopener">Legal</a></span>
   </div>
 </footer>
+
 
 <div class="ficha-fondo" id="ficha-fondo" hidden></div>
 <aside class="ficha" id="ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-titulo" hidden>
@@ -1719,6 +2051,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
     const estado = $('estado');
     estado.classList.toggle('abierto', abierto);
     estado.textContent = abierto ? `Abierto hasta las ${texto}` : 'Cerrado ahora';
+    const em = $('estado-mapa'); if (em) { em.classList.toggle('abierto', abierto); em.textContent = estado.textContent; }
     document.querySelectorAll('#horario tr').forEach(tr =>
       tr.classList.toggle('hoy', (tr.dataset.dias === 'festivo') === festivo));
   }
@@ -2107,5 +2440,79 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 })();
 </script>
 
+<script>
+/* ═══ Movimiento con sentido (v7) ═══ */
+(function(){
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const filtros = document.getElementById('filtros');
+  const lista = document.getElementById('lista');
+  const conteo = document.getElementById('conteo');
+  if (!filtros || !lista) return;
+  const suave = 'cubic-bezier(.7,0,.2,1)';
+
+  /* ── 1. Sonar: al cargar no se anima; se activa con el primer clic en el índice ── */
+  filtros.classList.add('inicio');
+  filtros.addEventListener('click', () => filtros.classList.remove('inicio'), true);
+
+  /* ── 2. Los locales se reacomodan (técnica FLIP) ── */
+  let antes = null;
+  const clave = b => b.getAttribute('aria-label');
+  function foto(){
+    const m = new Map();
+    lista.querySelectorAll('li > button').forEach(b => m.set(clave(b), { r: b.getBoundingClientRect(), el: b }));
+    return m;
+  }
+  function reacomodar(cambioVista){
+    if (!antes || quieto) { antes = null; return; }
+    const previo = antes; antes = null;
+    const nuevos = [...lista.querySelectorAll('li > button')];
+    let i = 0;
+    nuevos.forEach(b => {
+      const r = b.getBoundingClientRect(), p = previo.get(clave(b));
+      if (p) {
+        previo.delete(clave(b));
+        const dx = p.r.left - r.left, dy = p.r.top - r.top;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && !cambioVista) return;
+        b.animate([{ transform: `translate(${dx}px,${dy}px)`, opacity: cambioVista ? .35 : 1 }, { transform: 'none', opacity: 1 }],
+                  { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      } else {
+        /* Entra: se "enciende" como un letrero */
+        b.animate([{ opacity: 0, filter: 'brightness(1.6) saturate(0)', transform: 'translateY(10px)' },
+                   { opacity: 1, filter: 'none', transform: 'none' }],
+                  { duration: 420, delay: 140 + 35 * i++, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+      }
+    });
+    /* Sale: se apaga en su puesto */
+    previo.forEach(({ r, el }) => {
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const g = el.cloneNode(true); g.className += ' fantasma-local'; g.setAttribute('aria-hidden', 'true'); g.tabIndex = -1;
+      Object.assign(g.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+      document.body.appendChild(g);
+      g.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.92)' }], { duration: 180, easing: 'ease-in' })
+       .onfinish = () => g.remove();
+    });
+  }
+  const registrar = sel => document.addEventListener('click', e => {
+    if (e.target.closest(sel)) { antes = foto(); const v = !!e.target.closest('.vista__btn'); requestAnimationFrame(() => reacomodar(v)); }
+  }, true);
+  registrar('#filtros .filtro'); registrar('.vista__btn');
+
+  /* ── 3. El conteo rueda ── */
+  if (conteo) {
+    let previo = conteo.textContent, propio = false;
+    new MutationObserver(() => {
+      if (propio) return;
+      const nuevo = conteo.textContent;
+      if (quieto || nuevo === previo) { previo = nuevo; return; }
+      propio = true;
+      conteo.innerHTML = '<span class="rueda"><span class="sale" aria-hidden="true"></span><span class="entra"></span></span>';
+      conteo.querySelector('.sale').textContent = previo;
+      conteo.querySelector('.entra').textContent = nuevo;
+      previo = nuevo;
+      setTimeout(() => { propio = false; }, 0);
+    }).observe(conteo, { childList: true, characterData: true, subtree: true });
+  }
+})();
+</script>
 </body>
 </html>
