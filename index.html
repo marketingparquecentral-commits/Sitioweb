@@ -1079,17 +1079,27 @@ body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-fam
 .tarjeta--info .tarjeta__pie{width:100%}
 @media (prefers-reduced-motion:reduce){.visita2 .fila--link,.vista2 .fila--link{transition:none!important}}
 </style>
-<style id="v19a">
-/* v19a · LÍNEA COMÚN: la raya negra cruza las dos columnas; "74 locales" y Lista/Tarjetas van en esa línea como etiquetas; las tarjetas arrancan con "Todas" */
+<style id="v19d">
+/* v19d · LÍNEA COMÚN con el selector Lista/Tarjetas original: la franja de etiquetas crece a 52 px en las dos columnas
+   para que quepa el botón; "CATEGORÍAS", "74 LOCALES" y el botón quedan centrados en la misma línea, y el contenido arranca con "Todas" */
 @media (min-width:861px){
-  #locales .dir__lado{box-sizing:border-box;height:35px;border-top:2px solid #0b0b0b;align-items:flex-start;padding-top:12px}
+  #locales .filtros::before{box-sizing:border-box;height:52px;display:flex!important;align-items:center;padding:0!important}
+  #locales .dir__lado{box-sizing:border-box;height:54px;border-top:2px solid #0b0b0b;align-items:center}
   #locales .dir__conteo{font-size:12px!important;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6B67!important;height:1.5em;line-height:1.5em}
-  #locales .vista{background:none!important;padding:0!important;gap:16px;box-shadow:none!important}
-  #locales .vista__btn{padding:0!important;font-size:12px!important;font-weight:600;letter-spacing:.08em;text-transform:uppercase;line-height:1.5;background:none!important;box-shadow:none!important;color:#9a9a9a;gap:5px}
-  #locales .vista__btn svg{width:13px;height:13px}
-  #locales .vista__btn[aria-pressed="true"],#locales .vista__btn.activo,#locales .vista__btn[aria-selected="true"]{color:#0b0b0b!important}
-  #locales .vista__btn:hover{color:#0b0b0b}
-  #locales #lista{margin-top:0!important}
+  #locales #lista{margin-top:14px!important}
+  #locales .filtros::before{margin-bottom:14px}
+}
+/* v19d · la LÍNEA COMÚN también en Cómo llegar, Eventos y Para marcas */
+@media (min-width:861px){
+  .visita2__datos > .bloque:first-child > .etq,.vista2__lado > .bloque:first-child > .etq{box-sizing:border-box;height:52px;display:flex;align-items:center;padding:0!important;margin:0 0 14px!important}
+  .mapa-caja{border-top:2px solid #0b0b0b}
+  .mapa-caja .estado-mapa{box-sizing:border-box;height:52px;margin:0 0 14px!important;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6B6B67}
+  .mapa-caja .estado-mapa.abierto{color:#0b0b0b}
+  .vista2__tarjetas{border-top:2px solid #0b0b0b}
+  .vista2__tarjetas::before{grid-column:1/-1;box-sizing:border-box;height:52px;display:flex;align-items:center;margin-bottom:0;
+    font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6B67}
+  #eventos .vista2__tarjetas::before{content:"Qué ofrecemos"}
+  #para-marcas .vista2__tarjetas::before{content:"Oportunidades"}
 }
 </style>
 </head>
