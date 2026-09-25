@@ -3804,10 +3804,41 @@ main.tema-claro{background:#F3F3F1}
   document.querySelectorAll('[data-chip]').forEach(e => { e.textContent = abierto ? 'Abierto ahora' : 'Cerrado ahora'; if (!abierto) e.classList.add('b-chip--gris'); });
 
   const catsEl = document.getElementById('cats'), filas = document.getElementById('filas'), buscar = document.getElementById('buscar');
+  /* v40 · Sinónimos del buscador: si alguien escribe una palabra de un grupo, también se buscan las demás del grupo.
+     Van sin tildes y en singular (se buscan como pedazo de palabra, así "cargadores" encuentra "cargador"). */
+  const SINONIMOS = [
+    ['portatil', 'laptop', 'lapto', 'notebook', 'computador'],
+    ['computador', 'computadora', 'pc', 'ordenador', 'computo', 'equipo', 'escritorio', 'torre'],
+    ['celular', 'telefono', 'movil', 'smartphone', 'iphone', 'android'],
+    ['tablet', 'tableta', 'ipad'],
+    ['apple', 'mac', 'macbook', 'imac', 'iphone', 'ipad'],
+    ['impresora', 'impresion', 'imprimir', 'tinta', 'toner', 'cartucho', 'recarga', 'multifuncional'],
+    ['servicio tecnico', 'tecnico', 'reparacion', 'reparar', 'arreglo', 'arreglar', 'mantenimiento', 'soporte', 'repair'],
+    ['accesorio', 'cargador', 'cable', 'forro', 'estuche', 'protector', 'vidrio templado', 'audifono', 'periferico'],
+    ['audifono', 'auricular', 'headset', 'diadema', 'parlante', 'bafle', 'sonido'],
+    ['teclado', 'mouse', 'raton', 'periferico'],
+    ['monitor', 'pantalla', 'display'],
+    ['gamer', 'consola', 'videojuego', 'juego', 'playstation', 'ps4', 'ps5', 'xbox', 'nintendo'],
+    ['camara', 'seguridad', 'cctv', 'vigilancia', 'dvr', 'alarma'],
+    ['red', 'redes', 'wifi', 'router', 'internet', 'conectividad', 'cableado'],
+    ['software', 'programa', 'licencia', 'windows', 'office', 'antivirus', 'punto de venta', 'pos', 'facturacion'],
+    ['estampado', 'estampar', 'sublimacion', 'camiseta', 'taza', 'personalizado', 'vinilo'],
+    ['comida', 'restaurante', 'almuerzo', 'cafe', 'bebida', 'snack'],
+    ['optica', 'gafas', 'lentes', 'monturas', 'drogueria', 'farmacia', 'salud'],
+    ['electrodomestico', 'hogar', 'televisor', 'tv', 'electronica']
+  ];
+  /* grupos que encajan con lo que escribió la persona (desde 3 letras: "cel" ya encuentra celulares) */
+  const terminosDe = p => {
+    const t = new Set([p]);
+    if (p.length >= 3) SINONIMOS.forEach(g => { if (g.some(w => w.startsWith(p) || p.startsWith(w))) g.forEach(w => t.add(w)); });
+    return [...t];
+  };
   const coincide = t => {
     if (!texto) return true;
-    const heno = sinTildes([t.local, t.nombre, t.categorias.join(' '), t.descripcion].join(' '));
-    return sinTildes(texto).split(/\s+/).filter(Boolean).every(p => heno.includes(p));
+    const heno = sinTildes([t.local, t.nombre, t.categorias.join(' '), t.resumen, t.descripcion].join(' '));
+    /* los sinónimos solo cuentan al inicio de una palabra, para que "mac" no encuentre "farmacia" ni "imac" encuentre "sublimación" */
+    const esta = w => new RegExp('(^|[^a-z0-9])' + w).test(heno);
+    return sinTildes(texto).split(/\s+/).filter(Boolean).every(p => heno.includes(p) || terminosDe(p).some(esta));
   };
   function pintarCats() {
     catsEl.innerHTML = cats.map(([c, n]) =>
