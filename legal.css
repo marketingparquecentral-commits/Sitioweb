@@ -1,0 +1,46 @@
+/* Páginas legales de Parque Central (privacidad y términos): mismo sistema del sitio, en versión de lectura */
+:root{--negro:#000;--tinta:#0b0b0b;--gris:#6B6B67;--lienzo:#F3F3F1;--naranja:#F5821F;--naranja-texto:#B35400;--f:"Schibsted Grotesk",ui-sans-serif,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--lienzo);color:var(--tinta);font-family:var(--f);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--naranja-texto);font-weight:600;text-underline-offset:3px;overflow-wrap:anywhere}
+a:focus-visible{outline:2px solid var(--tinta);outline-offset:3px;border-radius:4px}
+
+.cab{background:var(--negro);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px clamp(16px,4vw,48px)}
+.marca{color:#fff;text-decoration:none;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.marca span{color:var(--naranja)}
+.volver{color:rgba(255,255,255,.8);text-decoration:none;font-weight:600;font-size:15px;white-space:nowrap}
+.volver:hover{color:#fff}
+
+.hoja{max-width:820px;margin:clamp(20px,4vw,48px) auto;background:#fff;border-radius:22px;padding:clamp(24px,5vw,56px)}
+.etq{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--naranja-texto)}
+h1{margin:8px 0 0;font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.035em;line-height:1.08}
+.fecha{margin:10px 0 0;color:var(--gris);font-size:15px}
+h2{margin:40px 0 8px;font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.25;scroll-margin-top:16px}
+p{margin:0 0 14px}
+ul{margin:0 0 14px;padding-left:22px}
+li{margin:0 0 8px}
+li::marker{color:var(--naranja)}
+code{font-size:.9em;background:var(--lienzo);border-radius:6px;padding:2px 6px}
+
+.indice{display:flex;flex-wrap:wrap;gap:6px;margin:24px 0 28px;padding:0 0 24px;border-bottom:1px solid rgba(0,0,0,.08)}
+.indice a{font-size:14px;font-weight:600;color:var(--tinta);text-decoration:none;background:var(--lienzo);border-radius:999px;padding:6px 12px}
+.indice a:hover{background:var(--tinta);color:#fff}
+
+.ficha{margin:0 0 14px;border:1px solid rgba(0,0,0,.08);border-radius:14px;overflow:hidden}
+.ficha div{display:grid;grid-template-columns:170px minmax(0,1fr);gap:12px;padding:12px 16px;border-top:1px solid rgba(0,0,0,.06)}
+.ficha div:first-child{border-top:0}
+.ficha dt{color:var(--gris);font-weight:600;font-size:15px}
+.ficha dd{margin:0}
+@media (max-width:560px){.ficha div{grid-template-columns:1fr;gap:2px}}
+
+/* Datos que faltan por completar: se ven a propósito para que no se publiquen así */
+mark.falta{background:#FFE9A8;color:#5A3E00;border-radius:6px;padding:1px 6px;font-weight:700}
+
+.nota{margin-top:40px;padding:18px 20px;background:var(--lienzo);border-radius:14px;font-size:16px}
+
+.pie{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:24px clamp(16px,4vw,48px) 36px;color:var(--gris);font-size:14px}
+.pie span:last-child{display:flex;gap:18px}
+.pie a{color:var(--gris);font-weight:600;text-decoration:none}
+.pie a:hover,.pie a[aria-current="page"]{color:var(--tinta)}
