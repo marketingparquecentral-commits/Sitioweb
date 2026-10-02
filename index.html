@@ -2108,7 +2108,7 @@ main.tema-claro{background:#F3F3F1}
 .banner--cel{aspect-ratio:2/1;margin:0 0 16px;border-radius:18px}
 @media (min-width:861px){ .banner--cel{display:none} .banner--pc{display:block;margin-top:40px} .banner--pc.banner--vacio{display:grid}
   /* el banner queda con el mismo aire arriba (lista) y abajo (pie de página) */
-  #locales .b-tablero{padding-bottom:40px!important} .banner--pc:hover{box-shadow:0 0 0 1.5px #0b0b0b} }
+  #locales .b-tablero:has(.banner--pc){padding-bottom:40px!important} .banner--pc:hover{box-shadow:0 0 0 1.5px #0b0b0b} }
 </style>
 <style id="v41-ver-mas">
 /* v41 · botón "Ver más locales" al final de la lista */
@@ -2119,6 +2119,9 @@ main.tema-claro{background:#F3F3F1}
 .b-mas__btn:focus-visible{outline:2px solid #FF7D0E;outline-offset:3px}
 @media (max-width:860px){ .b-mas{padding:14px 0 6px} .b-mas__btn{width:100%} }
 </style>
+<!-- HALLOWEEN 2026 · para quitar la decoración, borra estas dos líneas (y la carpeta halloween/) -->
+<link rel="stylesheet" href="./halloween/halloween.css">
+<script src="./halloween/halloween.js"></script>
 </head>
 <body>
 
@@ -2241,7 +2244,7 @@ main.tema-claro{background:#F3F3F1}
     </div>
     <!-- BANNER (celular) · archivo 1080 × 540 px (proporción 2:1). Para cambiarlo: reemplaza banner-movil.jpg y el texto alt.
          Si debe abrir algo al tocarlo, cambia <div class="banner banner--cel"> por <a class="banner banner--cel" href="ENLACE" target="_blank" rel="noopener"> (y cierra con </a>). -->
-    <div class="banner banner--cel"><img src="./banner-movil.jpg" width="1080" height="540" alt="Happy Halloween: ¡disfraza a tu mascota y gana premio por mejor disfraz! 31 de octubre, 10:00 a.m., Centro Comercial Parque Central" decoding="async"></div>
+    <div class="banner banner--cel" data-hasta="2026-11-01"><img src="./banner-movil.jpg" width="1080" height="540" alt="Happy Halloween: ¡disfraza a tu mascota y gana premio por mejor disfraz! 31 de octubre, 10:00 a.m., Centro Comercial Parque Central" decoding="async"></div>
     <div class="b-rejilla">
       <aside class="b-tarjeta b-menu" aria-label="Categorías">
         <p class="b-menu__etq">Categorías</p>
@@ -2268,8 +2271,15 @@ main.tema-claro{background:#F3F3F1}
     </div>
     <!-- BANNER (computador) · archivo 2400 × 600 px (proporción 4:1). Para cambiarlo: reemplaza banner-pc.jpg y el texto alt.
          Si debe abrir algo al tocarlo, cambia <div class="banner banner--pc"> por <a class="banner banner--pc" href="ENLACE" target="_blank" rel="noopener"> (y cierra con </a>). -->
-    <div class="banner banner--pc"><img src="./banner-pc.jpg" width="2000" height="500" alt="Happy Halloween: ¡disfraza a tu mascota y gana premio por mejor disfraz! 31 de octubre, 10:00 a.m., Centro Comercial Parque Central" loading="lazy" decoding="async"></div>
+    <div class="banner banner--pc" data-hasta="2026-11-01"><img src="./banner-pc.jpg" width="2000" height="500" alt="Happy Halloween: ¡disfraza a tu mascota y gana premio por mejor disfraz! 31 de octubre, 10:00 a.m., Centro Comercial Parque Central" loading="lazy" decoding="async"></div>
 </div></div></div>
+<script>
+  /* Banners con fecha de vencimiento: desde el día de data-hasta (hora de Colombia) se esconden solos. */
+  (function () {
+    let hoy = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+    document.querySelectorAll('.banner[data-hasta]').forEach(b => { if (hoy >= b.dataset.hasta) b.remove(); });
+  })();
+</script>
 <div class="legado" hidden>
     <h2 class="seccion__titulo">Locales</h2>
     <p class="seccion__intro">Elige una categoría y toca cualquier local para ver cómo contactarlo.</p>
