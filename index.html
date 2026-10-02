@@ -2091,6 +2091,34 @@ main.tema-claro{background:#F3F3F1}
   .ev-promo .pm-btn{margin:0 0 0 auto;align-self:center;flex:none}
 }
 </style>
+<style id="v41-banner">
+/* ═══ v41 · BANNER publicitario en Locales ═══
+   Celular: debajo de "Abierto hasta las 7:00 p.m." y encima de la lista (2:1).
+   Computador: debajo de Locales, antes del pie de página (4:1). Siempre del ancho del contenido, sin recortes. */
+.banner{display:block;border-radius:22px;overflow:hidden;background:#000;transition:box-shadow .2s ease}
+.banner img{display:block;width:100%;height:auto}
+.banner:focus-visible{outline:2px solid #FF7D0E;outline-offset:3px}
+/* espacio reservado (sin banner todavía): rayas naranjas con el tamaño que debe tener el archivo */
+.banner--vacio{display:grid;place-items:center;text-align:center;background:repeating-linear-gradient(135deg,#FFF4EA 0 16px,#FFE9D6 16px 32px);outline:2px dashed #F5A15A;outline-offset:-2px;color:#8A4300}
+.banner--vacio span{display:grid;gap:2px;padding:0 16px}
+.banner--vacio b{font-weight:800;font-size:clamp(15px,2vw,24px);letter-spacing:-.02em}
+.banner--vacio small{font-weight:600;font-size:clamp(11.5px,1.2vw,15px)}
+.banner--vacio:hover{box-shadow:none!important}
+.banner--pc{display:none;aspect-ratio:4/1;margin-top:var(--hueco,16px)}
+.banner--cel{aspect-ratio:2/1;margin:0 0 16px;border-radius:18px}
+@media (min-width:861px){ .banner--cel{display:none} .banner--pc{display:block;margin-top:40px} .banner--pc.banner--vacio{display:grid}
+  /* el banner queda con el mismo aire arriba (lista) y abajo (pie de página) */
+  #locales .b-tablero{padding-bottom:40px!important} .banner--pc:hover{box-shadow:0 0 0 1.5px #0b0b0b} }
+</style>
+<style id="v41-ver-mas">
+/* v41 · botón "Ver más locales" al final de la lista */
+.b-mas{display:flex;justify-content:center;padding:18px 0 4px}
+.b-mas[hidden]{display:none}
+.b-mas__btn{font:inherit;font-size:15px!important;font-weight:700;color:#fff!important;background:#0b0b0b!important;border:0;border-radius:999px;height:46px;padding:0 22px;cursor:pointer;transition:transform .15s ease}
+.b-mas__btn:hover{transform:translateY(-1px)}
+.b-mas__btn:focus-visible{outline:2px solid #FF7D0E;outline-offset:3px}
+@media (max-width:860px){ .b-mas{padding:14px 0 6px} .b-mas__btn{width:100%} }
+</style>
 </head>
 <body>
 
@@ -2211,6 +2239,9 @@ main.tema-claro{background:#F3F3F1}
       <div><h2>Locales</h2><p>Elige una categoría y toca cualquier local para ver cómo contactarlo.</p></div>
       <span class="b-estado" data-estado>Abierto hasta las 7:00 p.m.</span>
     </div>
+    <!-- BANNER (celular) · archivo 1080 × 540 px (proporción 2:1). Para cambiarlo: reemplaza banner-movil.jpg y el texto alt.
+         Si debe abrir algo al tocarlo, cambia <div class="banner banner--cel"> por <a class="banner banner--cel" href="ENLACE" target="_blank" rel="noopener"> (y cierra con </a>). -->
+    <div class="banner banner--cel"><img src="./banner-movil.jpg" width="1080" height="540" alt="Happy Halloween: ¡disfraza a tu mascota y gana premio por mejor disfraz! 31 de octubre, 10:00 a.m., Centro Comercial Parque Central" decoding="async"></div>
     <div class="b-rejilla">
       <aside class="b-tarjeta b-menu" aria-label="Categorías">
         <p class="b-menu__etq">Categorías</p>
@@ -2235,6 +2266,9 @@ main.tema-claro{background:#F3F3F1}
         </div>
       </div>
     </div>
+    <!-- BANNER (computador) · archivo 2400 × 600 px (proporción 4:1). Para cambiarlo: reemplaza banner-pc.jpg y el texto alt.
+         Si debe abrir algo al tocarlo, cambia <div class="banner banner--pc"> por <a class="banner banner--pc" href="ENLACE" target="_blank" rel="noopener"> (y cierra con </a>). -->
+    <div class="banner banner--pc"><img src="./banner-pc.jpg" width="2000" height="500" alt="Happy Halloween: ¡disfraza a tu mascota y gana premio por mejor disfraz! 31 de octubre, 10:00 a.m., Centro Comercial Parque Central" loading="lazy" decoding="async"></div>
 </div></div></div>
 <div class="legado" hidden>
     <h2 class="seccion__titulo">Locales</h2>
@@ -3852,9 +3886,15 @@ main.tema-claro{background:#F3F3F1}
     if (!vis.length) {
       const msg = encodeURIComponent(`Hola Parque Central, estoy buscando: ${texto || elegida}`);
       filas.innerHTML = `<tr class="b-vacio-fila"><td colspan="5">No encontramos «${esc(texto)}» en el directorio. <a class="b-ir" target="_blank" rel="noopener" href="https://wa.me/${ADMIN}?text=${msg}">Pregúntale a la administración ›</a></td></tr>`;
+      visibles = []; cuantos = 0; botonMas();
       return;
     }
-    filas.innerHTML = vis.map(t => {
+    /* v41 · se muestran de a poco: 12 en computador (4 filas de 3) y 10 en celular; "Ver más locales" trae el siguiente grupo */
+    visibles = vis; cuantos = paso();
+    filas.innerHTML = vis.slice(0, cuantos).map(fila).join('');
+    botonMas();
+  }
+  function fila(t) {
       const cat = t.categorias.length > 2 ? `${t.categorias.slice(0, 2).join(' · ')} +${t.categorias.length - 2}` : t.categorias.join(' · ');
       const msg = encodeURIComponent(`Hola ${t.nombre}, te escribo desde la página de Parque Central`);
       const partes = t.local.split(/\s+y\s+/);
@@ -3863,8 +3903,22 @@ main.tema-claro{background:#F3F3F1}
       const ini = t.nombre.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
       const logo = `<td class="b-logo${lleno}" aria-hidden="true">${t.logo ? `<img src="./${esc(t.logo)}" alt="" loading="lazy" decoding="async">` : `<img class="b-logo-pc" src="./favicon.svg" alt="">`}<span class="b-logo-num">${esc(t.local)}</span></td>`;
       return `<tr data-i="${LOCALES.indexOf(t)}">${logo}<td class="b-loc${partes.length > 1 ? ' b-loc--doble' : ''}" aria-label="Local ${esc(t.local)}">${partes.map(esc).join('<br>')}</td><td class="b-nom">${esc(t.nombre)}</td><td class="b-cat" title="${esc(t.categorias.join(', '))}">${lugar ? `<span class="b-loc-txt">${esc(lugar)} · </span>` : ''}${esc(t.resumen || cat)}</td><td class="b-est"><span class="b-chip ${abierto ? '' : 'b-chip--gris'}"><span>${abierto ? 'Abierto' : 'Cerrado'}<span class="b-ahora"> ahora</span></span></span>${lugar ? `<span class="b-loc-est">${esc(lugar)}</span>` : ''}</td><td class="b-contacto">${t.instagram ? `<a class="b-igb" target="_blank" rel="noopener" href="${esc(t.instagram)}" aria-label="Instagram de ${esc(t.nombre)} (se abre en otra pestaña)" title="Instagram">${IGICO}</a>` : ''}${t.web ? `<a class="b-web" target="_blank" rel="noopener" href="${esc(t.web)}" aria-label="Sitio web de ${esc(t.nombre)} (se abre en otra pestaña)" title="Sitio web">${GLOBO}</a>` : ''}${t.whatsapp ? `<a class="b-ir" target="_blank" rel="noopener" href="https://wa.me/${t.whatsapp}?text=${msg}">Contactar ›</a>` : ''}</td></tr>`;
-    }).join('');
   }
+  let visibles = [], cuantos = 0;
+  const paso = () => matchMedia('(min-width:861px)').matches ? 12 : 10;
+  const mas = document.createElement('div'); mas.className = 'b-mas';
+  mas.innerHTML = '<button type="button" class="b-mas__btn"></button>';
+  filas.closest('table').after(mas);
+  function botonMas() {
+    const quedan = visibles.length - cuantos;
+    mas.hidden = quedan <= 0;
+    mas.firstChild.textContent = `Ver más locales · quedan ${quedan}`;
+  }
+  mas.firstChild.addEventListener('click', () => {
+    const desde = cuantos; cuantos += paso();
+    filas.insertAdjacentHTML('beforeend', visibles.slice(desde, cuantos).map(fila).join(''));
+    botonMas();
+  });
   catsEl.addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) { elegida = b.dataset.cat; pintarCats(); pintar(); } });
   if (buscar) buscar.addEventListener('input', () => { texto = buscar.value.trim(); pintar(); });
   pintarCats(); pintar();
