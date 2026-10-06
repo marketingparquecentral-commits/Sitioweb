@@ -2,7 +2,7 @@
 :root{--negro:#000;--tinta:#0b0b0b;--gris:#6B6B67;--lienzo:#F3F3F1;--naranja:#F5821F;--naranja-texto:#B35400;--f:"Schibsted Grotesk",ui-sans-serif,sans-serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){html{scroll-behavior:auto}}
 body{margin:0;background:var(--lienzo);color:var(--tinta);font-family:var(--f);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
 a{color:var(--naranja-texto);font-weight:600;text-underline-offset:3px;overflow-wrap:anywhere}
 a:focus-visible{outline:2px solid var(--tinta);outline-offset:3px;border-radius:4px}

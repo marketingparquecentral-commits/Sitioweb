@@ -58,4 +58,4 @@ html[class*="hw-"] .v37-pantalla::after{left:11px;bottom:-5px;width:16px;backgro
 @media (max-width:860px){ .hw-arana{right:40px} }
 @keyframes hw-arana{0%,100%{height:62px}50%{height:82px}}
 
-@media (prefers-reduced-motion:reduce){ .hw-bat,.hw-bat .ar,.hw-bat .ab{animation:none} .hw-bat{display:none} .hw-arana{animation:none;height:70px} }
+@media (prefers-reduced-motion:reduce) and (max-width:0px){ .hw-bat,.hw-bat .ar,.hw-bat .ab{animation:none} .hw-bat{display:none} .hw-arana{animation:none;height:70px} }

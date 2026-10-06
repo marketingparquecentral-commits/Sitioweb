@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" class="saludo-a menu-a cat-d fila-f logo-a logo-c escr-d escr-c">
 <head>
+<!-- v43 · Las animaciones y el robot se mueven siempre, aunque el computador tenga apagados los "efectos de animación" (Windows): las reglas de "menos movimiento" llevan "and (max-width:0px)", así nunca se activan. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Parque Central · Centro comercial de tecnología en Barranquilla</title>
@@ -240,7 +241,7 @@ body{
   .hero__sub{margin-bottom:18px}
 }
 
-@media (prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce) and (max-width:0px){
   *{transition:none !important;animation:none !important}
 }
 
@@ -248,7 +249,7 @@ body{
    SECCIONES INFORMATIVAS
    ═══════════════════════════════════════════════════════════ */
 html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){html{scroll-behavior:auto}}
 
 /* Barra superior: transparente sobre el video, sólida al bajar */
 .nav{
@@ -413,7 +414,7 @@ section[id]{scroll-margin-top:72px}
   .tienda:hover::before{height:60%}
 }
 
-@media (prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce) and (max-width:0px){
   .tienda,.tienda::before,.iman{transition:none}
 }
 
@@ -531,7 +532,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   .pestana{padding:4px 6px;font-size:12px}
   .pestana__icono{width:42px;height:42px}
 }
-@media (prefers-reduced-motion:reduce){.pestana__icono{transition:none}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){.pestana__icono{transition:none}}
 
 /* ═══ DOCK DE PESTAÑAS ═══
    La barra flota como una tarjeta que cruza el borde entre el video
@@ -606,7 +607,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
 .intro__cursor[hidden]{display:none}
 @keyframes intro-cursor{50%{opacity:0}}
 @media (max-width:480px){.intro__nombre{font-size:clamp(34px,11vw,52px)}}
-@media (prefers-reduced-motion:reduce){.intro__cursor{animation:none}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){.intro__cursor{animation:none}}
 
 /* ═══ Frase bajo "74 locales" ═══ */
 .hero__cabecera{width:100%;margin:auto 0}
@@ -666,7 +667,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   .hero__titulo .hero__detalle{font-size:.5em}
   .hero__titulo .hero__frase{align-items:center;text-align:center}
 }
-@media (prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce) and (max-width:0px){
   .hero__titulo .entra{transition:none}
   .rotador__palabra{transition:none}
 }
@@ -798,7 +799,7 @@ section.panel[id]{scroll-margin-top:calc(var(--alto-nav,60px) + var(--alto-pesta
   /* En celular la ficha sube desde abajo */
   .ficha{top:auto;left:0;width:100%;max-height:88vh;border-radius:24px 24px 0 0;transform:translateY(104%);padding:18px 22px 28px}
 }
-@media (prefers-reduced-motion:reduce){.ficha,.ficha-fondo,.tarjeta{transition:none}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){.ficha,.ficha-fondo,.tarjeta{transition:none}}
 </style>
 <style id="direccion-v16">
 :root{--f:"Schibsted Grotesk", ui-sans-serif, sans-serif}
@@ -885,7 +886,7 @@ body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-fam
   .filtro::before{left:12px}
   .filtro::after,.filtro[aria-pressed="true"]::after{left:15.5px}
 }
-@media (prefers-reduced-motion:reduce){.filtro::before,.filtro::after{animation-duration:0s!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){.filtro::before,.filtro::after{animation-duration:0s!important;transition:none!important}}
 
 /* Conteo que rueda */
 .dir__conteo{display:inline-flex;overflow:hidden;height:1.4em;line-height:1.4em;vertical-align:bottom}
@@ -896,7 +897,7 @@ body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-fam
 @keyframes rueda-sale{to{transform:translateY(-110%)}}
 @keyframes rueda-entra{from{transform:translateY(110%)}}
 .fantasma-local{position:fixed;margin:0;z-index:5;pointer-events:none}
-@media (prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce) and (max-width:0px){
   
   .rueda .sale{display:none}.rueda .entra{animation:none}
 }
@@ -1040,7 +1041,7 @@ body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-fam
   #locales .filtro:not([aria-pressed="true"]):hover::before{transform:scale(0);opacity:0}
   #locales .filtros.inicio .filtro{transition:none!important}
 }
-@media (prefers-reduced-motion:reduce){#locales .filtro{transition:none!important}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){#locales .filtro{transition:none!important}}
 
 /* v17 · seleccionado negro: Sonar en negro, letra blanca (19.7:1), bolita naranja */
 #locales .filtros{--relleno:#0b0b0b!important;--tenue:#0b0b0b!important;--trazo:#F5821F!important}
@@ -1076,7 +1077,7 @@ body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-fam
           mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m9 6 6 6-6 6' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
 .tarjeta--info:hover .tarjeta__loc::after{transform:translateX(3px)}
 .tarjeta--info .tarjeta__pie{width:100%}
-@media (prefers-reduced-motion:reduce){.visita2 .fila--link,.vista2 .fila--link{transition:none!important}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){.visita2 .fila--link,.vista2 .fila--link{transition:none!important}}
 </style>
 <style id="v19d">
 /* v19d · LÍNEA COMÚN con el selector Lista/Tarjetas original: la franja de etiquetas crece a 52 px en las dos columnas
@@ -1150,7 +1151,7 @@ body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-fam
   /* WhatsApp sube para no tapar el menú */
   .wa{bottom:calc(98px + env(safe-area-inset-bottom,0px))!important}
 }
-@media (prefers-reduced-motion:reduce){.lampara.anima{transition:none}}
+@media (prefers-reduced-motion:reduce) and (max-width:0px){.lampara.anima{transition:none}}
 </style>
 <style id="v21-hero-movil">
 /* ═══ v21 · HERO EN CELULAR: imagen del robot saludando, sin video ═══
@@ -1233,7 +1234,7 @@ body,.btn,.filtro,.pestana,.vista__btn,.tienda,.tarjeta,.ficha__btn,.wa{font-fam
 @keyframes saludo-sale{to{opacity:0;transform:translateY(-40px);visibility:hidden}}
 @keyframes mecer{0%,100%{transform:rotate(0)}30%{transform:rotate(-3deg)}70%{transform:rotate(2deg)}}
 
-@media (prefers-reduced-motion:reduce){
+@media (prefers-reduced-motion:reduce) and (max-width:0px){
   .saludo-c .hero__saludo{display:none!important}
   .hero__globo{transition:none!important}
 }
@@ -1549,7 +1550,7 @@ main.tema-claro{background:#F3F3F1}
   .b-hoja button.b-activo{background:#0b0b0b!important;color:#fff!important;font-weight:700}
   .b-hoja button.b-activo::before{content:"";width:7px;height:7px;border-radius:50%;background:#F5821F;flex:none}
   .b-hoja .b-num{margin-left:auto;background:none!important;color:inherit!important;opacity:.6;padding:0!important}
-  @media (prefers-reduced-motion:reduce){.b-hoja,.b-hoja__panel{transition:none}}
+  @media (prefers-reduced-motion:reduce) and (max-width:0px){.b-hoja,.b-hoja__panel{transition:none}}
 
   /* D · Dentro de la tarjeta de la tabla */
   .cat-d #locales .b-menu{display:none!important}
@@ -1580,7 +1581,7 @@ main.tema-claro{background:#F3F3F1}
   .b-flecha--izq{left:10px}.b-flecha--der{right:10px}
   .hay-izq .b-flecha--izq,.hay-der .b-flecha--der{opacity:1;pointer-events:auto}
   .b-flecha:focus-visible{outline:2px solid #0b0b0b;outline-offset:2px}
-  @media (prefers-reduced-motion:reduce){.cat-d #locales .b-cats-caja .b-cats-tabla{scroll-behavior:auto}}
+  @media (prefers-reduced-motion:reduce) and (max-width:0px){.cat-d #locales .b-cats-caja .b-cats-tabla{scroll-behavior:auto}}
 }
 </style>
 <style id="v28-filas">
@@ -1831,7 +1832,7 @@ main.tema-claro{background:#F3F3F1}
   .b-ficha__wa{background:#E7F8EE;color:#157A3C}.b-ficha__wa:hover{background:#D3F2DF}
   .b-ficha__web{background:#E8F0FE;color:#1A5FD0}.b-ficha__web:hover{background:#D2E3FC}
   .b-ficha__ig{background:#FDEBF3;color:#C13584}.b-ficha__ig:hover{background:#FAD6E6}
-  @media (prefers-reduced-motion:reduce){.b-hoja,.b-hoja__panel{transition:none}}
+  @media (prefers-reduced-motion:reduce) and (max-width:0px){.b-hoja,.b-hoja__panel{transition:none}}
 }
 /* v35 · computador igual que celular en Cómo llegar y Para marcas; Eventos unificado */
 @media (min-width:861px){
@@ -1979,7 +1980,7 @@ main.tema-claro{background:#F3F3F1}
 }
 @keyframes v36-mece{0%{transform:rotate(0)}18%{transform:rotate(-9deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(1.2deg)}100%{transform:rotate(0)}}
 @keyframes v36-late{0%{box-shadow:0 0 0 0 rgba(31,168,85,.5)}100%{box-shadow:0 0 0 7px rgba(31,168,85,0)}}
-@media (prefers-reduced-motion:reduce){ #locales .b-est .b-loc-est,#locales .b-est .b-chip::before{animation:none!important} }
+@media (prefers-reduced-motion:reduce) and (max-width:0px){ #locales .b-est .b-loc-est,#locales .b-est .b-chip::before{animation:none!important} }
 </style>
 <style id="v37-menu-colgante">
 /* ═══ v37 · COMPUTADOR: menú = pestañas pegadas a la cabecera + lámpara colgante ═══
@@ -2016,7 +2017,7 @@ main.tema-claro{background:#F3F3F1}
 }
 @media (max-width:860px){ .v37-colgante{display:none} }
 @keyframes v37-balanceo{0%{transform:rotate(0)}25%{transform:rotate(-5deg)}55%{transform:rotate(3deg)}80%{transform:rotate(-1deg)}100%{transform:rotate(0)}}
-@media (prefers-reduced-motion:reduce){ .v37-colgante{transition:none!important;animation:none!important} }
+@media (prefers-reduced-motion:reduce) and (max-width:0px){ .v37-colgante{transition:none!important;animation:none!important} }
 </style>
 <style id="v38-para-marcas">
 /* ═══ v38 · PARA MARCAS: el robot como anfitrión (celular y computador) ═══ */
@@ -2628,8 +2629,8 @@ main.tema-claro{background:#F3F3F1}
   let ultimoDibujado = -1;
 
   /* Solo hay tracking con mouse real y sin preferencia de menos movimiento */
-  const hayMouse        = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const menosMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hayMouse        = window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches;
+  const menosMovimiento = window.matchMedia('(prefers-reduced-motion:reduce) and (max-width:0px)').matches;
   const activarTracking = hayMouse && !menosMovimiento;
 
   /* ═════════════════════════════════════════════════════════
@@ -3294,8 +3295,8 @@ main.tema-claro{background:#F3F3F1}
 <script>
 (function () {
   'use strict';
-  const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const punteroFino  = matchMedia('(pointer: fine)').matches;
+  const sinMovimiento = matchMedia('(prefers-reduced-motion:reduce) and (max-width:0px)').matches;
+  const punteroFino  = matchMedia('(any-pointer: fine)').matches;
 
   /* ═════════════════════════════════════════════════════════
      1. LA LUZ QUE EL ROBOT PERSIGUE
@@ -3539,7 +3540,7 @@ main.tema-claro{background:#F3F3F1}
 
   const NOMBRE = 'Parque·Central';
   const FRASE  = 'El centro comercial de tecnología más grande del Caribe colombiano';
-  const sinMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sinMov = matchMedia('(prefers-reduced-motion:reduce) and (max-width:0px)').matches;
   const elNombre = document.getElementById('intro-nombre');
   const elFrase  = document.getElementById('intro-frase');
   const curNombre = document.getElementById('cursor-nombre');
@@ -3602,7 +3603,7 @@ main.tema-claro{background:#F3F3F1}
   const MAXIMO = 6000;
   const lienzo = document.getElementById('lienzo');
   const video  = document.getElementById('video');
-  const conSeguimiento = matchMedia('(hover: hover) and (pointer: fine)').matches && !sinMov;
+  const conSeguimiento = matchMedia('(any-hover: hover) and (any-pointer: fine)').matches && !sinMov;
   let robotListo = false, cerrando = false;
 
   async function intentarCerrar(forzar) {
@@ -3642,7 +3643,7 @@ main.tema-claro{background:#F3F3F1}
   const el = document.getElementById('rotador');
   if (!el) return;
   const PALABRAS = ['celulares', 'computadores', 'accesorios', 'videojuegos', 'impresoras', 'seguridad', 'tecnología'];
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;   // se queda en "tecnología"
+  if (matchMedia('(prefers-reduced-motion:reduce) and (max-width:0px)').matches) return;   // se queda en "tecnología"
   let i = PALABRAS.length - 1;
   const PAUSA = 1900;
   function siguiente() {
@@ -3670,7 +3671,7 @@ main.tema-claro{background:#F3F3F1}
 <script>
 /* ═══ Movimiento con sentido (v7) ═══ */
 (function(){
-  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const quieto = matchMedia('(prefers-reduced-motion:reduce) and (max-width:0px)').matches;
   const filtros = document.getElementById('filtros');
   const lista = document.getElementById('lista');
   const conteo = document.getElementById('conteo');
@@ -3769,7 +3770,7 @@ main.tema-claro{background:#F3F3F1}
 (function () {
   const html = document.documentElement;
   if (!matchMedia('(max-width:860px)').matches) return;
-  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const quieto = matchMedia('(prefers-reduced-motion:reduce) and (max-width:0px)').matches;
   function escribir(el, partes, ms, fin) {
     /* partes: [["texto normal", false], ["texto en negrita", true]] */
     el.textContent = '';
