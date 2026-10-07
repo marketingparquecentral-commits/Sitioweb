@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es" class="saludo-a menu-a cat-d fila-f logo-a logo-c escr-d escr-c">
 <head>
+<!-- v46 · En tablets Robi sigue el dedo: al tocar o deslizar de lado sobre el video. -->
+<!-- v45 · Robi usa 72 fotos ya hechas (carpeta robi/) en vez de sacarlas del video en cada visita. -->
 <!-- v43 · Las animaciones y el robot se mueven siempre, aunque el computador tenga apagados los "efectos de animación" (Windows): las reglas de "menos movimiento" llevan "and (max-width:0px)", así nunca se activan. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -2119,6 +2121,30 @@ main.tema-claro{background:#F3F3F1}
 .b-mas__btn:hover{transform:translateY(-1px)}
 .b-mas__btn:focus-visible{outline:2px solid #FF7D0E;outline-offset:3px}
 @media (max-width:860px){ .b-mas{padding:14px 0 6px} .b-mas__btn{width:100%} }
+/* v44 · Cómo llegar: dirección y horario de atención junto al mapa (computador: al lado; celular: encima) */
+#como-llegar .cl-info h3{margin:0}
+#como-llegar .cl-dir{margin:8px 0 0;font-size:17px;font-weight:600;color:#0b0b0b}
+#como-llegar .cl-ref{margin:2px 0 0;font-size:14px;color:#5c5c5c}
+#como-llegar .cl-cab{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid #EBEBE8}
+#como-llegar .cl-info .b-chip{background:#E6F6EC;color:#157A3C;padding:3px 10px;white-space:nowrap}
+#como-llegar .cl-info .b-chip--gris{background:#F0F0EE;color:#4a4a48}
+#como-llegar .cl-horas{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+#como-llegar .cl-horas li{position:relative;display:grid;gap:2px;padding:10px 12px 10px 30px;border-radius:14px;background:#F5F5F3}
+#como-llegar .cl-horas span{font-size:15px;color:#0b0b0b}
+#como-llegar .cl-horas b{font-family:inherit;letter-spacing:0;font-size:14px;font-weight:400;color:#5c5c5c}
+#como-llegar .cl-horas li::before{content:"";position:absolute;left:13px;top:17px;width:7px;height:7px;border-radius:50%;background:#C9C9C4}
+#como-llegar .cl-horas li.hoy{background:#0b0b0b}
+#como-llegar .cl-horas li.hoy span{color:#fff;font-weight:700}
+#como-llegar .cl-horas li.hoy b{color:rgba(255,255,255,.8)}
+#como-llegar .cl-horas li.hoy::before{background:#F5821F}
+@media (min-width:861px){
+  #como-llegar .b-dos{grid-template-columns:minmax(0,320px) minmax(0,1fr)!important;align-items:stretch}
+  #como-llegar .b-dos > .b-tarjeta:last-child{display:flex;flex-direction:column}
+  #como-llegar .b-dos .b-mapa{aspect-ratio:auto;flex:1;min-height:320px}
+}
+
+/* v46 · Tablets: deslizar de lado sobre el video mueve a Robi; deslizar hacia arriba o abajo sigue bajando la página */
+@media (any-pointer:coarse) and (min-width:861px){ #hero{touch-action:pan-y} }
 </style>
 <!-- HALLOWEEN 2026 · para quitar la decoración, borra estas dos líneas (y la carpeta halloween/) -->
 <link rel="stylesheet" href="./halloween/halloween.css">
@@ -2158,11 +2184,11 @@ main.tema-claro{background:#F3F3F1}
   <video
     class="hero__video"
     id="video"
-    src="./robot.mp4"
+    data-src="./robot.mp4"
     muted
     playsinline
     webkit-playsinline
-    preload="auto"
+    preload="none"
     disablepictureinpicture
     aria-hidden="true"
     tabindex="-1"></video>
@@ -2338,6 +2364,16 @@ main.tema-claro{background:#F3F3F1}
               <div class="b-grafica__eje"><span>12 h</span><span>8 h</span><span>4 h</span><span>0</span></div>
               <div class="b-grafica__zona" id="semana"></div>
             </div>
+          </div>
+          <div class="b-tarjeta cl-info">
+            <h3 class="b-tarjeta__tit">Dirección</h3>
+            <p class="cl-dir">Carrera 43 # 50-12, Barranquilla</p>
+            <p class="cl-ref">Frente a la Universidad del Atlántico</p>
+            <div class="cl-cab"><h3 class="b-tarjeta__tit">Horario de atención</h3><span class="b-chip" data-chip>Abierto ahora</span></div>
+            <ul class="cl-horas">
+              <li data-cl-dias="semana"><span>Lunes a sábado</span><b>8:00 a.m. – 7:00 p.m.</b></li>
+              <li data-cl-dias="festivo"><span>Domingos y festivos</span><b>9:00 a.m. – 2:00 p.m.</b></li>
+            </ul>
           </div>
           <div class="b-tarjeta">
             <div class="b-tarjeta__cabeza"><h3 class="b-tarjeta__tit">Mapa</h3><a class="b-tabla b-ir" style="width:auto;font-size:14px;font-weight:600;color:var(--naranja-texto);text-decoration:none" href="https://maps.app.goo.gl/9gKFXxWYgQKRt3NF8" target="_blank" rel="noopener">Abrir en Maps ›</a></div>
@@ -2590,13 +2626,13 @@ main.tema-claro{background:#F3F3F1}
      reconstruir la imagen desde ahí, decenas de veces por
      segundo.
 
-     Aquí lo hacemos distinto. Al cargar la página extraemos
-     una sola vez todos los frames y los guardamos como
-     imágenes en memoria. Después, mover el mouse solo dibuja
-     una imagen ya lista en un canvas. Eso es instantáneo.
-
-     Cuesta unos segundos de preparación al inicio, pero la
-     interacción queda perfectamente fluida.
+     v45 · Las 72 fotos del giro ya vienen hechas en robi/
+     (robi-00.webp … robi-71.webp, sacadas del video una sola
+     vez). El navegador solo las descarga: primero la de frente,
+     luego unas pocas repartidas y después el resto, así Robi
+     responde al mouse casi de inmediato, también en Windows.
+     Mover el mouse solo dibuja una imagen ya lista en un canvas.
+     Si las fotos no cargan, se usa el video como respaldo.
      ═════════════════════════════════════════════════════════ */
 
   const hero     = document.getElementById('hero');
@@ -2607,13 +2643,10 @@ main.tema-claro{background:#F3F3F1}
   const ctx      = lienzo.getContext('2d', { alpha: false });
 
   /* ── Ajustes que puedes tocar ── */
-  const FRAMES_POR_SEGUNDO = 20;   // muestras a extraer por segundo de video
-  const FRAMES_MAX         = 72;   // tope, para no gastar memoria de más
-  const FRAMES_MIN         = 24;   // piso, para que no se vea a saltos
-  const ANCHO_CAPTURA      = 1280; // resolución de los frames guardados
-  const CALIDAD_JPEG       = 0.82; // 0-1, peso contra nitidez
+  const FRAMES             = 72;   // fotos en robi/ (robi-00.webp … robi-71.webp)
+  const RUTA_FRAMES        = './robi/robi-';
+  const DE_A               = 6;    // fotos que se piden a la vez
   const SUAVIDAD           = 0.22; // 0-1, qué tan pegado va al cursor
-  const TIMEOUT_SEEK       = 4000; // ms de espera máxima por frame
   /* Momento del video (de 0 a 1) en que el robot mira de frente.
      0.5 es la mitad. Si en tu video el frente está en otro punto,
      ajústalo aquí: por ejemplo 0.45 o 0.55. */
@@ -2621,15 +2654,16 @@ main.tema-claro{background:#F3F3F1}
 
   /* ── Estado ── */
   let duracion   = 0;
-  let imagenes   = [];    // frames ya listos para dibujar
+  let imagenes   = new Array(FRAMES);   // fotos ya listas (las que faltan quedan vacías)
   let modoCanvas = false; // true cuando la extracción terminó bien
   let objetivo   = 0;     // posición deseada, en índice de frame
   let actual     = 0;     // posición actual, se acerca al objetivo
   let bucleId    = null;
   let ultimoDibujado = -1;
 
-  /* Solo hay tracking con mouse real y sin preferencia de menos movimiento */
-  const hayMouse        = window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches;
+  /* Robi sigue al mouse y, en tablets, al dedo (v46) */
+  const hayMouse        = window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches ||
+                          window.matchMedia('(any-pointer: coarse)').matches;
   const menosMovimiento = window.matchMedia('(prefers-reduced-motion:reduce) and (max-width:0px)').matches;
   const activarTracking = hayMouse && !menosMovimiento;
 
@@ -2653,11 +2687,15 @@ main.tema-claro{background:#F3F3F1}
      Replica el comportamiento de object-fit: cover.
      ═════════════════════════════════════════════════════════ */
   function dibujar(indice) {
-    const i = Math.round(Math.min(Math.max(indice, 0), imagenes.length - 1));
-    if (i === ultimoDibujado) return;   // ya está pintado, no repetimos
+    const pedido = Math.round(Math.min(Math.max(indice, 0), FRAMES - 1));
+    let i = -1;
+    for (let d = 0; d < FRAMES && i < 0; d++) {
+      if (imagenes[pedido - d]) i = pedido - d;
+      else if (imagenes[pedido + d]) i = pedido + d;
+    }
+    if (i < 0 || i === ultimoDibujado) return;   // nada listo, o ya está pintado
 
     const img = imagenes[i];
-    if (!img) return;
 
     const anchoL = lienzo.width;
     const altoL  = lienzo.height;
@@ -2696,124 +2734,31 @@ main.tema-claro{background:#F3F3F1}
   }
 
   /* ═════════════════════════════════════════════════════════
-     EXTRACCIÓN DE FRAMES
-     Recorre el video una vez, saltando de posición en posición
-     y guardando cada imagen. Esto es lo lento, pero pasa una
-     sola vez y en segundo plano.
+     CARGA DE LAS FOTOS
+     Primero la de frente; luego cada 12, cada 6, cada 3 y el
+     resto. Mientras faltan, se dibuja la más cercana.
      ═════════════════════════════════════════════════════════ */
-
-  /* Espera a que el video termine de posicionarse en un tiempo dado */
-  function irA(fuente, tiempo) {
+  function cargarFoto(i) {
     return new Promise(function (resolver, rechazar) {
-      let cerrado = false;
-
-      const alSaltar = function () {
-        if (cerrado) return;
-        cerrado = true;
-        clearTimeout(reloj);
-        fuente.removeEventListener('seeked', alSaltar);
-        resolver();
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = function () {
+        const listo = function () { imagenes[i] = img; resolver(img); };
+        img.decode ? img.decode().then(listo, listo) : listo();
       };
-
-      /* Si un salto se demora demasiado, abortamos toda la extracción */
-      const reloj = setTimeout(function () {
-        if (cerrado) return;
-        cerrado = true;
-        fuente.removeEventListener('seeked', alSaltar);
-        rechazar(new Error('El salto tardó demasiado'));
-      }, TIMEOUT_SEEK);
-
-      fuente.addEventListener('seeked', alSaltar);
-      fuente.currentTime = tiempo;
+      img.onerror = function () { rechazar(new Error('No cargó la foto ' + i)); };
+      img.src = RUTA_FRAMES + String(i).padStart(2, '0') + '.webp';
     });
   }
 
-  /* Convierte el canvas temporal en una imagen lista para dibujar */
-  function guardarComoImagen(canvasTemp) {
-    /* Abierto con doble clic (file://): el navegador no deja exportar el frame,
-       así que guardamos una copia en canvas, que se dibuja igual de bien. */
-    if (location.protocol === 'file:') {
-      const copiaFrame = document.createElement('canvas');
-      copiaFrame.width = canvasTemp.width;
-      copiaFrame.height = canvasTemp.height;
-      copiaFrame.getContext('2d', { alpha: false }).drawImage(canvasTemp, 0, 0);
-      return Promise.resolve(copiaFrame);
-    }
-    return new Promise(function (resolver, rechazar) {
-      canvasTemp.toBlob(function (blob) {
-        if (!blob) return rechazar(new Error('No se pudo generar el frame'));
-
-        const img = new Image();
-        const url = URL.createObjectURL(blob);
-
-        img.onload = function () {
-          /* decode() fuerza al navegador a preparar la imagen ahora,
-             para que el primer dibujado no tenga tirón */
-          if (img.decode) {
-            img.decode().then(function () { resolver(img); })
-                        .catch(function () { resolver(img); });
-          } else {
-            resolver(img);
-          }
-        };
-        img.onerror = function () { rechazar(new Error('Frame corrupto')); };
-        img.src = url;
-      }, 'image/jpeg', CALIDAD_JPEG);
+  function ordenDeCarga() {
+    const centro = Math.round((FRAMES - 1) * PUNTO_CENTRO);
+    const lista = [centro], vista = new Set(lista);
+    [12, 6, 3, 1].forEach(function (paso) {
+      for (let i = 0; i < FRAMES; i += paso) if (!vista.has(i)) { vista.add(i); lista.push(i); }
     });
-  }
-
-  /* Copia invisible del video: se recorre por detrás para que el
-     visitante nunca vea al robot girar mientras se prepara. */
-  function crearCopia() {
-    return new Promise(function (resolver, rechazar) {
-      const copia = document.createElement('video');
-      copia.muted = true;
-      copia.playsInline = true;
-      copia.preload = 'auto';
-      copia.setAttribute('aria-hidden', 'true');
-      copia.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px';
-      document.body.appendChild(copia);
-
-      const reloj = setTimeout(function () { rechazar(new Error('La copia no cargó')); }, 10000);
-      copia.addEventListener('loadeddata', function () { clearTimeout(reloj); resolver(copia); }, { once: true });
-      copia.addEventListener('error', function () { clearTimeout(reloj); rechazar(new Error('Error en la copia')); }, { once: true });
-      copia.src = video.currentSrc || video.src;
-    });
-  }
-
-  async function extraerFrames() {
-    /* Cuántos frames vamos a sacar, según lo que dure el video */
-    let total = Math.round(duracion * FRAMES_POR_SEGUNDO);
-    total = Math.min(FRAMES_MAX, Math.max(FRAMES_MIN, total));
-
-    /* Canvas temporal donde cae cada frame antes de guardarse */
-    const fuente = await crearCopia();
-    const temp = document.createElement('canvas');
-    const anchoReal = fuente.videoWidth  || 1280;
-    const altoReal  = fuente.videoHeight || 720;
-    const factor    = Math.min(1, ANCHO_CAPTURA / anchoReal);
-
-    temp.width  = Math.round(anchoReal * factor);
-    temp.height = Math.round(altoReal  * factor);
-    const ctxTemp = temp.getContext('2d', { alpha: false });
-
-    /* Dejamos un margen al final: el último frame exacto a veces no existe */
-    const fin = Math.max(0, duracion - 0.04);
-
-    for (let i = 0; i < total; i++) {
-      const tiempo = (i / (total - 1)) * fin;
-
-      await irA(fuente, tiempo);
-      ctxTemp.drawImage(fuente, 0, 0, temp.width, temp.height);
-      imagenes.push(await guardarComoImagen(temp));
-
-      progreso.style.width = Math.round(((i + 1) / total) * 100) + '%';
-    }
-
-    /* Liberamos la copia */
-    fuente.removeAttribute('src');
-    fuente.load();
-    fuente.remove();
+    if (!vista.has(FRAMES - 1)) lista.push(FRAMES - 1);
+    return lista;
   }
 
   /* ═════════════════════════════════════════════════════════
@@ -2824,6 +2769,16 @@ main.tema-claro{background:#F3F3F1}
   function activarRespaldo() {
     modoCanvas = false;
     lienzo.classList.remove('activo');
+    if (!video.getAttribute('src')) {   // el video aún no se ha pedido: lo cargamos y volvemos aquí
+      video.addEventListener('loadedmetadata', function () {
+        duracion = video.duration;
+        video.addEventListener('seeked', function () { video.classList.add('listo'); }, { once: true });
+        activarRespaldo();
+      }, { once: true });
+      video.preload = 'auto';
+      video.src = video.dataset.src;
+      return;
+    }
     video.classList.remove('retirado');
     video.currentTime = duracion * PUNTO_CENTRO;
 
@@ -2862,14 +2817,14 @@ main.tema-claro{background:#F3F3F1}
     proporcion = Math.min(Math.max(proporcion, 0), 1);
 
     /* La convertimos en índice de frame */
-    objetivo = proporcion * (imagenes.length - 1);
+    objetivo = proporcion * (FRAMES - 1);
     arrancarBucle();
 
     if (pista.classList.contains('visible')) pista.classList.remove('visible');
   }
 
   function alSalir() {
-    objetivo = (imagenes.length - 1) * PUNTO_CENTRO;   // vuelve al centro
+    objetivo = (FRAMES - 1) * PUNTO_CENTRO;   // vuelve al centro
     arrancarBucle();
   }
 
@@ -2877,68 +2832,48 @@ main.tema-claro{background:#F3F3F1}
      ARRANQUE
      ═════════════════════════════════════════════════════════ */
   async function iniciar() {
-    if (!isFinite(video.duration) || video.duration <= 0) return;
-
-    duracion = video.duration;
-    video.pause();
-    /* Mirando al frente mientras se prepara. El video está invisible
-       hasta que llega a ese cuadro, así nunca se ve el primer cuadro
-       (que puede estar en diagonal). */
-    video.addEventListener('seeked', function () { video.classList.add('listo'); }, { once: true });
-    setTimeout(function () { video.classList.add('listo'); }, 2500);   // respaldo por si el salto no avisa
-    video.currentTime = duracion * PUNTO_CENTRO;
+    /* En celular el robot es una imagen fija: no se pide nada */
+    if (matchMedia('(max-width:860px)').matches) { progreso.classList.add('terminado'); return; }
 
     ajustarLienzo();
+    const centro = Math.round((FRAMES - 1) * PUNTO_CENTRO);
 
-    /* En celular o con movimiento reducido no extraemos nada:
-       basta con dejar el video quieto en la mitad. */
-    if (!activarTracking) {
-      video.currentTime = duracion * PUNTO_CENTRO;
+    try {
+      await cargarFoto(centro);
+    } catch (error) {
+      console.warn('Fotos de Robi no disponibles:', error.message);
+      activarRespaldo();
       progreso.classList.add('terminado');
       return;
     }
 
-    try {
-      await extraerFrames();
+    /* Ya hay foto de frente: el canvas toma el control */
+    modoCanvas = true;
+    actual = objetivo = centro;
+    dibujar(actual);
+    lienzo.classList.add('activo');
+    video.classList.add('retirado');
 
-      if (imagenes.length < 2) throw new Error('Muy pocos frames');
+    /* Sin mouse (o con movimiento reducido) basta con la foto de frente */
+    if (!activarTracking) { progreso.classList.add('terminado'); return; }
 
-      /* Todo listo: el canvas toma el control */
-      modoCanvas = true;
-      actual = objetivo = (imagenes.length - 1) * PUNTO_CENTRO;
+    /* El robot ya no sigue al mouse: persigue a la luz */
+    window.__heroSeguir = alMover;
+    pista.classList.add('visible');
+    setTimeout(function () { pista.classList.remove('visible'); }, 6000);
+
+    /* El resto de las fotos, de a pocas a la vez */
+    const resto = ordenDeCarga().slice(1);
+    for (let k = 0; k < resto.length; k += DE_A) {
+      await Promise.all(resto.slice(k, k + DE_A).map(function (i) { return cargarFoto(i).catch(function () {}); }));
+      progreso.style.width = Math.round(Math.min(k + DE_A + 1, FRAMES) / FRAMES * 100) + '%';
+      ultimoDibujado = -1;   // puede que ahora haya una foto más cercana a la pedida
       dibujar(actual);
-
-      lienzo.classList.add('activo');
-      video.classList.add('retirado');
-      video.removeAttribute('src');   // liberamos el video, ya no hace falta
-      video.load();
-
-      /* El robot ya no sigue al mouse: persigue a la luz */
-      window.__heroSeguir = alMover;
-
-      pista.classList.add('visible');
-      setTimeout(function () { pista.classList.remove('visible'); }, 6000);
-
-    } catch (error) {
-      /* Algo falló: seguimos con el video normal */
-      console.warn('Extracción de frames no disponible:', error.message);
-      activarRespaldo();
     }
-
     progreso.classList.add('terminado');
   }
 
-  /* Puede que los metadatos ya estén listos si el video venía en caché */
-  if (video.readyState >= 1) {
-    iniciar();
-  } else {
-    video.addEventListener('loadedmetadata', iniciar, { once: true });
-  }
-
-  video.addEventListener('error', function () {
-    video.style.opacity = '0';
-    progreso.classList.add('terminado');
-  });
+  iniciar();
 
   /* Reajuste al cambiar el tamaño de la ventana, con freno para no
      recalcular en cada pixel del arrastre */
@@ -3331,12 +3266,14 @@ main.tema-claro{background:#F3F3F1}
     const apagar   = () => luz.classList.remove('activa');
     const encender = () => luz.classList.add('activa');
 
-    heroEl.addEventListener('pointermove', e => {
+    const seguirPuntero = e => {
       tx = e.clientX - caja.left;
       ty = e.clientY - caja.top;
       encender();
       arrancar();
-    }, { passive: true });
+    };
+    heroEl.addEventListener('pointermove', seguirPuntero, { passive: true });
+    heroEl.addEventListener('pointerdown', seguirPuntero, { passive: true });   // tablets: al tocar, la luz va al dedo
     heroEl.addEventListener('pointerleave', apagar);
     document.addEventListener('mouseleave', apagar);
 
@@ -3847,6 +3784,7 @@ main.tema-claro{background:#F3F3F1}
   document.querySelectorAll('[data-hoy]').forEach(e => e.textContent = dia === 0 ? '9:00 a.m. – 2:00 p.m.' : '8:00 a.m. – 7:00 p.m.');
   document.querySelectorAll('[data-estado]').forEach(e => { e.textContent = abierto ? 'Abierto hasta las ' + (dia === 0 ? '2:00 p.m.' : '7:00 p.m.') : 'Cerrado ahora'; e.classList.toggle('b-cerrado', !abierto); });
   document.querySelectorAll('[data-chip]').forEach(e => { e.textContent = abierto ? 'Abierto ahora' : 'Cerrado ahora'; if (!abierto) e.classList.add('b-chip--gris'); });
+  document.querySelectorAll('[data-cl-dias]').forEach(li => li.classList.toggle('hoy', (li.dataset.clDias === 'festivo') === (dia === 0)));
 
   const catsEl = document.getElementById('cats'), filas = document.getElementById('filas'), buscar = document.getElementById('buscar');
   /* v40 · Sinónimos del buscador: si alguien escribe una palabra de un grupo, también se buscan las demás del grupo.
